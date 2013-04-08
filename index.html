@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>Core Builder 0.1</title>
+  <script src="lib/jquery-1.9.1.js"></script>
+  <script src="lib/underscore-min.js"></script>
+  <script src="lib/backbone-min.js"></script>
+  <script src="lib/sax.js"></script>
+  <script src="lib/SAXParser.js"></script>
+  <script src="lib/shjs/sh_main.min.js"></script>
+  <script src="lib/shjs/sh_xml.js"></script>
+  <link rel="stylesheet" type="text/css" href="lib/shjs/sh_style.css">
+  <script>
+  	Array.prototype.remove = function(e) {
+		var t, _ref;
+		if ((t = this.indexOf(e)) > -1) {
+		    return ([].splice.apply(this, [t, t - t + 1].concat(_ref = [])), _ref);
+		}
+	};
+  var generateUid = function (separator) {
+    /// <summary>
+    ///    Creates a unique id for identification purposes.
+    /// </summary>
+    /// <param name="separator" type="String" optional="true">
+    /// The optional separator for grouping the generated segmants: default "-".    
+    /// </param>
+
+    var delim = separator || "-";
+
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+
+    return (S4() + S4() + delim + S4() + delim + S4() + delim + S4() + delim + S4() + S4() + S4());
+};
+  </script>
+  <style>
+    li {
+      list-style-type: none;
+    }
+  	div.column {
+  		float:left;
+  		border: 1px solid Black;
+  		padding: 1em;
+  	}
+  	dt.has_id {
+  		border: 1px solid Black;
+  		background: #3DBEF5;
+  	}
+  	dt {
+  		border: 1px solid Black;
+  		background: #F74F58;
+  	}
+  	dt.selected {
+  		border: 4px Solid Yellow;
+  	}
+    #cur_grp {
+      display: none;
+    }
+  	#cur_grp header {
+  		font-style: italic;
+  	}
+  	h2 {
+  		font-size: medium;
+  	}
+    #makeNew {
+      background-color: #89F531;
+    }
+    #save { 
+      display: none; 
+      background-color: #3DBEF5;
+    }
+    .remove {
+      font-size: small;
+      float:right;
+    }
+  </style>
+</head>
+<body>
+<div class="column">
+  <h2>Controls</h2>
+  <button id="makeNew">Create new <em>app</em> entry</button>
+  <button id="save">Save entry to CORE</button>
+  <section id="cur_grp">
+    <header>Selected elements:</header>
+  </section>
+  <dl id="core"></dl>
+</div>
+<div class="column">
+  <h2>CORE</h2>
+  <div id="corexml"></div>
+</div>
+
+<script>
+var sources = ['C_07_Kind_Autograph','C_07_Handexemplar'];
+//var core = {app : []};
+// Example structure:
+// "app": [
+//   "rdg": [{source: "", ptr: []}]
+// ]  
+
+/* Set up backbone models an views */
+var coreModel = Backbone.Model.extend({
+  defaults: {
+    "app": []
+  }
+});
+// &lt;rdg wit="#A-pt"&gt;
+//     &lt;ptr target="#A-pt_l2"/&gt;
+//     &lt;ptr target="#A-pt_l3"/&gt;
+//   &lt;/rdg&gt;
+var core = new coreModel();
+var coreView = Backbone.View.extend({
+  template: _.template('<% _.each(app, function(a, i) { %><a href="#" class="remove" id="_<%=i%>">remove</a><pre class="sh_xml">&lt;app&gt;<% _.each(a.rdg, function(r) { %>\
+\n  &lt;rdg wit="#<%=r.source%>"&gt;\
+<% _.each(r.ptr, function(p) { %>\n    &lt;ptr target="#<%=p%>"/&gt;\
+\n  <% }); %>&lt;/rdg&gt;<% }); %>\
+\n&lt;/app&gt;</pre><% }); %>'),
+  initialize: function() {
+    this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'destroy', this.remove);
+  },
+  render: function() {
+    this.$el.html(this.template(this.model.toJSON()));
+    $('#corexml').html(this.$el.html());
+    sh_highlightDocument();
+    console.log(this.model);
+    this.bindRemove(this.model);
+    return this;
+  },
+  bindRemove: function(model) {
+    $('.remove').click(function(){
+      var idx = /_(\d+)/.exec($(this).attr('id'))[1];
+      //model.unset(model.toJSON().app[idx]);
+      // set it back to all without the one.
+      var app = model.toJSON().app;
+      model.set(app.splice(0, idx).concat(app.splice(idx, app.length)));
+
+      //model.unset('rdg');
+      //console.log(model);
+    });
+  }
+});
+
+var selection = Backbone.Model.extend({
+	defaults: {
+	  "source": "",
+	  "elements": []
+	}
+});
+
+var appEntry = Backbone.Collection.extend({
+    model: selection,
+    initialize: function() {
+    }
+});
+
+var appView = Backbone.View.extend({
+  template: _.template("<ul><%= source %></ul>"),
+    initialize: function() {
+  },
+  render: function() {
+    this.$el.html(this.template({}));
+    this.collection.each(this.addOne, this);
+    return this;
+  },
+  addOne: function(model) {
+    var view = new selectionView({model: model});
+    $('#cur_grp').show().append(view.render().$el);
+    $('#save').show();
+    $('#makeNew').hide();
+  },
+  updateCore: function() {
+    var c = this.collection.toJSON();
+    var rgroup = {rdg:[], id: generateUid()};
+    for (var i=0; i<c.length; i++){
+      rgroup.rdg.push({source:c[i].source, ptr: c[i].elements});
+    }
+    core.attributes.app.push(rgroup);
+    var m;
+    while (m = this.collection.first()) {
+      m.destroy();
+    }
+  }
+});
+
+var selectionView = Backbone.View.extend({
+	template: _.template("<li><%= source %>\
+		<ul>\
+			<% _.each(elements, function(e) { %> <li><%= e %></li> <% }); %>\
+		</ul>\
+	</li>"),
+	initialize: function() {
+		this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'destroy', this.remove);
+	},
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	}
+});
+
+/* Set up SAX PARSER */
+
+var end = false;
+var parser = new SAXParser({
+  startDocument: function() { },
+  endDocument: function() { },
+  startElement: function(node) { 
+  		end = false;
+  		has_id = ($.inArray('xml:id', Object.keys(node.attributes)) !== -1) ? ' class="has_id '+window.source+'" data-teiid="'+node.attributes['xml:id'].value+'"' : '';
+  		window.loc.append('<dt'+has_id+'>'+node.name+'</dd>');
+  	},
+  endElement: function(node) {
+  	end = true;
+  },
+  characters: function(text) {
+  		if (!end) {
+  			var t = (text.length > 20) ? text.substr(0,19) : text;
+  			window.loc.append('<dd>'+t+'</dd>');
+  		}  		
+  	},
+  comment: function(comment) { }
+});
+
+/* GET DATA */
+
+var loadTEI = function(s, cb) {
+  $.get(s+'.xml', function(data) {
+    var column = $('<div class="column"><h2>'+s+'</h2></div>');
+    var dl = $('<dl id="'+s+'"/>');
+    column.append(dl);
+    $('body').prepend(column);
+    window.loc = dl;
+    window.source = s;
+    parser.parse(data);
+  }, 'text');
+  if (cb != null || cb != undefined) {cb(s);}
+}
+
+// Load sources in oder (pipe through a callback)
+if (sources.length > 1) {
+  loadTEI(sources[0], function() {loadTEI(sources.slice(1, sources.length))});
+}
+else { loadTEI(sources[0]); }
+
+// Attach events to TEI elements when creating a new selection.
+var bindTEI = function(source, sel) {
+	var selected = {};
+	selected[source] = [];
+	$('.has_id.'+source).click(function(){
+		elm = $(this);
+		teiid = elm.attr('data-teiid');
+		if ($.inArray(teiid, selected[source]) == -1) {
+			selected[source].push(elm.attr('data-teiid'));
+			elm.addClass('selected');
+		} 
+		else {
+			selected[source].remove(teiid);
+			elm.removeClass('selected');
+			sel.unset({source:source, elements:selected[source]});
+		}
+		sel.set({source:source, elements:selected[source]}, {silent:true});
+		sel.trigger("change"); //Firing change manually seems to make this work better.
+	});
+}
+// Detach events to TEI elements when creating a new selection.
+var unbindTEI = function(source, sel) {
+  $('.has_id').unbind('click');
+  $('.has_id.selected').removeClass('selected');
+}
+
+var cur_col;
+
+$('#makeNew').click(function(){
+	var entry = new appEntry();
+  var entryView = new appView({collection:entry});
+  cur_col = entryView;
+  for (var i=0; i<sources.length; i++){
+    var s = new selection(); 
+    entry.add(s);   
+    bindTEI(sources[i], s);
+  }
+  entryView.render();
+});
+
+$('#save').click(function(){
+  cur_col.updateCore();
+  $('#save').hide();
+  $('#cur_grp').hide();
+  $('#makeNew').show();
+  unbindTEI();
+  var cv = new coreView({model:core});
+  cv.render();
+});
+
+</script>
+ 
+</body>
+</html>
