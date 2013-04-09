@@ -10,6 +10,7 @@
   <script src="lib/SAXParser.js"></script>
   <script src="lib/shjs/sh_main.min.js"></script>
   <script src="lib/shjs/sh_xml.js"></script>
+  <script src="lib/FileSaver.min.js"></script>
   <link rel="stylesheet" type="text/css" href="lib/shjs/sh_style.css">
   <script>
   	Array.prototype.remove = function(e) {
@@ -71,6 +72,9 @@
       display: none; 
       background-color: #3DBEF5;
     }
+    #saveall {
+      background-color: #3DBEF5;
+    }
     .remove {
       font-size: small;
       float:right;
@@ -89,6 +93,7 @@
 </div>
 <div class="column">
   <h2>CORE</h2>
+  <button id="saveall">Save XML</button>
   <div id="corexml"></div>
 </div>
 
@@ -125,20 +130,14 @@ var coreView = Backbone.View.extend({
     this.$el.html(this.template(this.model.toJSON()));
     $('#corexml').html(this.$el.html());
     sh_highlightDocument();
-    console.log(this.model);
     this.bindRemove(this.model);
     return this;
   },
   bindRemove: function(model) {
     $('.remove').click(function(){
       var idx = /_(\d+)/.exec($(this).attr('id'))[1];
-      //model.unset(model.toJSON().app[idx]);
-      // set it back to all without the one.
       var app = model.toJSON().app;
       model.set(app.splice(0, idx).concat(app.splice(idx, app.length)));
-
-      //model.unset('rdg');
-      //console.log(model);
     });
   }
 });
@@ -293,6 +292,14 @@ $('#save').click(function(){
   unbindTEI();
   var cv = new coreView({model:core});
   cv.render();
+});
+
+$('#saveall').click(function(){
+  var xml = '<?xml version="1.0" encoding="UTF-8"?><TEI>'+$('pre').text()+"</TEI>";
+  //THIS + http://updates.html5rocks.com/2011/08/Saving-generated-files-on-the-client-side 
+  // AND https://github.com/eligrey/FileSaver.js:
+  var bb = new Blob([xml], {"type":"text\/xml"});
+  saveAs(bb, 'core.xml');
 });
 
 </script>
