@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div type="scene" n="2" xml:id="Ltx2_III_2" xml:space="preserve">
+    <head type="scene"><hi rend="underline" n="1">Zweiter Auftritt</hi>. </head>
+
+    <stage>
+        <lb/><hi rend="underline" n="1"><name>Agathens</name> Stübchen, alterthümlich, doch niedlich verziert. An einer Seite ein kleiner Hausaltar, worauf <seg xml:id="Ltx2_III_2_2_1">in einem Blumentopfe ein Straus weißer Roßen. Gegenüber ein Spiegel</seg></hi>.</stage>
+
+    <sp>
+        <lb/><speaker><hi rend="underline" n="2">Agathe</hi>, </speaker> <stage rend="inline">allein.</stage>
+
+        <stage>
+            <hi rend="underline" n="1">bräutlich und blendentweiß, mit grünem Bande gekleidet, <seg xml:id="Ltx2_III_2_4_1">steht <del rend="strikethrough">mit</del> vor dem <subst><del rend="strikethrough">Betaltar</del><add place="margin">Altar</add></subst></seg> u. wendet sich dann vorwärts. Mit wehmüthiger Andacht</hi>: 
+        </stage>
+        
+        <lg>
+            <l>Und ob die Wolke <sic xml:id="Ltx2_III_2_5_1">sich</sic> verhülle, </l>
+            <l>Die Sonne bleibt am Himmelszelt! </l>
+            <l>Es waltet dort ein heil’ger Wille; </l>
+            <l>Nicht blindem Zufall dient die Welt! </l>
+            <l>Das Auge, <seg xml:id="Ltx2_III_2_9_1">ewig rein und</seg> klar, </l>
+            <l>Nimmt aller Wesen liebend wahr! </l>
+        </lg>
+
+        <lg>
+            <l> Für mich auch wird der Höchste sorgen, </l>
+            <l>Dem kindlich Herz u. Sinn vertraut! </l>
+            <l>Und wär’ dieß auch mein letzter Morgen, </l>
+            <l>Rief mich sein Vaterwort als Braut; </l>
+            <l><hi rend="underline" n="1">Sein</hi> Auge, <seg xml:id="Ltx2_III_2_15_1">ewig rein und</seg> klar, </l>
+            <l><seg xml:id="Ltx2_III_2_16_1">Nimmt aller seiner Kinder</seg> wahr! </l>
+        </lg>
+        
+        <stage rend="right">sich gegen den Spiegel wendend</stage>
+
+        <lg>
+            <l>Nicht eitles Prangen soll mich schmücken,</l>
+            <l>Nicht goldne Ketten und Geschmeid.</l>
+            <l>Zu <hi rend="underline" n="1">ihm</hi> will ich in Demuth blicken,</l>
+            <l>Und wär' dieß auch – mein Leichenkleid!</l>
+            <l><hi rend="underline" n="1">Sein</hi> Auge, ewig rein u. klar,</l>
+            <l>Nimmt <hi rend="underline" n="1">meiner</hi> auch mit Liebe wahr!</l>
+        </lg>
+
+    </sp>
+
+</div>

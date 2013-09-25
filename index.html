@@ -3,15 +3,18 @@
 <head>
   <meta charset='utf-8'>
   <title>Core Builder 0.1</title>
-  <script src="lib/jquery-1.9.1.js"></script>
-  <script src="lib/underscore-min.js"></script>
-  <script src="lib/backbone-min.js"></script>
-  <script src="lib/sax.js"></script>
-  <script src="lib/SAXParser.js"></script>
-  <script src="lib/shjs/sh_main.min.js"></script>
-  <script src="lib/shjs/sh_xml.js"></script>
-  <script src="lib/FileSaver.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="lib/shjs/sh_style.css">
+  <script src="js/jquery-1.9.1.js"></script>
+  <script src="js/underscore-min.js"></script>
+  <script src="js/backbone-min.js"></script>
+  <script src="js/sax.js"></script>
+  <script src="js/SAXParser.js"></script>
+  <script src="js/shjs/sh_main.min.js"></script>
+  <script src="js/shjs/sh_xml.js"></script>
+  <script src="js/FileSaver.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="js/shjs/sh_style.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+
   <script>
   	Array.prototype.remove = function(e) {
 		var t, _ref;
@@ -37,17 +40,26 @@
 };
   </script>
   <style>
+    body, html, #container {
+      height: 100%;
+    }
     li {
       list-style-type: none;
     }
   	div.column {
+      height:92%;
   		float:left;
   		border: 1px solid Black;
   		padding: 1em;
   	}
+    dl {
+      height: 88%;
+      overflow-y: auto;
+    }
   	dt.has_id {
   		border: 1px solid Black;
   		background: #3DBEF5;
+      margin-right: 10px;
   	}
   	dt {
   		border: 1px solid Black;
@@ -64,6 +76,7 @@
   	}
   	h2 {
   		font-size: medium;
+      padding: 1em;
   	}
     #makeNew {
       background-color: #89F531;
@@ -73,32 +86,42 @@
       background-color: #3DBEF5;
     }
     #saveall {
-      background-color: #3DBEF5;
+      
     }
     .remove {
       font-size: small;
       float:right;
     }
+    #controls {
+      background-color: #DBDBDB;
+    }
+    pre {
+      padding: 1em;
+    }
   </style>
 </head>
 <body>
-<div class="column">
-  <h2>Controls</h2>
-  <button id="makeNew">Create new <em>app</em> entry</button>
-  <button id="save">Save entry to CORE</button>
-  <section id="cur_grp">
-    <header>Selected elements:</header>
-  </section>
-  <dl id="core"></dl>
-</div>
-<div class="column">
-  <h2>CORE</h2>
-  <button id="saveall">Save XML</button>
-  <div id="corexml"></div>
-</div>
+  <div id="container">
+    <div id="controls" class="column">
+      <h2>Controls</h2>
+      <button id="makeNew">Create new <em>app</em> entry</button>
+      <button id="save">Save entry to CORE</button>
+      <section id="cur_grp">
+        <header>Selected elements:</header>
+      </section>
+      <dl id="core"></dl>
+    </div>
+    <div class="column">
+      <h2>CORE</h2>
+      <button id="saveall">Save XML</button><br/>
+      <input type="file" id="files" name="files[]" />
+      <div id="corexml"></div>
+    </div>
+  </div>
 
 <script>
-var sources = ['C_07_Kind_Autograph','C_07_Handexemplar'];
+
+var sources = ['KAtx4_III_2', 'Ltx2_III_2', 'Ktx6_III_2', 'D_ptx2_III_2'];
 //var core = {app : []};
 // Example structure:
 // "app": [
@@ -171,7 +194,9 @@ var appView = Backbone.View.extend({
     $('#makeNew').hide();
   },
   updateCore: function() {
-    var c = this.collection.toJSON();
+    var c = jQuery.grep(this.collection.toJSON(), function(e,i) {
+      return e.source != "" && e.source != null && e.source != undefined;
+    });
     var rgroup = {rdg:[], id: generateUid()};
     for (var i=0; i<c.length; i++){
       rgroup.rdg.push({source:c[i].source, ptr: c[i].elements});
@@ -203,19 +228,28 @@ var selectionView = Backbone.View.extend({
 /* Set up SAX PARSER */
 
 var end = false;
+var skip = ['teiHeader', 'lb']
+var skipping = false;
 var parser = new SAXParser({
   startDocument: function() { },
   endDocument: function() { },
-  startElement: function(node) { 
-  		end = false;
-  		has_id = ($.inArray('xml:id', Object.keys(node.attributes)) !== -1) ? ' class="has_id '+window.source+'" data-teiid="'+node.attributes['xml:id'].value+'"' : '';
-  		window.loc.append('<dt'+has_id+'>'+node.name+'</dd>');
+  startElement: function(node) {
+      end = false;
+      if (skip.indexOf(node.name) != -1) {skipping=true;}
+      if (!skipping) { 
+    		has_id = ($.inArray('xml:id', Object.keys(node.attributes)) !== -1) ? ' class="has_id '+window.source+'" data-teiid="'+node.attributes['xml:id'].value+'"' : '';
+    		window.loc.append('<dt'+has_id+'>'+node.name+'</dd>');
+      }
+      //if (skipping && node.isSelfClosing) {skipping=false;}
   	},
   endElement: function(node) {
   	end = true;
+    if (skip.indexOf(node) != -1){
+      skipping=false;
+    }
   },
   characters: function(text) {
-  		if (!end) {
+  		if (!end && !skipping) {
   			var t = (text.length > 20) ? text.substr(0,19) : text;
   			window.loc.append('<dd>'+t+'</dd>');
   		}  		
@@ -226,23 +260,26 @@ var parser = new SAXParser({
 /* GET DATA */
 
 var loadTEI = function(s, cb) {
-  $.get(s+'.xml', function(data) {
-    var column = $('<div class="column"><h2>'+s+'</h2></div>');
-    var dl = $('<dl id="'+s+'"/>');
+  $.get('data/'+s[0]+'.xml', function(data) {
+    var column = $('<div class="column TEI"><h2 class="anchored">'+s[0]+'</h2></div>');
+    var dl = $('<dl id="'+s[0]+'"/>');
     column.append(dl);
-    $('body').prepend(column);
+    $('#container').prepend(column);
     window.loc = dl;
-    window.source = s;
+    window.source = s[0];
     parser.parse(data);
   }, 'text');
-  if (cb != null || cb != undefined) {cb(s);}
+  if (cb != null || cb != undefined) {cb(s.slice(1, s.length));}
 }
 
-// Load sources in oder (pipe through a callback)
-if (sources.length > 1) {
-  loadTEI(sources[0], function() {loadTEI(sources.slice(1, sources.length))});
+// Load sources in order (pipe through a callback)
+var pipe = function(ss) {
+  if (ss.length > 1) {
+    loadTEI(ss, pipe);
+  }
+  else { loadTEI(ss); }
 }
-else { loadTEI(sources[0]); }
+pipe(sources);
 
 // Attach events to TEI elements when creating a new selection.
 var bindTEI = function(source, sel) {
@@ -269,6 +306,50 @@ var unbindTEI = function(source, sel) {
   $('.has_id').unbind('click');
   $('.has_id.selected').removeClass('selected');
 }
+
+
+// Listeners
+
+var handleFileSelect= function (evt) {
+  var files = evt.target.files; // FileList object
+
+  // Loop through the FileList
+  for (var i = 0, f; f = files[i]; i++) {
+
+    var reader = new FileReader();
+
+    // Closure to capture the file information.
+    reader.onload = (function(theFile) {
+      return function(e) {
+        parser=new DOMParser();
+        XMLCore=parser.parseFromString(e.target.result,"text/xml");
+        entries = $(XMLCore).find('app');
+        entries.each(function(i,e){
+          var entry = new appEntry();
+          var entryView = new appView({collection:entry});
+          $(e).find('rdg').each(function(i,r){
+            var s = new selection(); 
+            entry.add(s);
+            w = $(r).attr('wit').substr(1);
+            els = [];
+            $(r).find('ptr').each(function(i,p){
+              els.push($(p).attr('target').substr(1));
+            });
+            s.set({source:w, elements:els}, {silent:true});
+          });
+          entryView.updateCore();
+          var cv = new coreView({model:core});
+          cv.render();
+        });
+      };
+    })(f);
+
+    // Read in the file
+    reader.readAsText(f,"UTF-8");
+  }
+}
+
+$('#files').change(handleFileSelect);
 
 var cur_col;
 

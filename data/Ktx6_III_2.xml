@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div type="scene" xml:id="Ktx6_III_2" n="2">
+    <head rend="h2"><hi rend="underline" n="1">2<hi>ter</hi> Auftritt</hi>. </head>
+
+    <stage type="setting" rend="underline" n="1">
+        <lb/><name>Agathens</name> Stübchen, alterthümlich, doch niedlich verziert.
+        <lb/>An einer Seite ein kleiner Hausaltar, worauf <seg xml:id="Ktx6_III_2_3_1">in einem
+        <lb/>Blumentopfe ein Strauß weißer Rosen. Gegenüber ein
+        <lb/>Spiegel</seg>. 
+    </stage>
+    
+    <sp>
+        <speaker rend="underline" n="1">Agathe,  </speaker><stage rend="inline"><hi rend="underline" n="1">allein</hi>,</stage>
+        
+        <stage rend="underline" n="1">
+            <lb/>(bräutlich und blendentweiß, mit grünem Bande, gekleidet,
+            <lb/><seg xml:id="Ktx6_III_2_8_1">steht vor dem Altar</seg> und wendet sich dann vorwärts. Mit
+            <lb/>wehmüthiger Andacht: /
+        </stage>
+
+        <addSpan hand="#Kopist_Berlin" place="inspace" spanTo="#Berlin_Kopist_End_26"/>
+        <ab xml:id="Ktx6_III_2_10">
+            <lb/><hi rend="underline" n="1">12. <w xml:id="Ktx6_III_2_10_1">Cavatine</w></hi>.
+        </ab>
+        <anchor xml:id="Kopist_Berlin_End_26"/>
+
+        <lg>
+            <l>Und ob die Wolke <sic xml:id="Ktx6_III_2_11_1">sich</sic> verhülle, </l>
+            <l>Die Sonne bleibt am Himmelszelt! </l>
+            <l>Es waltet dort ein heil’ger Wille; </l>
+            <l>Nicht blindem Zufall dient die Welt! </l>
+            <l>Das Auge <seg xml:id="Ktx6_III_2_15_1">ewig rein und</seg> klar, </l>
+            <l>Nimmt aller Wesen liebend wahr! </l>
+        </lg>
+
+        <addSpan hand="#Kopist_Berlin" place="margin" spanTo="#Berlin_Kopist_End_27"/>
+        <ab>2.)</ab>
+        <anchor xml:id="Kopist_Berlin_End_27"/>
+        
+        <lg>
+            <l>Für mich auch wird der Höchste sorgen, </l>
+            <l>Dem kindlich Herz und Sinn vertraut! </l>
+            <l>Und wär dies auch mein letzter Morgen, </l>
+            <l>Rief mich sein Vaterwort als Braut; </l>
+            <l><hi rend="underline" n="1">Sein</hi> Auge ewig rein und klar, </l>
+            <l><seg xml:id="Ktx6_III_2_23_1">Nimmt aller seiner Kinder</seg> wahr!</l>
+        </lg>
+
+        <delSpan hand="#Kopist_Berlin" rend="strikethrough" spanTo="#Berlin_Kopist_End_28"/>
+        <stage rend="right">(<hi rend="underline" n="1">sich gegen den Spiegel wendend</hi>./</stage>
+
+        <lg>
+            <l>Nicht eitles Prangen soll mich schmücken,</l>
+            <l>Nicht goldne Ketten und Geschmeid.</l>
+            <pb n="33v"/>
+            <l>Zu <hi rend="underline" n="1">ihm</hi> will ich in Demuth blicken,</l>
+            <l>Und wär dies auch mein Leichenkleid!</l>
+            <l>Sein Auge ewig rein und klar,</l>
+            <l>Nimmt meiner auch mit Liebe wahr!</l>
+        </lg>
+        <anchor xml:id="Berlin_Kopist_End_28"/>
+
+    </sp>
+</div>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div type="scene" n="2" xml:id="KAtx4_III_2" xml:space="preserve">
+    <head type="scene"><hi rend="underline" n="1">Zweiter Auftritt</hi>. </head>
+
+    <stage type="setting">
+        <lb/><hi rend="underline" n="1"><name>Agathens</name> Stübchen, alterthümlich, doch niedlich verziert.
+        <lb/>An einer Seite ein kleiner Hausaltar, worauf <seg xml:id="KAtx4_III_2_3_1">in ei
+        <lb break="no"/>nem Blumentopfe ein <sic>Straus weiser Roßen</sic>. Gegen
+        <lb break="no"/>über ein Spiegel</seg></hi>.
+    </stage>
+
+    <addSpan hand="#cmvweber" place="inspace" spanTo="#cmvweber_End_24"/>
+    <!-- not ok: how do I address this? It groups lines, so it can't have a line number in the id?? -->
+    <ab xml:id="KAtx4_III_2_6">
+        <lb/><hi rend="underline" n="2"><hi rend="latintype">No</hi>: 1<subst><del rend="overwritten" hand="#cmvweber">3</del><add hand="#cmvweber" place="inline">2</add></subst></hi>. <hi rend="latintype"><hi rend="underline" n="1" xml:id="KAtx4_III_2_6_1">Cavatina</hi></hi>.
+    </ab>
+    <anchor xml:id="cmvweber_End_24"/>
+
+    <sp>
+        <!-- Problem here as well - two elements form line, but no grouping -->
+        <lb/><speaker><hi rend="underline" n="2">Agathe</hi>,  </speaker><stage type="entrance" rend="inline">allein.</stage>
+        
+        <stage>
+            <lb/><hi rend="underline" n="1">bräutlich und blendentweiß, mit grünem Bande geklei
+            <lb break="no"/>det, <seg xml:id="KAtx4_III_2_8_1">steht vor dem Altar</seg> und wendet sich dann vor
+            <lb break="no"/>wärts. Mit wehmüthiger Andacht</hi>: 
+        </stage>
+
+        <addSpan hand="#cmvweber" place="inspace" spanTo="#cmvweber_End_25"/>
+        <ab>
+            <lb/><del><hi rend="latintype">N</hi></del>
+        </ab>
+        <anchor xml:id="cmvweber_End_25"/>
+
+        <lg>
+            <l>Und ob die Wolke <sic xml:id="KAtx4_III_2_11_1">sich</sic> verhülle, </l>
+            <l>Die Sonne bleibt am Himmelszelt! </l>
+            <l>Es waltet dort ein heil’ger Wille; </l>
+            <l>Nicht blindem Zufall dient die Welt! </l>
+            <l>Das Auge, <seg xml:id="KAtx4_III_2_15_1">ewig rein und</seg> klar, </l>
+            <l>Nimmt aller Wesen liebend wahr! </l>
+        </lg>
+
+        <lg>
+            <l>Für mich auch wird der Höchste sorgen, </l>
+            <l>Dem kindlich Herz und Sinn vertraut! </l>
+            <l>Und wär’ dieß auch mein letzter Morgen, </l>
+            <l>Rief mich sein Vaterwort als Braut; </l>
+            <l><hi rend="underline" n="1">Sein</hi> Auge, <seg xml:id="KAtx4_III_2_21_1">ewig rein und</seg> klar, </l>
+            <l><subst>
+                <del hand="#cmvweber" rend="strikethrough">Nimmt aller seiner Kinder</del>
+                <del hand="#cmvweber" rend="strikethrough">
+                    <add hand="#cmvweber" place="above">meiner auch mit Liebe</add>
+                </del><add xml:id="KAtx4_III_2_23_1" hand="#cmvweber" rend="punctuated">..........</add>
+            </subst> wahr!  </l>
+        </lg>
+        <stage rend="right">
+            <del hand="#cmvweber" rend="strikethrough">sich gegen den Spiegel wendend</del>
+        </stage>
+
+        <delSpan hand="#cmvweber" rend="strikethrough" spanTo="#cmvweber_End_26"/>
+        <lg>
+            <l>Nicht eitles Prangen soll mich schmücken,</l>
+            <l>Nicht goldne Ketten und Geschmeid.</l>
+            <l>Zu <hi rend="underline" n="1">ihm</hi> will ich in Demuth blicken,</l>
+            <l>Und wär' dieß auch – mein Leichenkleid!</l>
+            <pb n="26r"/>
+            <l><hi rend="underline" n="1">Sein</hi> Auge, ewig rein und klar,</l>
+            <l>Nimmt <hi rend="underline" n="1">meiner</hi> auch mit Liebe wahr!</l>
+        </lg>
+        <anchor xml:id="cmvweber_End_26"/>
+    </sp>
+
+</div>
