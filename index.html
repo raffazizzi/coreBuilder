@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Core Builder 0.2</title>
   <script src="js/jquery-1.9.1.js"></script>
   <script src="js/underscore-min.js"></script>
@@ -12,22 +13,115 @@
   <script src="js/shjs/sh_xml.js"></script>-->
   <script src="js/FileSaver.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap-multiselect.js"></script>
   <script src="js/ace/ace.js"></script>
   <link rel="stylesheet" type="text/css" href="js/shjs/sh_style.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css">
   <style type="text/css" media="screen">
-    #editor { 
+    .editor { 
       position: relative !important;
-      height: 30em;
+      height: 15em;
+      margin-top: 1.5em;
+    }
+    #sources { 
+      margin-bottom: 1.5em;
     }
 </style>
 
 </head>
 <body>
  
-  <!-- <div id="editor">x</div> -->
+  <div class="container">
+    <h1>CoreBuilder v 0.2</h1>
+    
+    <div id="sources">
+      <select class="sel-sources" multiple="multiple">
+        <option value="KAtx4_III_2">KAtx4_III_2</option>
+        <option value="Ltx2_III_2">Ltx2_III_2</option>
+        <option value="Ktx6_III_2">Ktx6_III_2</option>
+        <option value="D_ptx2_III_2">D_ptx2_III_2</option>
+      </select>
+      <strong>Choose sources to compare</strong>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 well">
+        <div class="btn-grp">
+          <button type="button" class="btn btn-success">
+            Create new app entry
+          </button>
+        </div>
+        <div class="row" id="editors">
+          <!-- <div class="editor" id="editor1">TEI</div>
+          <div class="editor" id="editor2">TEI</div>
+          <div class="editor" id="editor3">TEI</div>
+          <div class="editor" id="editor4">TEI</div> -->
+        </div>
+      </div>
+      <div class="col-md-4 well" id="corexml">
+        <div class="btn-grp">
+          <strong>CORE</strong>
+          <button type="button" class="btn btn-primary">
+            Load Core
+          </button>
+          <button type="button" class="btn btn-primary">
+            Save Core
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/JavaScript">
+    // var editor1 = ace.edit("editor1");
+    // editor1.setTheme("ace/theme/monokai");
+    // editor1.getSession().setMode("ace/mode/xml");
+    // var editor2 = ace.edit("editor2");
+    // editor2.setTheme("ace/theme/monokai");
+    // editor2.getSession().setMode("ace/mode/xml");
+    // var editor3 = ace.edit("editor3");
+    // editor3.setTheme("ace/theme/monokai");
+    // editor3.getSession().setMode("ace/mode/xml");
+    // var editor4 = ace.edit("editor4");
+    // editor4.setTheme("ace/theme/monokai");
+    // editor4.getSession().setMode("ace/mode/xml");
+  </script>
+
+  <!-- BACKBONE TEMPLATES -->
+  <script type="text/template" id="core-tpl">
+
+  <% _.each(app, function(a, i) { %>
+    <a href="#" class="remove" id="_<%=i%>">remove</a>
+      <pre class="sh_xml">&lt;app&gt;<% _.each(a.rdg, function(r) { %>
+  &lt;rdg wit="#<%=r.source%>"&gt;
+<% _.each(r.ptr, function(p) { %>
+    &lt;ptr target="#<%=p%>"/&gt;
+  <% }); %>&lt;/rdg&gt;<% }); %>
+&lt;/app&gt;</pre><% }); %>
+
+  </script>
+
+  <script type="text/template" id="app-tpl">
+    <ul><%= source %></ul>
+  </script>
+
+  <script type="text/template" id="sel-tpl">
+    <li><%= source %>
+    <ul>
+      <% _.each(elements, function(e) { %> <li><%= e %></li> <% }); %>
+    </ul>
+  </li>
+  </script>
+  
 
   <script src="js/coreBuilder.js"></script>
+  <script type="text/javascript">
+
+    // UI
+    coreBuilder.Components.multiselect('.sel-sources');  
+
+  </script>
 
 </body>
 </html>
