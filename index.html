@@ -18,9 +18,6 @@
   <script src="js/bootstrap-multiselect.js"></script>
   <script src="js/ace/ace.js"></script>-->
 
-  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="bower_components/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
-
   <!--<link rel="stylesheet" type="text/css" href="js/shjs/sh_style.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css">-->
@@ -41,7 +38,7 @@
 </head>
 <body>
  
-  <div class="container">
+  <div class="container" id="coreBuilder">
     <h1>CoreBuilder v 0.2</h1>
     
     <div id="sources">
@@ -51,22 +48,12 @@
         <option value="Ktx6_III_2">Ktx6_III_2</option>
         <option value="D_ptx2_III_2">D_ptx2_III_2</option>
       </select>
-      <strong>Choose sources to compare</strong>
     </div>
 
     <div class="row">
       <div class="col-md-8 well">
-        <div class="btn-grp">
-          <button type="button" class="btn btn-success">
-            Create new app entry
-          </button>
-        </div>
-        <div class="row" id="editors">
-          <!-- <div class="editor" id="editor1">TEI</div>
-          <div class="editor" id="editor2">TEI</div>
-          <div class="editor" id="editor3">TEI</div>
-          <div class="editor" id="editor4">TEI</div> -->
-        </div>
+        <div class="alert alert-info"><span class="glyphicon glyphicon-arrow-up"></span> Pick a source to start selecting elements.</div>
+        <div class="row" id="editors"> </div>
       </div>
       <div class="col-md-4 well" id="corexml">
         <div class="btn-grp">
@@ -127,7 +114,7 @@
   <script type="text/javascript">
 
     // UI
-    coreBuilder.Components.multiselect('.sel-sources');  
+    cb = new coreBuilder.App
 
   </script>
 
