@@ -55,7 +55,7 @@ module.exports = (grunt) ->
     concat:
       bower_js:
         options:
-          separator: ";"
+          separator: "\n"
         src: ['bower_components/jquery/jquery.min.js', 
               'bower_components/underscore/underscore-min.js', 
               'bower_components/backbone/backbone-min.js',
@@ -67,9 +67,11 @@ module.exports = (grunt) ->
     copy:
       ace:
         files: [{expand: true, cwd: 'bower_components/ace-builds/src-min/', src: ['**'], dest: 'dist/ace/'}]
+      fonts:
+        files: [{expand: true, cwd: 'bower_components/bootstrap/fonts/', src: ['*'], dest: 'fonts/'}]
 
 
   # Task(s).
   grunt.registerTask 'default', ['coffee', 'uglify', 'less']
   grunt.registerTask 'run', ['connect', 'watch']
-  grunt.registerTask 'install', ['install-dependencies', 'bower', 'concat', 'copy:ace']
+  grunt.registerTask 'build', ['install-dependencies', 'bower', 'concat', 'copy:fonts', 'copy:ace']

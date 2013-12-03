@@ -16,11 +16,11 @@
   ],
   "dependencies": {
     "jquery": "~2.0.0",
-    "bootstrap": "~3.0.1",
+    "bootstrap": "~3.0.2",
     "underscore": "~1.5.2",
     "backbone": "~1.1.0",
     "FileSaver": "*",
-    "bootstrap-multiselect": "~0.9.1",
-    "ace-builds": "~1.1.1"
+    "ace-builds": "~1.1.1",
+    "bootstrap-multiselect": "~0.9.1"
   }
 }
