@@ -96,6 +96,9 @@ root.coreBuilder = {}
   coreBuilder.Views = {}
 
   class EditorView extends Backbone.View
+
+    template: _.template $('#editor-tpl').html()
+
     initialize: ->
       @listenTo @model, 'change', @render
       @listenTo @model, 'destroy', @remove
@@ -149,7 +152,7 @@ root.coreBuilder = {}
                 when token.type == "meta.tag.r" and token.value == ">" and openTags.length == 0
                   # The cursor must be on a closing tag, 
                   # return element value
-                  return latestTag+"2"
+                  return latestTag
                 when token.type == "meta.tag" and token.value == "</"
                   isClosingTag = true
                 when token.type == "meta.tag.r" and token.value == "/>"
@@ -158,15 +161,15 @@ root.coreBuilder = {}
                   milestone = openTags[openTags.length-1]
                   milestone = latestTag if !milestone?
                   closedTags.push milestone
-                  return milestone+"4" if isfinal()
+                  return milestone if isfinal()
                 when token.type == "meta.tag.tag-name" and isOpeningTag
                   allTags.push "<#{token.value}>"
                   openTags.push token.value
-                  return token.value+"5" if isfinal()
+                  return token.value if isfinal()
                 when token.type == "meta.tag.tag-name" and isClosingTag
                   allTags.push "</#{token.value}>"
                   closedTags.push token.value
-                  return token.value+"6" if isfinal()
+                  return token.value if isfinal()
 
           scanRow(row+1, 0)
 
@@ -175,21 +178,20 @@ root.coreBuilder = {}
       $(@el).click =>
         pos = @editor.getCursorPosition()
         ident = findParent pos.row, pos.column
+        ident = "none" if !ident?
+        id = "#cur-el_" + @model.get "source"
+        $(id).text " #{ident}"
 
     render: ->
-      console.log 'rendering'
       $el = $(@el)
 
-      # Might replace with template
-      $el.attr "id", @model.get "source"
-      $el.addClass "editor"
+      $el.html @template(@model.toJSON())
 
       # Need to append the element to the DOM here
       # so that ace can be initialized.
-
       $("#editors").append $el
 
-      @editor = ace.edit @model.get "source"
+      @editor = ace.edit "ed_" + @model.get("source")
       @editor.setReadOnly(true)
       @editor.setTheme("ace/theme/monokai")
       @editor.getSession().setMode("ace/mode/xml")
@@ -197,7 +199,6 @@ root.coreBuilder = {}
       @editor.moveCursorTo({column:0, row:0})
 
       @bindSelect()
-
       @
 
     remove: ->

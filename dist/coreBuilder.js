@@ -129,6 +129,8 @@
         return _ref4;
       }
 
+      EditorView.prototype.template = _.template($('#editor-tpl').html());
+
       EditorView.prototype.initialize = function() {
         this.listenTo(this.model, 'change', this.render);
         return this.listenTo(this.model, 'destroy', this.remove);
@@ -188,7 +190,7 @@
                     isClosingTag = false;
                     break;
                   case !(token.type === "meta.tag.r" && token.value === ">" && openTags.length === 0):
-                    return latestTag + "2";
+                    return latestTag;
                   case !(token.type === "meta.tag" && token.value === "</"):
                     isClosingTag = true;
                     break;
@@ -201,21 +203,21 @@
                     }
                     closedTags.push(milestone);
                     if (isfinal()) {
-                      return milestone + "4";
+                      return milestone;
                     }
                     break;
                   case !(token.type === "meta.tag.tag-name" && isOpeningTag):
                     allTags.push("<" + token.value + ">");
                     openTags.push(token.value);
                     if (isfinal()) {
-                      return token.value + "5";
+                      return token.value;
                     }
                     break;
                   case !(token.type === "meta.tag.tag-name" && isClosingTag):
                     allTags.push("</" + token.value + ">");
                     closedTags.push(token.value);
                     if (isfinal()) {
-                      return token.value + "6";
+                      return token.value;
                     }
                 }
               }
@@ -225,20 +227,23 @@
           return scanRow(row, column);
         };
         return $(this.el).click(function() {
-          var ident, pos;
+          var id, ident, pos;
           pos = _this.editor.getCursorPosition();
-          return ident = findParent(pos.row, pos.column);
+          ident = findParent(pos.row, pos.column);
+          if (ident == null) {
+            ident = "none";
+          }
+          id = "#cur-el_" + _this.model.get("source");
+          return $(id).text(" " + ident);
         });
       };
 
       EditorView.prototype.render = function() {
         var $el;
-        console.log('rendering');
         $el = $(this.el);
-        $el.attr("id", this.model.get("source"));
-        $el.addClass("editor");
+        $el.html(this.template(this.model.toJSON()));
         $("#editors").append($el);
-        this.editor = ace.edit(this.model.get("source"));
+        this.editor = ace.edit("ed_" + this.model.get("source"));
         this.editor.setReadOnly(true);
         this.editor.setTheme("ace/theme/monokai");
         this.editor.getSession().setMode("ace/mode/xml");
