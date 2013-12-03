@@ -6,35 +6,7 @@
   <title>Core Builder 0.2</title>
   <script src="dist/bower.js"></script>
   <script src="dist/ace/ace.js"></script>
-  <!--<script src="js/jquery-1.9.1.js"></script>
-  <script src="js/underscore-min.js"></script>
-  <script src="js/backbone-min.js"></script>
-  <script src="js/sax.js"></script>
-  <script src="js/SAXParser.js"></script>-->
-  <!--<script src="js/shjs/sh_main.min.js"></script>
-  <script src="js/shjs/sh_xml.js"></script>-->
-  <!--<script src="js/FileSaver.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/bootstrap-multiselect.js"></script>
-  <script src="js/ace/ace.js"></script>-->
-
-  <!--<link rel="stylesheet" type="text/css" href="js/shjs/sh_style.css">
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css">-->
-  <!--<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="bower_components/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css">-->
   <link rel="stylesheet" type="text/css" href="css/main.css">
-  <style type="text/css" media="screen">
-    .editor { 
-      position: relative !important;
-      height: 15em;
-      margin-top: 1.5em;
-    }
-    #sources { 
-      margin-bottom: 1.5em;
-    }
-</style>
-
 </head>
 <body>
  
@@ -53,6 +25,11 @@
     <div class="row">
       <div class="col-md-8 well">
         <div class="alert alert-info"><span class="glyphicon glyphicon-arrow-up"></span> Pick a source to start selecting elements.</div>
+        <div class="btn-grp hidden">
+          <button type="button" class="btn btn-success">
+            <span class="glyphicon glyphicon-floppy-disk"></span> Save selections to Core
+          </button>
+        </div>
         <div class="row" id="editors"> </div>
       </div>
       <div class="col-md-4 well" id="corexml">
@@ -69,22 +46,26 @@
     </div>
   </div>
 
-  <script type="text/JavaScript">
-    // var editor1 = ace.edit("editor1");
-    // editor1.setTheme("ace/theme/monokai");
-    // editor1.getSession().setMode("ace/mode/xml");
-    // var editor2 = ace.edit("editor2");
-    // editor2.setTheme("ace/theme/monokai");
-    // editor2.getSession().setMode("ace/mode/xml");
-    // var editor3 = ace.edit("editor3");
-    // editor3.setTheme("ace/theme/monokai");
-    // editor3.getSession().setMode("ace/mode/xml");
-    // var editor4 = ace.edit("editor4");
-    // editor4.setTheme("ace/theme/monokai");
-    // editor4.getSession().setMode("ace/mode/xml");
+  <!-- BACKBONE TEMPLATES -->
+  <script type="text/template" id="editor-tpl">
+  <div>
+    <h3><%=source%></h3>
+    <div id="ed_<%=source%>" class="editor"></div>
+    <div class='well-sm'>
+      <span class="label label-info">Current Element:</span>
+      <span id="cur-el_<%=source%>"> none </span>
+      <button type="button" class="btn btn-default btn-xs">Add to selection</button>
+    </div>
+  </div>
   </script>
 
-  <!-- BACKBONE TEMPLATES -->
+  <script type="text/template" id="selection-tpl">
+    <span class="label label-info">Selected Elements</span>
+    <span class="badge">hi[@xml:id='testasdhasjkdhakjsdhkajs']</span>
+    <span class="badge">seg[@xml:id='testasdhasjkdhakjsdhkajs']</span> 
+    <span class="badge">seg[@xml:id='testasdhasjkdhakjsdhkajs']</span>
+  </script>
+
   <script type="text/template" id="core-tpl">
 
   <% _.each(app, function(a, i) { %>
