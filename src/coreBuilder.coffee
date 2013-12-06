@@ -107,13 +107,19 @@ root.coreBuilder = {}
 
     bindSelect: ->
 
+      # Could simplify this greatly and simply allow to pick XMLIds...
+
       findParent = (row, column) =>
         openTags = []
         closedTags = []
         allTags = []
         isOpeningTag = false
         isClosingTag = false
+        hasXMLId = false
 
+        XMLId = 
+          tag: ''
+          id: ''
         finalTag = ''
         maxRow = @editor.getSession().getLength()
 
@@ -142,6 +148,13 @@ root.coreBuilder = {}
 
             latestTag = token.value if token.type == "meta.tag.tag-name"
 
+            switch
+              when token.type == "entity.other.attribute-name" and token.value == 'xml:id'
+                hasXMLId = true
+              when token.type == "string" and hasXMLId
+                XMLId = {tag: latestTag, id: token.value.slice(1,token.value.length-1)}
+                hasXMLId = false
+
             if curColumn > column
               switch
                 when token.type == "meta.tag" and token.value == "<"
@@ -151,8 +164,9 @@ root.coreBuilder = {}
                   isClosingTag = false
                 when token.type == "meta.tag.r" and token.value == ">" and openTags.length == 0
                   # The cursor must be on a closing tag, 
-                  # return element value
-                  return latestTag
+                  # return element value 
+                  XMLId.id = "" if XMLId.tag != latestTag
+                  return {ident : latestTag, id : XMLId.id}
                 when token.type == "meta.tag" and token.value == "</"
                   isClosingTag = true
                 when token.type == "meta.tag.r" and token.value == "/>"
@@ -161,15 +175,21 @@ root.coreBuilder = {}
                   milestone = openTags[openTags.length-1]
                   milestone = latestTag if !milestone?
                   closedTags.push milestone
-                  return milestone if isfinal()
+                  if isfinal()
+                    XMLId.id = "" if XMLId.tag != milestone
+                    return {ident : milestone, id : XMLId.id}
                 when token.type == "meta.tag.tag-name" and isOpeningTag
                   allTags.push "<#{token.value}>"
                   openTags.push token.value
-                  return token.value if isfinal()
+                  if isfinal()
+                    XMLId.id = "" if XMLId.tag != token.value
+                    return {ident : token.value, id : XMLId.id}
                 when token.type == "meta.tag.tag-name" and isClosingTag
                   allTags.push "</#{token.value}>"
                   closedTags.push token.value
-                  return token.value if isfinal()
+                  if isfinal()
+                    XMLId.id = "" if XMLId.tag != token.value
+                    return {ident : token.value, id : XMLId.id}
 
           scanRow(row+1, 0)
 
@@ -177,10 +197,15 @@ root.coreBuilder = {}
 
       $(@el).click =>
         pos = @editor.getCursorPosition()
-        ident = findParent pos.row, pos.column
-        ident = "none" if !ident?
-        id = "#cur-el_" + @model.get "source"
-        $(id).text " #{ident}"
+        tag= findParent pos.row, pos.column
+        tag.ident = "none" if !tag?
+        elm = "#cur-el_" + @model.get "source"
+        id = "#cur-el-id_" + @model.get "source"
+        $(elm).text " #{tag.ident}"
+        $(id).addClass("disabled")
+        if tag.id != ""
+          $(elm).text "#{$(elm).text()} '#{tag.id}'"
+          $(id).removeClass("disabled").text("Add element to selection")
 
     render: ->
       $el = $(@el)

@@ -142,12 +142,17 @@
         var findParent,
           _this = this;
         findParent = function(row, column) {
-          var allTags, closedTags, finalTag, isClosingTag, isOpeningTag, maxRow, openTags, scanRow;
+          var XMLId, allTags, closedTags, finalTag, hasXMLId, isClosingTag, isOpeningTag, maxRow, openTags, scanRow;
           openTags = [];
           closedTags = [];
           allTags = [];
           isOpeningTag = false;
           isClosingTag = false;
+          hasXMLId = false;
+          XMLId = {
+            tag: '',
+            id: ''
+          };
           finalTag = '';
           maxRow = _this.editor.getSession().getLength();
           scanRow = function(row, column) {
@@ -180,6 +185,17 @@
               if (token.type === "meta.tag.tag-name") {
                 latestTag = token.value;
               }
+              switch (false) {
+                case !(token.type === "entity.other.attribute-name" && token.value === 'xml:id'):
+                  hasXMLId = true;
+                  break;
+                case !(token.type === "string" && hasXMLId):
+                  XMLId = {
+                    tag: latestTag,
+                    id: token.value.slice(1, token.value.length - 1)
+                  };
+                  hasXMLId = false;
+              }
               if (curColumn > column) {
                 switch (false) {
                   case !(token.type === "meta.tag" && token.value === "<"):
@@ -190,7 +206,13 @@
                     isClosingTag = false;
                     break;
                   case !(token.type === "meta.tag.r" && token.value === ">" && openTags.length === 0):
-                    return latestTag;
+                    if (XMLId.tag !== latestTag) {
+                      XMLId.id = "";
+                    }
+                    return {
+                      ident: latestTag,
+                      id: XMLId.id
+                    };
                   case !(token.type === "meta.tag" && token.value === "</"):
                     isClosingTag = true;
                     break;
@@ -203,21 +225,39 @@
                     }
                     closedTags.push(milestone);
                     if (isfinal()) {
-                      return milestone;
+                      if (XMLId.tag !== milestone) {
+                        XMLId.id = "";
+                      }
+                      return {
+                        ident: milestone,
+                        id: XMLId.id
+                      };
                     }
                     break;
                   case !(token.type === "meta.tag.tag-name" && isOpeningTag):
                     allTags.push("<" + token.value + ">");
                     openTags.push(token.value);
                     if (isfinal()) {
-                      return token.value;
+                      if (XMLId.tag !== token.value) {
+                        XMLId.id = "";
+                      }
+                      return {
+                        ident: token.value,
+                        id: XMLId.id
+                      };
                     }
                     break;
                   case !(token.type === "meta.tag.tag-name" && isClosingTag):
                     allTags.push("</" + token.value + ">");
                     closedTags.push(token.value);
                     if (isfinal()) {
-                      return token.value;
+                      if (XMLId.tag !== token.value) {
+                        XMLId.id = "";
+                      }
+                      return {
+                        ident: token.value,
+                        id: XMLId.id
+                      };
                     }
                 }
               }
@@ -227,14 +267,20 @@
           return scanRow(row, column);
         };
         return $(this.el).click(function() {
-          var id, ident, pos;
+          var elm, id, pos, tag;
           pos = _this.editor.getCursorPosition();
-          ident = findParent(pos.row, pos.column);
-          if (ident == null) {
-            ident = "none";
+          tag = findParent(pos.row, pos.column);
+          if (tag == null) {
+            tag.ident = "none";
           }
-          id = "#cur-el_" + _this.model.get("source");
-          return $(id).text(" " + ident);
+          elm = "#cur-el_" + _this.model.get("source");
+          id = "#cur-el-id_" + _this.model.get("source");
+          $(elm).text(" " + tag.ident);
+          $(id).addClass("disabled");
+          if (tag.id !== "") {
+            $(elm).text("" + ($(elm).text()) + " '" + tag.id + "'");
+            return $(id).removeClass("disabled").text("Add element to selection");
+          }
         });
       };
 
