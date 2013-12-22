@@ -37,7 +37,11 @@ root.coreBuilder = {}
             source: source
             url: url
           $.get(url, (data) ->
-            editor.set data : data
+            parser = new DOMParser()
+            xmlDoc = parser.parseFromString data,"text/xml"
+            editor.set 
+              text : data
+              xmldata : xmlDoc
             # Get title, too and other data-related stuff
             # so that the model can be mapped to a template in the view.
           , 'text')
@@ -70,14 +74,18 @@ root.coreBuilder = {}
   class Editor extends Backbone.Model
     idAttribute : "source"
 
+    # Using initialize instead of defaults for nested collections
+    # is recommended by the Backbone FAQs:
+    # http://documentcloud.github.io/backbone/#FAQ-nested
+    initialize : ->
+      @selectionGroup = new SelectionGroup
+
   # class Core extends Backbone.Model
   #   defaults:
   #     "app": []
 
   class Selection extends Backbone.Model
-    defaults: 
-      "file": ""
-      "elements": []
+    idAttribute : "xmlid"
 
   # Collections
 
@@ -88,12 +96,26 @@ root.coreBuilder = {}
     model: Selection
 
   # Expose Collections
-  coreBuilder.Data.selectionGroup = new SelectionGroup
+  # coreBuilder.Data.selectionGroup = new SelectionGroup
   coreBuilder.Data.editors = new Editors
 
   ## VIEWS ##
 
   coreBuilder.Views = {}
+
+  class SelectionGroupView extends Backbone.View
+
+    template: _.template $('#selection-tpl').html()
+
+    initialize: ->
+      @listenTo @collection, 'add', @render
+
+    render: ->
+      @$el.html @template(col: @collection.toJSON())
+      @
+
+
+
 
   class EditorView extends Backbone.View
 
@@ -107,105 +129,44 @@ root.coreBuilder = {}
 
     bindSelect: ->
 
-      # Could simplify this greatly and simply allow to pick XMLIds...
+      $(@el).click (e) =>
+        e.stopPropagation()
 
-      findParent = (row, column) =>
-        openTags = []
-        closedTags = []
-        allTags = []
-        isOpeningTag = false
-        isClosingTag = false
-        hasXMLId = false
+        # Remove any element selectors
+        $("#el_select").remove()
 
-        XMLId = 
-          tag: ''
-          id: ''
-        finalTag = ''
-        maxRow = @editor.getSession().getLength()
-
-        scanRow = (row, column) =>
-          return if row > maxRow
-          curColumn = 0
-          tokens = @editor.getSession().getTokens(row)
-          lastTag = null
-          for token in tokens
-            curColumn += token.value.length
-
-            isfinal = ->
-              switch
-                when openTags.length == 0
-                  true
-                when openTags.length == closedTags.length
-                  openTags.pop()
-                  closedTags.pop()
-                  false
-                when openTags[openTags.length-1] == closedTags[closedTags.length-1]
-                  openTags.pop()
-                  closedTags.pop()
-                  false
-                else
-                  false
-
-            latestTag = token.value if token.type == "meta.tag.tag-name"
-
-            switch
-              when token.type == "entity.other.attribute-name" and token.value == 'xml:id'
-                hasXMLId = true
-              when token.type == "string" and hasXMLId
-                XMLId = {tag: latestTag, id: token.value.slice(1,token.value.length-1)}
-                hasXMLId = false
-
-            if curColumn > column
-              switch
-                when token.type == "meta.tag" and token.value == "<"
-                  isOpeningTag = true
-                when token.type == "meta.tag.r" and token.value == ">" and (isOpeningTag or isClosingTag)
-                  isOpeningTag = false
-                  isClosingTag = false
-                when token.type == "meta.tag.r" and token.value == ">" and openTags.length == 0
-                  # The cursor must be on a closing tag, 
-                  # return element value 
-                  XMLId.id = "" if XMLId.tag != latestTag
-                  return {ident : latestTag, id : XMLId.id}
-                when token.type == "meta.tag" and token.value == "</"
-                  isClosingTag = true
-                when token.type == "meta.tag.r" and token.value == "/>"
-                  isOpeningTag = false
-                  isClosingTag = false
-                  milestone = openTags[openTags.length-1]
-                  milestone = latestTag if !milestone?
-                  closedTags.push milestone
-                  if isfinal()
-                    XMLId.id = "" if XMLId.tag != milestone
-                    return {ident : milestone, id : XMLId.id}
-                when token.type == "meta.tag.tag-name" and isOpeningTag
-                  allTags.push "<#{token.value}>"
-                  openTags.push token.value
-                  if isfinal()
-                    XMLId.id = "" if XMLId.tag != token.value
-                    return {ident : token.value, id : XMLId.id}
-                when token.type == "meta.tag.tag-name" and isClosingTag
-                  allTags.push "</#{token.value}>"
-                  closedTags.push token.value
-                  if isfinal()
-                    XMLId.id = "" if XMLId.tag != token.value
-                    return {ident : token.value, id : XMLId.id}
-
-          scanRow(row+1, 0)
-
-        scanRow(row, column)
-
-      $(@el).click =>
         pos = @editor.getCursorPosition()
-        tag= findParent pos.row, pos.column
-        tag.ident = "none" if !tag?
-        elm = "#cur-el_" + @model.get "source"
-        id = "#cur-el-id_" + @model.get "source"
-        $(elm).text " #{tag.ident}"
-        $(id).addClass("disabled")
-        if tag.id != ""
-          $(elm).text "#{$(elm).text()} '#{tag.id}'"
-          $(id).removeClass("disabled").text("Add element to selection")
+        token = @editor.session.getTokenAt(pos.row, pos.column)
+        tokenRow = @editor.session.getTokens pos.row
+        if token?
+          switch
+            when token.type == "entity.other.attribute-name" and token.value == 'xml:id'
+              # lookup id string (two tokens forward)
+              xmlid = tokenRow[token.index+2].value
+            when token.type == "string" and tokenRow[token.index-2].value == 'xml:id'
+              # check this is an xml:id attribute vaule (two tokens back)
+              xmlid = token.value
+
+        if xmlid?
+          xmldata = $(@model.get "xmldata")
+          find_q = "*[xml\\:id=" +xmlid+ "]" 
+          xmlel = xmldata.find(find_q)
+          
+          tagName = xmlel.prop("tagName")
+          popup = $('<button type="button" class="btn btn-default" id="el_select">' + tagName + '</button>')
+          popup.css 
+            'position' : 'absolute'
+            'left' : e.pageX
+            'top' : e.pageY
+            'z-index': 999
+          $('html').append popup
+
+          popup.click (e) =>
+            e.stopPropagation()
+            @model.selectionGroup.add
+              ident : tagName
+              xmlid : xmlid
+            popup.remove()
 
     render: ->
       $el = $(@el)
@@ -220,11 +181,12 @@ root.coreBuilder = {}
       @editor.setReadOnly(true)
       @editor.setTheme("ace/theme/monokai")
       @editor.getSession().setMode("ace/mode/xml")
-      @editor.getSession().insert({column:0, row:0}, @model.get "data")          
+      @editor.getSession().insert({column:0, row:0}, @model.get "text")          
       @editor.moveCursorTo({column:0, row:0})
 
       @bindSelect()
-      @
+
+      $el.append(new SelectionGroupView({collection : @model.selectionGroup}).el)
 
     remove: ->
       $(@el).remove()

@@ -51,19 +51,20 @@
   <div>
     <h3><%=source%></h3>
     <div id="ed_<%=source%>" class="editor"></div>
-    <div class='well-sm'>
-      <span class="label label-info">Current Element:</span>
-      <span id="cur-el_<%=source%>"> none </span>
-      <button type="button" class="btn btn-default btn-xs disabled" id="cur-el-id_<%=source%>">Cannot add to selection (no id)</button>
-    </div>
   </div>
   </script>
 
+  <!--<div class='well-sm'>
+      <span class="label label-info">Current Element:</span>
+      <span id="cur-el_<%=source%>"> none </span>
+      <button type="button" class="btn btn-default btn-xs disabled" id="cur-el-id_<%=source%>">Cannot add to selection (no id)</button>
+    </div>-->
+
   <script type="text/template" id="selection-tpl">
     <span class="label label-info">Selected Elements</span>
-    <span class="badge">hi[@xml:id='testasdhasjkdhakjsdhkajs']</span>
-    <span class="badge">seg[@xml:id='testasdhasjkdhakjsdhkajs']</span> 
-    <span class="badge">seg[@xml:id='testasdhasjkdhakjsdhkajs']</span>
+    <% _.each(col, function(val, i) { %>
+       <span class="badge"><%=val.ident%>[@xml:id='<%=val.xmlid%>']</span>
+    <%}); %>
   </script>
 
   <script type="text/template" id="core-tpl">

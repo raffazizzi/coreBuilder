@@ -8,7 +8,7 @@
   root.coreBuilder = {};
 
   (function($, coreBuilder, _, Backbone, ace) {
-    var Editor, EditorView, Editors, Selection, SelectionGroup, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
+    var Editor, EditorView, Editors, Selection, SelectionGroup, SelectionGroupView, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
     coreBuilder.Utils = {};
     coreBuilder.Utils.generateUid = function(separator) {
       var S4, delim;
@@ -35,8 +35,12 @@
               url: url
             });
             return $.get(url, function(data) {
+              var parser, xmlDoc;
+              parser = new DOMParser();
+              xmlDoc = parser.parseFromString(data, "text/xml");
               return editor.set({
-                data: data
+                text: data,
+                xmldata: xmlDoc
               });
             }, 'text');
           } else {
@@ -73,6 +77,10 @@
 
       Editor.prototype.idAttribute = "source";
 
+      Editor.prototype.initialize = function() {
+        return this.selectionGroup = new SelectionGroup;
+      };
+
       return Editor;
 
     })(Backbone.Model);
@@ -84,10 +92,7 @@
         return _ref1;
       }
 
-      Selection.prototype.defaults = {
-        "file": "",
-        "elements": []
-      };
+      Selection.prototype.idAttribute = "xmlid";
 
       return Selection;
 
@@ -118,15 +123,38 @@
       return SelectionGroup;
 
     })(Backbone.Collection);
-    coreBuilder.Data.selectionGroup = new SelectionGroup;
     coreBuilder.Data.editors = new Editors;
     coreBuilder.Views = {};
+    SelectionGroupView = (function(_super) {
+      __extends(SelectionGroupView, _super);
+
+      function SelectionGroupView() {
+        _ref4 = SelectionGroupView.__super__.constructor.apply(this, arguments);
+        return _ref4;
+      }
+
+      SelectionGroupView.prototype.template = _.template($('#selection-tpl').html());
+
+      SelectionGroupView.prototype.initialize = function() {
+        return this.listenTo(this.collection, 'add', this.render);
+      };
+
+      SelectionGroupView.prototype.render = function() {
+        this.$el.html(this.template({
+          col: this.collection.toJSON()
+        }));
+        return this;
+      };
+
+      return SelectionGroupView;
+
+    })(Backbone.View);
     EditorView = (function(_super) {
       __extends(EditorView, _super);
 
       function EditorView() {
-        _ref4 = EditorView.__super__.constructor.apply(this, arguments);
-        return _ref4;
+        _ref5 = EditorView.__super__.constructor.apply(this, arguments);
+        return _ref5;
       }
 
       EditorView.prototype.template = _.template($('#editor-tpl').html());
@@ -139,147 +167,44 @@
       EditorView.prototype.tagName = 'div';
 
       EditorView.prototype.bindSelect = function() {
-        var findParent,
-          _this = this;
-        findParent = function(row, column) {
-          var XMLId, allTags, closedTags, finalTag, hasXMLId, isClosingTag, isOpeningTag, maxRow, openTags, scanRow;
-          openTags = [];
-          closedTags = [];
-          allTags = [];
-          isOpeningTag = false;
-          isClosingTag = false;
-          hasXMLId = false;
-          XMLId = {
-            tag: '',
-            id: ''
-          };
-          finalTag = '';
-          maxRow = _this.editor.getSession().getLength();
-          scanRow = function(row, column) {
-            var curColumn, isfinal, lastTag, latestTag, milestone, token, tokens, _i, _len;
-            if (row > maxRow) {
-              return;
-            }
-            curColumn = 0;
-            tokens = _this.editor.getSession().getTokens(row);
-            lastTag = null;
-            for (_i = 0, _len = tokens.length; _i < _len; _i++) {
-              token = tokens[_i];
-              curColumn += token.value.length;
-              isfinal = function() {
-                switch (false) {
-                  case openTags.length !== 0:
-                    return true;
-                  case openTags.length !== closedTags.length:
-                    openTags.pop();
-                    closedTags.pop();
-                    return false;
-                  case openTags[openTags.length - 1] !== closedTags[closedTags.length - 1]:
-                    openTags.pop();
-                    closedTags.pop();
-                    return false;
-                  default:
-                    return false;
-                }
-              };
-              if (token.type === "meta.tag.tag-name") {
-                latestTag = token.value;
-              }
-              switch (false) {
-                case !(token.type === "entity.other.attribute-name" && token.value === 'xml:id'):
-                  hasXMLId = true;
-                  break;
-                case !(token.type === "string" && hasXMLId):
-                  XMLId = {
-                    tag: latestTag,
-                    id: token.value.slice(1, token.value.length - 1)
-                  };
-                  hasXMLId = false;
-              }
-              if (curColumn > column) {
-                switch (false) {
-                  case !(token.type === "meta.tag" && token.value === "<"):
-                    isOpeningTag = true;
-                    break;
-                  case !(token.type === "meta.tag.r" && token.value === ">" && (isOpeningTag || isClosingTag)):
-                    isOpeningTag = false;
-                    isClosingTag = false;
-                    break;
-                  case !(token.type === "meta.tag.r" && token.value === ">" && openTags.length === 0):
-                    if (XMLId.tag !== latestTag) {
-                      XMLId.id = "";
-                    }
-                    return {
-                      ident: latestTag,
-                      id: XMLId.id
-                    };
-                  case !(token.type === "meta.tag" && token.value === "</"):
-                    isClosingTag = true;
-                    break;
-                  case !(token.type === "meta.tag.r" && token.value === "/>"):
-                    isOpeningTag = false;
-                    isClosingTag = false;
-                    milestone = openTags[openTags.length - 1];
-                    if (milestone == null) {
-                      milestone = latestTag;
-                    }
-                    closedTags.push(milestone);
-                    if (isfinal()) {
-                      if (XMLId.tag !== milestone) {
-                        XMLId.id = "";
-                      }
-                      return {
-                        ident: milestone,
-                        id: XMLId.id
-                      };
-                    }
-                    break;
-                  case !(token.type === "meta.tag.tag-name" && isOpeningTag):
-                    allTags.push("<" + token.value + ">");
-                    openTags.push(token.value);
-                    if (isfinal()) {
-                      if (XMLId.tag !== token.value) {
-                        XMLId.id = "";
-                      }
-                      return {
-                        ident: token.value,
-                        id: XMLId.id
-                      };
-                    }
-                    break;
-                  case !(token.type === "meta.tag.tag-name" && isClosingTag):
-                    allTags.push("</" + token.value + ">");
-                    closedTags.push(token.value);
-                    if (isfinal()) {
-                      if (XMLId.tag !== token.value) {
-                        XMLId.id = "";
-                      }
-                      return {
-                        ident: token.value,
-                        id: XMLId.id
-                      };
-                    }
-                }
-              }
-            }
-            return scanRow(row + 1, 0);
-          };
-          return scanRow(row, column);
-        };
-        return $(this.el).click(function() {
-          var elm, id, pos, tag;
+        var _this = this;
+        return $(this.el).click(function(e) {
+          var find_q, popup, pos, tagName, token, tokenRow, xmldata, xmlel, xmlid;
+          e.stopPropagation();
+          $("#el_select").remove();
           pos = _this.editor.getCursorPosition();
-          tag = findParent(pos.row, pos.column);
-          if (tag == null) {
-            tag.ident = "none";
+          token = _this.editor.session.getTokenAt(pos.row, pos.column);
+          tokenRow = _this.editor.session.getTokens(pos.row);
+          if (token != null) {
+            switch (false) {
+              case !(token.type === "entity.other.attribute-name" && token.value === 'xml:id'):
+                xmlid = tokenRow[token.index + 2].value;
+                break;
+              case !(token.type === "string" && tokenRow[token.index - 2].value === 'xml:id'):
+                xmlid = token.value;
+            }
           }
-          elm = "#cur-el_" + _this.model.get("source");
-          id = "#cur-el-id_" + _this.model.get("source");
-          $(elm).text(" " + tag.ident);
-          $(id).addClass("disabled");
-          if (tag.id !== "") {
-            $(elm).text("" + ($(elm).text()) + " '" + tag.id + "'");
-            return $(id).removeClass("disabled").text("Add element to selection");
+          if (xmlid != null) {
+            xmldata = $(_this.model.get("xmldata"));
+            find_q = "*[xml\\:id=" + xmlid + "]";
+            xmlel = xmldata.find(find_q);
+            tagName = xmlel.prop("tagName");
+            popup = $('<button type="button" class="btn btn-default" id="el_select">' + tagName + '</button>');
+            popup.css({
+              'position': 'absolute',
+              'left': e.pageX,
+              'top': e.pageY,
+              'z-index': 999
+            });
+            $('html').append(popup);
+            return popup.click(function(e) {
+              e.stopPropagation();
+              _this.model.selectionGroup.add({
+                ident: tagName,
+                xmlid: xmlid
+              });
+              return popup.remove();
+            });
           }
         });
       };
@@ -296,13 +221,15 @@
         this.editor.getSession().insert({
           column: 0,
           row: 0
-        }, this.model.get("data"));
+        }, this.model.get("text"));
         this.editor.moveCursorTo({
           column: 0,
           row: 0
         });
         this.bindSelect();
-        return this;
+        return $el.append(new SelectionGroupView({
+          collection: this.model.selectionGroup
+        }).el);
       };
 
       EditorView.prototype.remove = function() {
@@ -317,8 +244,8 @@
       __extends(editors, _super);
 
       function editors() {
-        _ref5 = editors.__super__.constructor.apply(this, arguments);
-        return _ref5;
+        _ref6 = editors.__super__.constructor.apply(this, arguments);
+        return _ref6;
       }
 
       editors.prototype.initialize = function(collection) {
@@ -339,8 +266,8 @@
       __extends(App, _super);
 
       function App() {
-        _ref6 = App.__super__.constructor.apply(this, arguments);
-        return _ref6;
+        _ref7 = App.__super__.constructor.apply(this, arguments);
+        return _ref7;
       }
 
       App.prototype.el = "#coreBuilder";
@@ -377,8 +304,8 @@
       __extends(coreView, _super);
 
       function coreView() {
-        _ref7 = coreView.__super__.constructor.apply(this, arguments);
-        return _ref7;
+        _ref8 = coreView.__super__.constructor.apply(this, arguments);
+        return _ref8;
       }
 
       coreView.prototype.template = _.template($('#core-tpl').html());
