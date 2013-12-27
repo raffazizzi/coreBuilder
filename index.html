@@ -13,13 +13,19 @@
   <div class="container" id="coreBuilder">
     <h1>CoreBuilder v 0.2</h1>
     
-    <div id="sources">
+    <div id="sources" class="btn-grp">
       <select class="sel-sources" multiple="multiple">
         <option value="KAtx4_III_2">KAtx4_III_2</option>
         <option value="Ltx2_III_2">Ltx2_III_2</option>
         <option value="Ktx6_III_2">Ktx6_III_2</option>
         <option value="D_ptx2_III_2">D_ptx2_III_2</option>
       </select>
+      <button type="button" class="btn btn-primary">
+          Upload Core
+        </button>
+        <button type="button" class="btn btn-primary">
+          Download Core
+        </button>
     </div>
 
     <div class="row">
@@ -33,16 +39,8 @@
         <div class="row" id="editors"> </div>
       </div>
       <div class="col-md-4 well" id="corexml">
-        <div class="btn-grp">
-          <strong>CORE</strong>
-          <button type="button" class="btn btn-primary">
-            Load Core
-          </button>
-          <button type="button" class="btn btn-primary">
-            Save Core
-          </button>
-        </div>
-      </div>
+        <div class="alert alert-info">Core entry</div>
+        <div id="cur_entry"></div>
     </div>
   </div>
 
@@ -51,33 +49,26 @@
   <div>
     <h3><%=source%></h3>
     <div id="ed_<%=source%>" class="editor"></div>
+    <span class="label label-info">Selected Elements</span>
   </div>
   </script>
 
-  <!--<div class='well-sm'>
-      <span class="label label-info">Current Element:</span>
-      <span id="cur-el_<%=source%>"> none </span>
-      <button type="button" class="btn btn-default btn-xs disabled" id="cur-el-id_<%=source%>">Cannot add to selection (no id)</button>
-    </div>-->
-
   <script type="text/template" id="selection-tpl">
-    <span class="label label-info">Selected Elements</span>
-    <% _.each(col, function(val, i) { %>
-       <span class="badge"><%=val.ident%>[@xml:id='<%=val.xmlid%>']</span>
-    <%}); %>
+    <%=ident%>[@xml:id='<%=xmlid%>']&nbsp;<button class="btn btn-xs btn-danger sel-remove">×</button>
   </script>
 
   <script type="text/template" id="core-tpl">
-
-  <% _.each(app, function(a, i) { %>
-    <a href="#" class="remove" id="_<%=i%>">remove</a>
-      <pre class="sh_xml">&lt;app&gt;<% _.each(a.rdg, function(r) { %>
-  &lt;rdg wit="#<%=r.source%>"&gt;
-<% _.each(r.ptr, function(p) { %>
-    &lt;ptr target="#<%=p%>"/&gt;
-  <% }); %>&lt;/rdg&gt;<% }); %>
-&lt;/app&gt;</pre><% }); %>
-
+      <pre class="sh_xml">&lt;app&gt;<% _.each(col.models, function(r) { %>
+  &lt;rdg wit="#<%=r.get('source')%>"&gt;<% _.each(r.selectionGroup.models, function(p) { %>
+    &lt;ptr target="#<%=p.get('xmlid')%>"/&gt;<% }); %>
+  &lt;/rdg&gt;<% }); %>
+&lt;/app&gt;</pre>
+  <button type="button" class="btn btn-primary btn-success pull-right">
+    <span class="glyphicon glyphicon-plus"></span> Add
+  </button>
+  <button type="button" class="btn btn-primary btn-danger pull-right">
+    <span class="glyphicon glyphicon-trash"></span> Cancel
+  </button>
   </script>
 
   <script type="text/template" id="app-tpl">

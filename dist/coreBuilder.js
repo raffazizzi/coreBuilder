@@ -1,14 +1,15 @@
 (function() {
   var root,
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   root = this;
 
   root.coreBuilder = {};
 
   (function($, coreBuilder, _, Backbone, ace) {
-    var Editor, EditorView, Editors, Selection, SelectionGroup, SelectionGroupView, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+    var Core, CoreEntry, CoreView, Editor, EditorView, Editors, EditorsView, Selection, SelectionGroup, SelectionGroupView, SelectionView, Source, Sources, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
     coreBuilder.Utils = {};
     coreBuilder.Utils.generateUid = function(separator) {
       var S4, delim;
@@ -30,7 +31,7 @@
           source = $(opt).val();
           if (adding) {
             url = 'data/' + source + '.xml';
-            editor = coreBuilder.Data.editors.add({
+            editor = coreBuilder.Data.Editors.add({
               source: source,
               url: url
             });
@@ -44,8 +45,8 @@
               });
             }, 'text');
           } else {
-            s = coreBuilder.Data.editors.get(source);
-            coreBuilder.Data.editors.remove(source);
+            s = coreBuilder.Data.Editors.get(source);
+            coreBuilder.Data.Editors.remove(source);
             return s.trigger('destroy');
           }
         },
@@ -84,12 +85,38 @@
       return Editor;
 
     })(Backbone.Model);
+    CoreEntry = (function(_super) {
+      __extends(CoreEntry, _super);
+
+      function CoreEntry() {
+        _ref1 = CoreEntry.__super__.constructor.apply(this, arguments);
+        return _ref1;
+      }
+
+      CoreEntry.prototype.initialize = function() {
+        return this.sources = new Sources;
+      };
+
+      return CoreEntry;
+
+    })(Backbone.Model);
+    Source = (function(_super) {
+      __extends(Source, _super);
+
+      function Source() {
+        _ref2 = Source.__super__.constructor.apply(this, arguments);
+        return _ref2;
+      }
+
+      return Source;
+
+    })(Backbone.Model);
     Selection = (function(_super) {
       __extends(Selection, _super);
 
       function Selection() {
-        _ref1 = Selection.__super__.constructor.apply(this, arguments);
-        return _ref1;
+        _ref3 = Selection.__super__.constructor.apply(this, arguments);
+        return _ref3;
       }
 
       Selection.prototype.idAttribute = "xmlid";
@@ -101,8 +128,8 @@
       __extends(Editors, _super);
 
       function Editors() {
-        _ref2 = Editors.__super__.constructor.apply(this, arguments);
-        return _ref2;
+        _ref4 = Editors.__super__.constructor.apply(this, arguments);
+        return _ref4;
       }
 
       Editors.prototype.model = Editor;
@@ -110,12 +137,25 @@
       return Editors;
 
     })(Backbone.Collection);
+    Sources = (function(_super) {
+      __extends(Sources, _super);
+
+      function Sources() {
+        _ref5 = Sources.__super__.constructor.apply(this, arguments);
+        return _ref5;
+      }
+
+      Sources.prototype.model = Source;
+
+      return Sources;
+
+    })(Backbone.Collection);
     SelectionGroup = (function(_super) {
       __extends(SelectionGroup, _super);
 
       function SelectionGroup() {
-        _ref3 = SelectionGroup.__super__.constructor.apply(this, arguments);
-        return _ref3;
+        _ref6 = SelectionGroup.__super__.constructor.apply(this, arguments);
+        return _ref6;
       }
 
       SelectionGroup.prototype.model = Selection;
@@ -123,38 +163,92 @@
       return SelectionGroup;
 
     })(Backbone.Collection);
-    coreBuilder.Data.editors = new Editors;
+    Core = (function(_super) {
+      __extends(Core, _super);
+
+      function Core() {
+        _ref7 = Core.__super__.constructor.apply(this, arguments);
+        return _ref7;
+      }
+
+      Core.prototype.model = CoreEntry;
+
+      return Core;
+
+    })(Backbone.Collection);
+    coreBuilder.Data.Editors = new Editors;
     coreBuilder.Views = {};
     SelectionGroupView = (function(_super) {
       __extends(SelectionGroupView, _super);
 
       function SelectionGroupView() {
-        _ref4 = SelectionGroupView.__super__.constructor.apply(this, arguments);
-        return _ref4;
+        _ref8 = SelectionGroupView.__super__.constructor.apply(this, arguments);
+        return _ref8;
       }
 
-      SelectionGroupView.prototype.template = _.template($('#selection-tpl').html());
-
       SelectionGroupView.prototype.initialize = function() {
-        return this.listenTo(this.collection, 'add', this.render);
+        this.listenTo(this.collection, 'add', this.addOne);
+        return this.listenTo(this.collection, 'remove', this.removeOne);
       };
 
-      SelectionGroupView.prototype.render = function() {
-        this.$el.html(this.template({
-          col: this.collection.toJSON()
-        }));
+      SelectionGroupView.prototype.addOne = function(m) {
+        this.$el.append(new SelectionView({
+          model: m
+        }).render().el);
+        return this;
+      };
+
+      SelectionGroupView.prototype.removeOne = function(m) {
+        var id;
+        id = '#sel_' + m.id.replace(/\"/g, "");
+        $(id).remove();
         return this;
       };
 
       return SelectionGroupView;
 
     })(Backbone.View);
+    SelectionView = (function(_super) {
+      __extends(SelectionView, _super);
+
+      function SelectionView() {
+        this.removeOne = __bind(this.removeOne, this);
+        _ref9 = SelectionView.__super__.constructor.apply(this, arguments);
+        return _ref9;
+      }
+
+      SelectionView.prototype.tagName = 'span';
+
+      SelectionView.prototype.template = _.template($('#selection-tpl').html());
+
+      SelectionView.prototype.events = {
+        'click .sel-remove': 'removeOne'
+      };
+
+      SelectionView.prototype.removeOne = function() {
+        return this.model.collection.remove(this.model.id, {
+          silent: false
+        });
+      };
+
+      SelectionView.prototype.render = function() {
+        var id;
+        this.$el.addClass('badge');
+        id = 'sel_' + this.model.id.replace(/\"/g, "");
+        this.$el.attr('id', id);
+        this.$el.html(this.template(this.model.toJSON()));
+        return this;
+      };
+
+      return SelectionView;
+
+    })(Backbone.View);
     EditorView = (function(_super) {
       __extends(EditorView, _super);
 
       function EditorView() {
-        _ref5 = EditorView.__super__.constructor.apply(this, arguments);
-        return _ref5;
+        _ref10 = EditorView.__super__.constructor.apply(this, arguments);
+        return _ref10;
       }
 
       EditorView.prototype.template = _.template($('#editor-tpl').html());
@@ -168,7 +262,7 @@
 
       EditorView.prototype.bindSelect = function() {
         var _this = this;
-        return $(this.el).click(function(e) {
+        return $(this.editor.container).click(function(e) {
           var find_q, popup, pos, tagName, token, tokenRow, xmldata, xmlel, xmlid;
           e.stopPropagation();
           $("#el_select").remove();
@@ -240,34 +334,67 @@
       return EditorView;
 
     })(Backbone.View);
-    coreBuilder.Views.editors = (function(_super) {
-      __extends(editors, _super);
+    EditorsView = (function(_super) {
+      __extends(EditorsView, _super);
 
-      function editors() {
-        _ref6 = editors.__super__.constructor.apply(this, arguments);
-        return _ref6;
+      function EditorsView() {
+        _ref11 = EditorsView.__super__.constructor.apply(this, arguments);
+        return _ref11;
       }
 
-      editors.prototype.initialize = function(collection) {
-        return this.listenTo(coreBuilder.Data.editors, 'add', this.addOne);
+      EditorsView.prototype.initialize = function(collection) {
+        return this.listenTo(this.collection, 'add', this.addOne);
       };
 
-      editors.prototype.addOne = function(model) {
-        var view;
-        return view = new EditorView({
+      EditorsView.prototype.addOne = function(model) {
+        return new EditorView({
           model: model
         });
       };
 
-      return editors;
+      return EditorsView;
 
     })(Backbone.View);
-    coreBuilder.App = (function(_super) {
+    CoreView = (function(_super) {
+      __extends(CoreView, _super);
+
+      function CoreView() {
+        _ref12 = CoreView.__super__.constructor.apply(this, arguments);
+        return _ref12;
+      }
+
+      CoreView.prototype.el = '#cur_entry';
+
+      CoreView.prototype.template = _.template($('#core-tpl').html());
+
+      CoreView.prototype.initialize = function() {
+        this.listenTo(this.collection, 'add', this.addOne);
+        return this;
+      };
+
+      CoreView.prototype.addOne = function(model) {
+        this.listenTo(model.selectionGroup, 'add', this.render);
+        this.listenTo(model.selectionGroup, 'remove', this.render);
+        this.render();
+        return this;
+      };
+
+      CoreView.prototype.render = function() {
+        this.$el.html(this.template({
+          col: this.collection
+        }));
+        return this;
+      };
+
+      return CoreView;
+
+    })(Backbone.View);
+    return coreBuilder.App = (function(_super) {
       __extends(App, _super);
 
       function App() {
-        _ref7 = App.__super__.constructor.apply(this, arguments);
-        return _ref7;
+        _ref13 = App.__super__.constructor.apply(this, arguments);
+        return _ref13;
       }
 
       App.prototype.el = "#coreBuilder";
@@ -278,9 +405,16 @@
       };
 
       App.prototype.initialize = function() {
-        var editors;
         coreBuilder.Components.SourceSelector('.sel-sources');
-        return editors = new coreBuilder.Views.editors;
+        new EditorsView({
+          collection: coreBuilder.Data.Editors
+        });
+        new CoreView({
+          collection: coreBuilder.Data.Editors
+        });
+        return coreBuilder.Data.Core.add({
+          first: true
+        });
       };
 
       App.prototype.makeNewEntry = function(e) {
@@ -298,40 +432,6 @@
       };
 
       return App;
-
-    })(Backbone.View);
-    return coreBuilder.coreView = (function(_super) {
-      __extends(coreView, _super);
-
-      function coreView() {
-        _ref8 = coreView.__super__.constructor.apply(this, arguments);
-        return _ref8;
-      }
-
-      coreView.prototype.template = _.template($('#core-tpl').html());
-
-      coreView.prototype.initialize = function() {
-        this.listenTo(this.model, 'change', this.render);
-        return this.listenTo(this.model, 'destroy', this.remove);
-      };
-
-      coreView.prototype.render = function() {
-        this.$el.html(this.template(this.model.toJSON()));
-        sh_highlightDocument();
-        this.bindRemove(this.model);
-        return this;
-      };
-
-      coreView.prototype.bindRemove = function(model) {
-        return $('.remove').click(function() {
-          var app, idx;
-          idx = /_(\d+)/.exec($(this).attr('id'))[1];
-          app = model.toJSON().app;
-          return model.set(app.splice(0, idx).concat(app.splice(idx, app.length)));
-        });
-      };
-
-      return coreView;
 
     })(Backbone.View);
   })(jQuery, coreBuilder, _, Backbone, ace);

@@ -33,7 +33,7 @@ root.coreBuilder = {}
         source = $(opt).val()
         if adding
           url = 'data/' + source + '.xml'
-          editor = coreBuilder.Data.editors.add
+          editor = coreBuilder.Data.Editors.add
             source: source
             url: url
           $.get(url, (data) ->
@@ -46,8 +46,8 @@ root.coreBuilder = {}
             # so that the model can be mapped to a template in the view.
           , 'text')
         else
-          s = coreBuilder.Data.editors.get source
-          coreBuilder.Data.editors.remove source
+          s = coreBuilder.Data.Editors.get source
+          coreBuilder.Data.Editors.remove source
           # Triggering destroy manually to remove view
           s.trigger 'destroy'
 
@@ -80,9 +80,11 @@ root.coreBuilder = {}
     initialize : ->
       @selectionGroup = new SelectionGroup
 
-  # class Core extends Backbone.Model
-  #   defaults:
-  #     "app": []
+  class CoreEntry extends Backbone.Model
+    initialize: ->
+      @sources = new Sources
+
+  class Source extends Backbone.Model
 
   class Selection extends Backbone.Model
     idAttribute : "xmlid"
@@ -92,12 +94,17 @@ root.coreBuilder = {}
   class Editors extends Backbone.Collection
     model: Editor
 
+  class Sources extends Backbone.Collection
+    model: Source
+
   class SelectionGroup extends Backbone.Collection
     model: Selection
 
+  class Core extends Backbone.Collection
+    model: CoreEntry
+
   # Expose Collections
-  # coreBuilder.Data.selectionGroup = new SelectionGroup
-  coreBuilder.Data.editors = new Editors
+  coreBuilder.Data.Editors = new Editors
 
   ## VIEWS ##
 
@@ -105,17 +112,37 @@ root.coreBuilder = {}
 
   class SelectionGroupView extends Backbone.View
 
-    template: _.template $('#selection-tpl').html()
-
     initialize: ->
-      @listenTo @collection, 'add', @render
+      @listenTo @collection, 'add', @addOne
+      @listenTo @collection, 'remove', @removeOne
 
-    render: ->
-      @$el.html @template(col: @collection.toJSON())
+    addOne: (m) ->
+      @$el.append new SelectionView(model:m).render().el
       @
 
+    removeOne: (m) ->
+      id = '#sel_' + m.id.replace(/\"/g, "")
+      $(id).remove()
+      @
 
+  class SelectionView extends Backbone.View
 
+    tagName: 'span'
+
+    template: _.template $('#selection-tpl').html()
+
+    events:
+      'click .sel-remove': 'removeOne'
+
+    removeOne: =>
+      @model.collection.remove @model.id, silent:false
+
+    render: ->
+      @$el.addClass 'badge'
+      id = 'sel_' + @model.id.replace(/\"/g, "")
+      @$el.attr 'id', id
+      @$el.html @template(@model.toJSON())
+      @
 
   class EditorView extends Backbone.View
 
@@ -129,7 +156,7 @@ root.coreBuilder = {}
 
     bindSelect: ->
 
-      $(@el).click (e) =>
+      $(@editor.container).click (e) =>
         e.stopPropagation()
 
         # Remove any element selectors
@@ -193,14 +220,49 @@ root.coreBuilder = {}
       @
 
 
-  class coreBuilder.Views.editors extends Backbone.View
+  class EditorsView extends Backbone.View
 
     initialize: (collection) ->
-      @listenTo coreBuilder.Data.editors, 'add', @addOne
+      @listenTo @collection, 'add', @addOne
 
     addOne: (model) ->
-      view = new EditorView model: model
+      new EditorView model: model
 
+
+  # class CoreEntryView extends Backbone.View
+
+  #   template: _.template $('#coreEntry-tpl').html()
+
+  #   initialize: ->
+  #     @listenTo @model.selectionGroup, 'add', @render
+  #     @listenTo @model.selectionGroup, 'remove', @render
+
+  #   render: (s) ->
+  #     obj = 
+  #       "source" : @model.toJSON()
+  #       "selectionGroup" : @model.selectionGroup
+  #     @template(obj)
+      
+
+  class CoreView extends Backbone.View
+
+    el: '#cur_entry'
+
+    template: _.template $('#core-tpl').html()
+
+    initialize: ->
+      @listenTo @collection, 'add', @addOne
+      @
+
+    addOne: (model) ->
+      @listenTo model.selectionGroup, 'add', @render
+      @listenTo model.selectionGroup, 'remove', @render
+      @render()
+      @
+
+    render: ->
+      @$el.html @template(col : @collection)
+      @
 
   class coreBuilder.App extends Backbone.View
 
@@ -214,7 +276,14 @@ root.coreBuilder = {}
       # Bind UI components
       coreBuilder.Components.SourceSelector '.sel-sources'
       # Start Editors View
-      editors = new coreBuilder.Views.editors
+      new EditorsView collection: coreBuilder.Data.Editors
+      # Start Core View on the same data
+      new CoreView collection: coreBuilder.Data.Editors
+
+      # new CoreView collection: coreBuilder.Data.Core
+      # Start first entry
+      coreBuilder.Data.Core.add
+        first : true
 
     makeNewEntry: (e) ->
       btn = $(e.target)
@@ -226,23 +295,23 @@ root.coreBuilder = {}
       btn = cancel.prev('button').prop 'disabled', false
       cancel.addClass("hide")
 
-  class coreBuilder.coreView extends Backbone.View
-    template: _.template($('#core-tpl').html())
-    initialize: ->
-      @listenTo @model, 'change', @render
-      @listenTo @model, 'destroy', @remove
+  # class coreBuilder.coreView extends Backbone.View
+  #   template: _.template($('#core-tpl').html())
+  #   initialize: ->
+  #     @listenTo @model, 'change', @render
+  #     @listenTo @model, 'destroy', @remove
   
-    render: ->
-      @$el.html @template(@model.toJSON())
-      sh_highlightDocument()
-      @bindRemove(this.model)
-      @
+  #   render: ->
+  #     @$el.html @template(@model.toJSON())
+  #     sh_highlightDocument()
+  #     @bindRemove(this.model)
+  #     @
   
-    bindRemove: (model) ->
-      $('.remove').click ->
-        idx = /_(\d+)/.exec($(this).attr('id'))[1]
-        app = model.toJSON().app
-        model.set(app.splice(0, idx).concat(app.splice(idx, app.length)))
+  #   bindRemove: (model) ->
+  #     $('.remove').click ->
+  #       idx = /_(\d+)/.exec($(this).attr('id'))[1]
+  #       app = model.toJSON().app
+  #       model.set(app.splice(0, idx).concat(app.splice(idx, app.length)))
 
   # class coreBuilder.appView extends Backbone.View
   #   template: _.template($('#app-tpl').html())
