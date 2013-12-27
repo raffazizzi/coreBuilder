@@ -37,7 +37,7 @@ module.exports = (grunt) ->
 
     watch:
       scripts:
-        files: 'src/*.coffee'
+        files: ['src/*.coffee', 'less/*.less']
         tasks: ['coffee']
         options:
           livereload: true
