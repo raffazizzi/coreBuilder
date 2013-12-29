@@ -13,7 +13,7 @@
   <div class="container" id="coreBuilder">
     <h1>CoreBuilder v 0.2</h1>
     
-    <div id="sources" class="btn-grp">
+    <div id="sources" class="btn-grp panel">
       <select class="sel-sources" multiple="multiple">
         <option value="KAtx4_III_2">KAtx4_III_2</option>
         <option value="Ltx2_III_2">Ltx2_III_2</option>
@@ -26,6 +26,9 @@
         <button type="button" class="btn btn-primary">
           Download Core
         </button>
+        <button class="btn btn-success pull-right" data-toggle="modal" data-target="#coreModal">
+          Show full Core
+        </button>
     </div>
 
     <div class="row">
@@ -33,11 +36,29 @@
         <div class="alert alert-info"><span class="glyphicon glyphicon-arrow-up"></span> Pick a source to start selecting elements.</div>
         <div class="row" id="editors"> </div>
       </div>
-      <div class="col-md-4 well" id="corexml">
-        <div class="alert alert-info">Core entry</div>
+      <div class="col-md-4 panel" id="corexml">
+        <div class="alert alert-info">Current Core entry</div>
         <div id="cur_entry"></div>
     </div>
   </div>
+
+  <!-- Full Core Modal -->
+  <div class="modal fade" id="coreModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">Core file</h4>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
   <!-- BACKBONE TEMPLATES -->
   <script type="text/template" id="editor-tpl">
@@ -63,17 +84,6 @@
   </button>
   </script>
 
-  <script type="text/template" id="app-tpl">
-    <ul><%= source %></ul>
-  </script>
-
-  <script type="text/template" id="sel-tpl">
-    <li><%= source %>
-    <ul>
-      <% _.each(elements, function(e) { %> <li><%= e %></li> <% }); %>
-    </ul>
-  </li>
-  </script>
   
   <script src="dist/coreBuilder.js"></script>
   <script type="text/javascript">
