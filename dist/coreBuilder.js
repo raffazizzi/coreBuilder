@@ -9,7 +9,7 @@
   root.coreBuilder = {};
 
   (function($, coreBuilder, _, Backbone, ace) {
-    var Core, CoreEntry, CoreView, Editor, EditorView, Editors, EditorsView, Selection, SelectionGroup, SelectionGroupView, SelectionView, Source, Sources, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+    var Core, CoreEntry, CoreEntryView, CoreView, Editor, EditorView, Editors, EditorsView, Selection, SelectionGroup, SelectionGroupView, SelectionView, Source, Sources, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
     coreBuilder.Utils = {};
     coreBuilder.Utils.generateUid = function(separator) {
       var S4, delim;
@@ -93,10 +93,6 @@
         return _ref1;
       }
 
-      CoreEntry.prototype.initialize = function() {
-        return this.sources = new Sources;
-      };
-
       return CoreEntry;
 
     })(Backbone.Model);
@@ -177,6 +173,7 @@
 
     })(Backbone.Collection);
     coreBuilder.Data.Editors = new Editors;
+    coreBuilder.Data.Core = new Core;
     coreBuilder.Views = {};
     SelectionGroupView = (function(_super) {
       __extends(SelectionGroupView, _super);
@@ -200,8 +197,10 @@
 
       SelectionGroupView.prototype.removeOne = function(m) {
         var id;
-        id = '#sel_' + m.id.replace(/\"/g, "");
-        $(id).remove();
+        if (m.get("empty") == null) {
+          id = '#sel_' + m.id.replace(/\"/g, "");
+          $(id).remove();
+        }
         return this;
       };
 
@@ -233,10 +232,12 @@
 
       SelectionView.prototype.render = function() {
         var id;
-        this.$el.addClass('badge');
-        id = 'sel_' + this.model.id.replace(/\"/g, "");
-        this.$el.attr('id', id);
-        this.$el.html(this.template(this.model.toJSON()));
+        if (this.model.get("empty") == null) {
+          this.$el.addClass('badge');
+          id = 'sel_' + this.model.id.replace(/\"/g, "");
+          this.$el.attr('id', id);
+          this.$el.html(this.template(this.model.toJSON()));
+        }
         return this;
       };
 
@@ -259,6 +260,22 @@
       };
 
       EditorView.prototype.tagName = 'div';
+
+      EditorView.prototype.events = {
+        "click .add-empty": "addEmpty"
+      };
+
+      EditorView.prototype.addEmpty = function(e) {
+        $(e.target).addClass("disabled");
+        this.model.selectionGroup.add({
+          empty: true
+        });
+        return this.listenTo(this.model.selectionGroup, 'remove', function(m) {
+          if (m.get('empty') != null) {
+            return $(e.target).removeClass("disabled");
+          }
+        });
+      };
 
       EditorView.prototype.bindSelect = function() {
         var _this = this;
@@ -295,7 +312,8 @@
               e.stopPropagation();
               _this.model.selectionGroup.add({
                 ident: tagName,
-                xmlid: xmlid
+                xmlid: xmlid,
+                pos: pos
               });
               return popup.remove();
             });
@@ -355,35 +373,143 @@
       return EditorsView;
 
     })(Backbone.View);
-    CoreView = (function(_super) {
-      __extends(CoreView, _super);
+    CoreEntryView = (function(_super) {
+      __extends(CoreEntryView, _super);
 
-      function CoreView() {
-        _ref12 = CoreView.__super__.constructor.apply(this, arguments);
+      function CoreEntryView() {
+        _ref12 = CoreEntryView.__super__.constructor.apply(this, arguments);
         return _ref12;
       }
 
-      CoreView.prototype.el = '#cur_entry';
+      CoreEntryView.prototype.el = '#cur_entry';
 
-      CoreView.prototype.template = _.template($('#core-tpl').html());
+      CoreEntryView.prototype.template = _.template($('#core-tpl').html());
 
-      CoreView.prototype.initialize = function() {
+      CoreEntryView.prototype.events = {
+        "click #entry_add": "addEntry",
+        "click #entry_cancel": "remove"
+      };
+
+      CoreEntryView.prototype.addEntry = function() {
+        var msg;
+        coreBuilder.Data.Core.add({
+          "entry": this.toXMLString(),
+          "formatted": this.toXMLString(true)
+        });
+        this.remove();
+        msg = $('<div class="alert alert-success fade in">Added!</div>');
+        this.$el.html(msg);
+        $(msg).alert();
+        return window.setTimeout((function() {
+          return $(msg).alert('close');
+        }), 500);
+      };
+
+      CoreEntryView.prototype.toXMLString = function(format) {
+        var indent, nl, p, r, xml_string, _i, _j, _len, _len1, _ref13, _ref14, _ref15, _ref16;
+        if (format == null) {
+          format = false;
+        }
+        nl = '\n';
+        indent = '  ';
+        xml_string = '<app>';
+        _ref13 = this.collection.models;
+        for (_i = 0, _len = _ref13.length; _i < _len; _i++) {
+          r = _ref13[_i];
+          if (((_ref14 = r.selectionGroup) != null ? _ref14.length : void 0) > 0) {
+            if (format) {
+              xml_string += nl + indent;
+            }
+            xml_string += '<rdg wit="' + r.get("source") + '>';
+            _ref15 = r.selectionGroup.models;
+            for (_j = 0, _len1 = _ref15.length; _j < _len1; _j++) {
+              p = _ref15[_j];
+              if (format) {
+                xml_string += nl + indent + indent;
+              }
+              if (p.get("empty") != null) {
+                xml_string += '<!-- empty -->';
+              }
+              if (((_ref16 = p.get("xmlid")) != null ? _ref16.length : void 0) > 0) {
+                xml_string += '<ptr target="' + p.get("xmlid") + '/>';
+              }
+            }
+            if (format) {
+              xml_string += nl + indent;
+            }
+            xml_string += '</rdg>';
+          }
+        }
+        if (format) {
+          xml_string += nl;
+        }
+        xml_string += '</app>';
+        return xml_string;
+      };
+
+      CoreEntryView.prototype.initialize = function() {
         this.listenTo(this.collection, 'add', this.addOne);
         return this;
       };
 
-      CoreView.prototype.addOne = function(model) {
+      CoreEntryView.prototype.addOne = function(model) {
         this.listenTo(model.selectionGroup, 'add', this.render);
         this.listenTo(model.selectionGroup, 'remove', this.render);
-        this.render();
+        return this;
+      };
+
+      CoreEntryView.prototype.render = function() {
+        var xml_string;
+        xml_string = this.toXMLString(true);
+        xml_string = xml_string.replace(/</g, '&lt;');
+        xml_string = xml_string.replace(/>/g, '&gt;');
+        this.$el.html(this.template({
+          xml_string: xml_string
+        }));
+        return this;
+      };
+
+      CoreEntryView.prototype.remove = function() {
+        this.collection.each(function(c) {
+          return c.selectionGroup.each(function(s) {
+            return c.selectionGroup.remove(s);
+          });
+        });
+        this.$el.empty();
+        return this;
+      };
+
+      return CoreEntryView;
+
+    })(Backbone.View);
+    CoreView = (function(_super) {
+      __extends(CoreView, _super);
+
+      function CoreView() {
+        _ref13 = CoreView.__super__.constructor.apply(this, arguments);
+        return _ref13;
+      }
+
+      CoreView.prototype.tagName = "pre";
+
+      CoreView.prototype.initialize = function() {
+        this.listenTo(this.collection, 'add', this.render);
+        this.listenTo(this.collection, 'remove', this.render);
         return this;
       };
 
       CoreView.prototype.render = function() {
-        this.$el.html(this.template({
-          col: this.collection
-        }));
-        return this;
+        var _this = this;
+        this.$el.empty();
+        this.collection.each(function(entry) {
+          var xml_string;
+          xml_string = entry.get("formatted");
+          xml_string = xml_string.replace(/</g, '&lt;');
+          xml_string = xml_string.replace(/>/g, '&gt;');
+          xml_string += '\n';
+          return _this.$el.append(xml_string);
+        });
+        return $("#coreModal .modal-body").html(this.$el);
       };
 
       return CoreView;
@@ -393,42 +519,23 @@
       __extends(App, _super);
 
       function App() {
-        _ref13 = App.__super__.constructor.apply(this, arguments);
-        return _ref13;
+        _ref14 = App.__super__.constructor.apply(this, arguments);
+        return _ref14;
       }
 
       App.prototype.el = "#coreBuilder";
-
-      App.prototype.events = {
-        'click #makeNew': 'makeNewEntry',
-        'click #cancelMake': 'cancelMake'
-      };
 
       App.prototype.initialize = function() {
         coreBuilder.Components.SourceSelector('.sel-sources');
         new EditorsView({
           collection: coreBuilder.Data.Editors
         });
-        new CoreView({
+        new CoreEntryView({
           collection: coreBuilder.Data.Editors
         });
-        return coreBuilder.Data.Core.add({
-          first: true
+        return new CoreView({
+          collection: coreBuilder.Data.Core
         });
-      };
-
-      App.prototype.makeNewEntry = function(e) {
-        var btn, cancel;
-        btn = $(e.target);
-        btn.prop('disabled', true);
-        return cancel = btn.next('button').removeClass("hide");
-      };
-
-      App.prototype.cancelMake = function(e) {
-        var btn, cancel;
-        cancel = $(e.target);
-        btn = cancel.prev('button').prop('disabled', false);
-        return cancel.addClass("hide");
       };
 
       return App;

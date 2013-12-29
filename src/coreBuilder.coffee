@@ -257,7 +257,7 @@ root.coreBuilder = {}
   #     @template(obj)
       
 
-  class CoreView extends Backbone.View
+  class CoreEntryView extends Backbone.View
 
     el: '#cur_entry'
 
@@ -270,8 +270,12 @@ root.coreBuilder = {}
     addEntry: ->
       coreBuilder.Data.Core.add
         "entry" : @toXMLString()
-      console.log coreBuilder.Data.Core
+        "formatted" : @toXMLString(true)
       @remove()
+      msg = $ '<div class="alert alert-success fade in">Added!</div>'
+      @$el.html msg
+      $(msg).alert()
+      window.setTimeout (-> $(msg).alert('close')), 500
 
     toXMLString: (format=false) ->
       nl = '\n'
@@ -317,6 +321,25 @@ root.coreBuilder = {}
       @$el.empty()
       @
 
+  class CoreView extends Backbone.View
+
+    tagName: "pre"
+
+    initialize: ->
+      @listenTo @collection, 'add', @render
+      @listenTo @collection, 'remove', @render
+      @
+
+    render: ->
+      @$el.empty()
+      @collection.each (entry) =>
+        xml_string = entry.get("formatted")
+        xml_string = xml_string.replace(/</g, '&lt;')
+        xml_string = xml_string.replace(/>/g, '&gt;')
+        xml_string += '\n'
+        @$el.append xml_string
+      $("#coreModal .modal-body").html(@$el)
+
   class coreBuilder.App extends Backbone.View
 
     el: "#coreBuilder"
@@ -326,7 +349,9 @@ root.coreBuilder = {}
       coreBuilder.Components.SourceSelector '.sel-sources'
       # Start Editors View
       new EditorsView collection: coreBuilder.Data.Editors
+      # Start Core Entry View on the same data
+      new CoreEntryView collection: coreBuilder.Data.Editors
       # Start Core View on the same data
-      new CoreView collection: coreBuilder.Data.Editors
+      new CoreView collection: coreBuilder.Data.Core
 
 )(jQuery,coreBuilder,_,Backbone,ace)
