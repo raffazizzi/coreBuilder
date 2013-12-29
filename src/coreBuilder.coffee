@@ -81,8 +81,6 @@ root.coreBuilder = {}
       @selectionGroup = new SelectionGroup
 
   class CoreEntry extends Backbone.Model
-    initialize: ->
-      @sources = new Sources
 
   class Source extends Backbone.Model
 
@@ -105,6 +103,7 @@ root.coreBuilder = {}
 
   # Expose Collections
   coreBuilder.Data.Editors = new Editors
+  coreBuilder.Data.Core = new Core
 
   ## VIEWS ##
 
@@ -121,8 +120,9 @@ root.coreBuilder = {}
       @
 
     removeOne: (m) ->
-      id = '#sel_' + m.id.replace(/\"/g, "")
-      $(id).remove()
+      if !m.get("empty")?
+        id = '#sel_' + m.id.replace(/\"/g, "")
+        $(id).remove()
       @
 
   class SelectionView extends Backbone.View
@@ -138,10 +138,11 @@ root.coreBuilder = {}
       @model.collection.remove @model.id, silent:false
 
     render: ->
-      @$el.addClass 'badge'
-      id = 'sel_' + @model.id.replace(/\"/g, "")
-      @$el.attr 'id', id
-      @$el.html @template(@model.toJSON())
+      if !@model.get("empty")?
+        @$el.addClass 'badge'
+        id = 'sel_' + @model.id.replace(/\"/g, "")
+        @$el.attr 'id', id
+        @$el.html @template(@model.toJSON())
       @
 
   class EditorView extends Backbone.View
@@ -153,6 +154,17 @@ root.coreBuilder = {}
       @listenTo @model, 'destroy', @remove
 
     tagName: 'div'
+
+    events:
+      "click .add-empty" : "addEmpty"
+
+    addEmpty: (e) ->
+      $(e.target).addClass "disabled"
+      @model.selectionGroup.add
+        empty: true
+      @listenTo @model.selectionGroup, 'remove', (m) ->
+        if m.get('empty')?
+          $(e.target).removeClass "disabled"
 
     bindSelect: ->
 
@@ -193,6 +205,7 @@ root.coreBuilder = {}
             @model.selectionGroup.add
               ident : tagName
               xmlid : xmlid
+              pos   : pos
             popup.remove()
 
     render: ->
@@ -250,6 +263,37 @@ root.coreBuilder = {}
 
     template: _.template $('#core-tpl').html()
 
+    events: 
+      "click #entry_add" : "addEntry"
+      "click #entry_cancel" : "remove"
+
+    addEntry: ->
+      coreBuilder.Data.Core.add
+        "entry" : @toXMLString()
+      console.log coreBuilder.Data.Core
+      @remove()
+
+    toXMLString: (format=false) ->
+      nl = '\n'
+      indent = '  '
+
+      xml_string = '<app>'
+      for r in @collection.models
+        if r.selectionGroup?.length > 0
+          xml_string += nl + indent if format 
+          xml_string += '<rdg wit="'+r.get("source")+'>'
+          for p in r.selectionGroup.models
+            xml_string += nl + indent + indent if format 
+            xml_string += '<!-- empty -->' if p.get("empty")?
+            if p.get("xmlid")?.length > 0
+              xml_string += '<ptr target="'+p.get("xmlid")+'/>'
+          xml_string += nl + indent if format 
+          xml_string += '</rdg>'
+      xml_string += nl if format 
+      xml_string += '</app>'
+
+      xml_string
+
     initialize: ->
       @listenTo @collection, 'add', @addOne
       @
@@ -257,20 +301,25 @@ root.coreBuilder = {}
     addOne: (model) ->
       @listenTo model.selectionGroup, 'add', @render
       @listenTo model.selectionGroup, 'remove', @render
-      @render()
       @
 
     render: ->
-      @$el.html @template(col : @collection)
+      xml_string = @toXMLString(true)
+      xml_string = xml_string.replace(/</g, '&lt;')
+      xml_string = xml_string.replace(/>/g, '&gt;')
+      @$el.html @template(xml_string : xml_string)
+      @
+
+    remove: ->
+      @collection.each (c) ->
+        c.selectionGroup.each (s) ->
+          c.selectionGroup.remove s
+      @$el.empty()
       @
 
   class coreBuilder.App extends Backbone.View
 
     el: "#coreBuilder"
-
-    events: 
-      'click #makeNew': 'makeNewEntry'
-      'click #cancelMake': 'cancelMake'
 
     initialize: ->
       # Bind UI components
@@ -279,80 +328,5 @@ root.coreBuilder = {}
       new EditorsView collection: coreBuilder.Data.Editors
       # Start Core View on the same data
       new CoreView collection: coreBuilder.Data.Editors
-
-      # new CoreView collection: coreBuilder.Data.Core
-      # Start first entry
-      coreBuilder.Data.Core.add
-        first : true
-
-    makeNewEntry: (e) ->
-      btn = $(e.target)
-      btn.prop 'disabled', true
-      cancel = btn.next('button').removeClass("hide")
-
-    cancelMake: (e) ->
-      cancel = $(e.target)
-      btn = cancel.prev('button').prop 'disabled', false
-      cancel.addClass("hide")
-
-  # class coreBuilder.coreView extends Backbone.View
-  #   template: _.template($('#core-tpl').html())
-  #   initialize: ->
-  #     @listenTo @model, 'change', @render
-  #     @listenTo @model, 'destroy', @remove
-  
-  #   render: ->
-  #     @$el.html @template(@model.toJSON())
-  #     sh_highlightDocument()
-  #     @bindRemove(this.model)
-  #     @
-  
-  #   bindRemove: (model) ->
-  #     $('.remove').click ->
-  #       idx = /_(\d+)/.exec($(this).attr('id'))[1]
-  #       app = model.toJSON().app
-  #       model.set(app.splice(0, idx).concat(app.splice(idx, app.length)))
-
-  # class coreBuilder.appView extends Backbone.View
-  #   template: _.template($('#app-tpl').html())
-  #   initialize: ->
-  #   render: ->
-  #     @$el.html(this.template({}))
-  #     @collection.each @addOne, @
-  #     @
-    
-  #   addOne: (model) ->
-  #     view = new coreBuilder.selectionView {model: model}
-  #     $('#cur_grp').show().append(view.render().$el)
-  #     $('#save').show()
-  #     $('#makeNew').hide()
-    
-  #   updateCore: ->
-  #     col = $.grep @collection.toJSON(), (e,i) ->
-  #       e.source? and e.source != ""
-
-  #     rgroup = 
-  #       rdg:[]
-  #       id: coreBuilder.Utils.generateUid()
-
-  #     for c in col
-  #       rgroup.rdg.push
-  #         source:c.source
-  #         ptr: c.elements
-
-  #     core.attributes.app.push rgroup
-      
-  #     # REVISE
-  #     # m = null
-  #     # m.destroy() while m = @collection.first()
-
-  # class coreBuilder.selectionView extends Backbone.View
-  #   template: _.template($('#sel-tpl').html())
-  #   initialize: ->
-  #     @listenTo @model, 'change', @render
-  #     @listenTo @model, 'destroy', @remove
-  #   render: ->
-  #     @$el.html( @template(@model.toJSON()) )
-  #     @
 
 )(jQuery,coreBuilder,_,Backbone,ace)
