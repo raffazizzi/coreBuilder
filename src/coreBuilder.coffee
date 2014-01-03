@@ -22,6 +22,38 @@ root.coreBuilder = {}
 
   coreBuilder.Components = {}
 
+  coreBuilder.Components.FileUploader = (target) ->
+
+    $(target).change (e) ->
+
+      file = e.target.files[0]
+
+      reader = new FileReader()
+
+      reader.onload = ( (theFile) ->
+        return (e) ->
+          parser = new DOMParser()
+          XMLCore = parser.parseFromString e.target.result, "text/xml"
+          entries = $(XMLCore).find('app')
+
+          # Start Core Entry View on the same data
+          new CoreEntryView collection: coreBuilder.Data.Editors
+          # Start Core View on the same data
+          new CoreView collection: coreBuilder.Data.Core
+
+          entries.each (i,e) ->
+            string = (new XMLSerializer()).serializeToString(e)
+
+            coreBuilder.Data.Core.add
+              "entry" : string
+              "formatted" : string
+
+          $("#coreModal").modal 'show'
+
+      )(file);
+
+      reader.readAsText(file,"UTF-8")
+
   coreBuilder.Components.SourceSelector = (target) ->
 
     $(target).multiselect
@@ -159,6 +191,9 @@ root.coreBuilder = {}
       "click .add-empty" : "addEmpty"
 
     addEmpty: (e) ->
+      # Flush existing selections
+      @model.selectionGroup.each (s) =>
+        @model.selectionGroup.remove s
       $(e.target).addClass "disabled"
       @model.selectionGroup.add
         empty: true
@@ -240,22 +275,6 @@ root.coreBuilder = {}
 
     addOne: (model) ->
       new EditorView model: model
-
-
-  # class CoreEntryView extends Backbone.View
-
-  #   template: _.template $('#coreEntry-tpl').html()
-
-  #   initialize: ->
-  #     @listenTo @model.selectionGroup, 'add', @render
-  #     @listenTo @model.selectionGroup, 'remove', @render
-
-  #   render: (s) ->
-  #     obj = 
-  #       "source" : @model.toJSON()
-  #       "selectionGroup" : @model.selectionGroup
-  #     @template(obj)
-      
 
   class CoreEntryView extends Backbone.View
 
@@ -347,11 +366,28 @@ root.coreBuilder = {}
     initialize: ->
       # Bind UI components
       coreBuilder.Components.SourceSelector '.sel-sources'
+      coreBuilder.Components.FileUploader '#uploadCore'
+      
       # Start Editors View
       new EditorsView collection: coreBuilder.Data.Editors
       # Start Core Entry View on the same data
       new CoreEntryView collection: coreBuilder.Data.Editors
       # Start Core View on the same data
       new CoreView collection: coreBuilder.Data.Core
+
+      @render()
+
+    render: ->
+      # Intructions popover
+      $('#uploadCore').popover
+        'content' : 'Pick a source to start selecting elements, or upload an existing Core file.'
+        'title' : 'Getting Started'
+        'placement' : 'bottom'
+        'trigger' : 'manual'
+        'container' : '#sources'
+      $('#uploadCore').popover('show')
+
+      $('body').one "click", ->
+        $('#uploadCore').popover('hide')
 
 )(jQuery,coreBuilder,_,Backbone,ace)

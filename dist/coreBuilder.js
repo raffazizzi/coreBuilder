@@ -20,6 +20,37 @@
       return S4() + S4() + delim + S4() + delim + S4() + delim + S4() + delim + S4() + S4() + S4();
     };
     coreBuilder.Components = {};
+    coreBuilder.Components.FileUploader = function(target) {
+      return $(target).change(function(e) {
+        var file, reader;
+        file = e.target.files[0];
+        reader = new FileReader();
+        reader.onload = (function(theFile) {
+          return function(e) {
+            var XMLCore, entries, parser;
+            parser = new DOMParser();
+            XMLCore = parser.parseFromString(e.target.result, "text/xml");
+            entries = $(XMLCore).find('app');
+            new CoreEntryView({
+              collection: coreBuilder.Data.Editors
+            });
+            new CoreView({
+              collection: coreBuilder.Data.Core
+            });
+            entries.each(function(i, e) {
+              var string;
+              string = (new XMLSerializer()).serializeToString(e);
+              return coreBuilder.Data.Core.add({
+                "entry": string,
+                "formatted": string
+              });
+            });
+            return $("#coreModal").modal('show');
+          };
+        })(file);
+        return reader.readAsText(file, "UTF-8");
+      });
+    };
     coreBuilder.Components.SourceSelector = function(target) {
       return $(target).multiselect({
         buttonClass: 'btn',
@@ -266,6 +297,10 @@
       };
 
       EditorView.prototype.addEmpty = function(e) {
+        var _this = this;
+        this.model.selectionGroup.each(function(s) {
+          return _this.model.selectionGroup.remove(s);
+        });
         $(e.target).addClass("disabled");
         this.model.selectionGroup.add({
           empty: true
@@ -527,14 +562,30 @@
 
       App.prototype.initialize = function() {
         coreBuilder.Components.SourceSelector('.sel-sources');
+        coreBuilder.Components.FileUploader('#uploadCore');
         new EditorsView({
           collection: coreBuilder.Data.Editors
         });
         new CoreEntryView({
           collection: coreBuilder.Data.Editors
         });
-        return new CoreView({
+        new CoreView({
           collection: coreBuilder.Data.Core
+        });
+        return this.render();
+      };
+
+      App.prototype.render = function() {
+        $('#uploadCore').popover({
+          'content': 'Pick a source to start selecting elements, or upload an existing Core file.',
+          'title': 'Getting Started',
+          'placement': 'bottom',
+          'trigger': 'manual',
+          'container': '#sources'
+        });
+        $('#uploadCore').popover('show');
+        return $('body').one("click", function() {
+          return $('#uploadCore').popover('hide');
         });
       };
 
