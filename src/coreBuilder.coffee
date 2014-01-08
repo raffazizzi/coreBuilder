@@ -39,7 +39,7 @@ root.coreBuilder = {}
           # Start Core Entry View on the same data
           new CoreEntryView collection: coreBuilder.Data.Sources
           # Start Core View on the same data
-          new CoreView collection: coreBuilder.Data.Core
+          new FullCoreView collection: coreBuilder.Data.Core
 
           entries.each (i,e) ->
             string = (new XMLSerializer()).serializeToString(e)
@@ -352,7 +352,7 @@ root.coreBuilder = {}
       @$el.empty()
       @
 
-  class CoreView extends Backbone.View
+  class FullCoreView extends Backbone.View
 
     initialize: ->
       @listenTo @collection, 'add', @render
@@ -363,11 +363,11 @@ root.coreBuilder = {}
       @$el.empty()
       @collection.each (entry) =>
         
-        @$el.append new CoreEntryView(model : entry).render()
+        @$el.append new FullCoreEntryView(model : entry).render()
         
       $("#coreModal .modal-body").html(@$el)
 
-  class CoreEntryView extends Backbone.View
+  class FullCoreEntryView extends Backbone.View
 
     template: _.template $('#entry-tpl').html()
 
@@ -377,7 +377,6 @@ root.coreBuilder = {}
       "click .close" : "remove"
 
     render: ->
-      console.log @model
       xml_string = @model.get("formatted")
       xml_string = xml_string.replace(/</g, '&lt;')
       xml_string = xml_string.replace(/>/g, '&gt;')
@@ -391,6 +390,9 @@ root.coreBuilder = {}
 
     el: "#coreBuilder"
 
+    events:
+      "click #downloadCore": "download"
+
     initialize: ->
       # Bind UI components
       coreBuilder.Components.SourceSelector '.sel-sources'
@@ -401,9 +403,18 @@ root.coreBuilder = {}
       # Start Core Entry View on the same data
       new CoreEntryView collection: coreBuilder.Data.Sources
       # Start Core View on the same data
-      new CoreView collection: coreBuilder.Data.Core
+      new FullCoreView collection: coreBuilder.Data.Core
 
       @render()
+
+    download: ->
+      xml = "<core>"
+      coreBuilder.Data.Core.each (e,i) ->
+        xml += e.get("entry")
+      xml += "</core>"
+
+      bb = new Blob [xml], "type":"text\/xml"
+      saveAs(bb, 'core.xml')
 
     render: ->
       # Intructions popover

@@ -9,7 +9,7 @@
   root.coreBuilder = {};
 
   (function($, coreBuilder, _, Backbone, ace) {
-    var Core, CoreEntry, CoreEntryView, CoreView, Selection, SelectionGroup, SelectionGroupView, SelectionView, Source, SourceView, Sources, SourcesView, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+    var Core, CoreEntry, CoreEntryView, FullCoreEntryView, FullCoreView, Selection, SelectionGroup, SelectionGroupView, SelectionView, Source, SourceView, Sources, SourcesView, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
     coreBuilder.Utils = {};
     coreBuilder.Utils.generateUid = function(separator) {
       var S4, delim;
@@ -34,7 +34,7 @@
             new CoreEntryView({
               collection: coreBuilder.Data.Sources
             });
-            new CoreView({
+            new FullCoreView({
               collection: coreBuilder.Data.Core
             });
             entries.each(function(i, e) {
@@ -514,53 +514,52 @@
       return CoreEntryView;
 
     })(Backbone.View);
-    CoreView = (function(_super) {
-      __extends(CoreView, _super);
+    FullCoreView = (function(_super) {
+      __extends(FullCoreView, _super);
 
-      function CoreView() {
-        _ref11 = CoreView.__super__.constructor.apply(this, arguments);
+      function FullCoreView() {
+        _ref11 = FullCoreView.__super__.constructor.apply(this, arguments);
         return _ref11;
       }
 
-      CoreView.prototype.initialize = function() {
+      FullCoreView.prototype.initialize = function() {
         this.listenTo(this.collection, 'add', this.render);
         this.listenTo(this.collection, 'remove', this.render);
         return this;
       };
 
-      CoreView.prototype.render = function() {
+      FullCoreView.prototype.render = function() {
         var _this = this;
         this.$el.empty();
         this.collection.each(function(entry) {
-          return _this.$el.append(new CoreEntryView({
+          return _this.$el.append(new FullCoreEntryView({
             model: entry
           }).render());
         });
         return $("#coreModal .modal-body").html(this.$el);
       };
 
-      return CoreView;
+      return FullCoreView;
 
     })(Backbone.View);
-    CoreEntryView = (function(_super) {
-      __extends(CoreEntryView, _super);
+    FullCoreEntryView = (function(_super) {
+      __extends(FullCoreEntryView, _super);
 
-      function CoreEntryView() {
-        _ref12 = CoreEntryView.__super__.constructor.apply(this, arguments);
+      function FullCoreEntryView() {
+        _ref12 = FullCoreEntryView.__super__.constructor.apply(this, arguments);
         return _ref12;
       }
 
-      CoreEntryView.prototype.template = _.template($('#entry-tpl').html());
+      FullCoreEntryView.prototype.template = _.template($('#entry-tpl').html());
 
-      CoreEntryView.prototype.tagName = 'pre';
+      FullCoreEntryView.prototype.tagName = 'pre';
 
-      CoreEntryView.prototype.events = {
+      FullCoreEntryView.prototype.events = {
         "click .close": "remove"
       };
 
-      CoreEntryView.prototype.render = function() {
+      FullCoreEntryView.prototype.render = function() {
         var xml_string;
-        console.log(this.model);
         xml_string = this.model.get("formatted");
         xml_string = xml_string.replace(/</g, '&lt;');
         xml_string = xml_string.replace(/>/g, '&gt;');
@@ -569,12 +568,12 @@
         }));
       };
 
-      CoreEntryView.prototype.remove = function() {
+      FullCoreEntryView.prototype.remove = function() {
         this.model.collection.remove(this.model);
         return this;
       };
 
-      return CoreEntryView;
+      return FullCoreEntryView;
 
     })(Backbone.View);
     return coreBuilder.App = (function(_super) {
@@ -587,6 +586,10 @@
 
       App.prototype.el = "#coreBuilder";
 
+      App.prototype.events = {
+        "click #downloadCore": "download"
+      };
+
       App.prototype.initialize = function() {
         coreBuilder.Components.SourceSelector('.sel-sources');
         coreBuilder.Components.FileUploader('#uploadCore');
@@ -596,10 +599,23 @@
         new CoreEntryView({
           collection: coreBuilder.Data.Sources
         });
-        new CoreView({
+        new FullCoreView({
           collection: coreBuilder.Data.Core
         });
         return this.render();
+      };
+
+      App.prototype.download = function() {
+        var bb, xml;
+        xml = "<core>";
+        coreBuilder.Data.Core.each(function(e, i) {
+          return xml += e.get("entry");
+        });
+        xml += "</core>";
+        bb = new Blob([xml], {
+          "type": "text\/xml"
+        });
+        return saveAs(bb, 'core.xml');
       };
 
       App.prototype.render = function() {
