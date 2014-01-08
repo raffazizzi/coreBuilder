@@ -37,16 +37,30 @@ root.coreBuilder = {}
           entries = $(XMLCore).find('app')
 
           # Start Core Entry View on the same data
-          new CoreEntryView collection: coreBuilder.Data.Editors
+          new CoreEntryView collection: coreBuilder.Data.Sources
           # Start Core View on the same data
           new CoreView collection: coreBuilder.Data.Core
 
           entries.each (i,e) ->
             string = (new XMLSerializer()).serializeToString(e)
 
-            coreBuilder.Data.Core.add
+            entry = coreBuilder.Data.Core.add
               "entry" : string
               "formatted" : string
+
+            $(e).find('rdg').each (i,r) ->
+              source = entry.sources.add 
+                "source" : $(r).attr("wit")
+
+              ptrs = $(r).find('ptr')
+              if ptrs.length > 0
+                ptrs.each (i,p) ->
+                  source.selectionGroup.add
+                    "xmlid" : $(p).attr("target")
+                    # ident ?
+                    # pos ?
+              else
+                source.set "empty", true
 
           $("#coreModal").modal 'show'
 
@@ -65,21 +79,21 @@ root.coreBuilder = {}
         source = $(opt).val()
         if adding
           url = 'data/' + source + '.xml'
-          editor = coreBuilder.Data.Editors.add
+          source = coreBuilder.Data.Sources.add
             source: source
             url: url
           $.get(url, (data) ->
             parser = new DOMParser()
             xmlDoc = parser.parseFromString data,"text/xml"
-            editor.set 
+            source.set 
               text : data
               xmldata : xmlDoc
             # Get title, too and other data-related stuff
             # so that the model can be mapped to a template in the view.
           , 'text')
         else
-          s = coreBuilder.Data.Editors.get source
-          coreBuilder.Data.Editors.remove source
+          s = coreBuilder.Data.Sources.get source
+          coreBuilder.Data.Sources.remove source
           # Triggering destroy manually to remove view
           s.trigger 'destroy'
 
@@ -103,7 +117,7 @@ root.coreBuilder = {}
 
   # Models
 
-  class Editor extends Backbone.Model
+  class Source extends Backbone.Model
     idAttribute : "source"
 
     # Using initialize instead of defaults for nested collections
@@ -113,16 +127,13 @@ root.coreBuilder = {}
       @selectionGroup = new SelectionGroup
 
   class CoreEntry extends Backbone.Model
-
-  class Source extends Backbone.Model
+    initialize : ->
+      @sources = new Sources
 
   class Selection extends Backbone.Model
     idAttribute : "xmlid"
 
   # Collections
-
-  class Editors extends Backbone.Collection
-    model: Editor
 
   class Sources extends Backbone.Collection
     model: Source
@@ -134,7 +145,7 @@ root.coreBuilder = {}
     model: CoreEntry
 
   # Expose Collections
-  coreBuilder.Data.Editors = new Editors
+  coreBuilder.Data.Sources = new Sources
   coreBuilder.Data.Core = new Core
 
   ## VIEWS ##
@@ -177,7 +188,7 @@ root.coreBuilder = {}
         @$el.html @template(@model.toJSON())
       @
 
-  class EditorView extends Backbone.View
+  class SourceView extends Backbone.View
 
     template: _.template $('#editor-tpl').html()
 
@@ -268,13 +279,13 @@ root.coreBuilder = {}
       @
 
 
-  class EditorsView extends Backbone.View
+  class SourcesView extends Backbone.View
 
     initialize: (collection) ->
       @listenTo @collection, 'add', @addOne
 
     addOne: (model) ->
-      new EditorView model: model
+      new SourceView model: model
 
   class CoreEntryView extends Backbone.View
 
@@ -287,9 +298,10 @@ root.coreBuilder = {}
       "click #entry_cancel" : "remove"
 
     addEntry: ->
-      coreBuilder.Data.Core.add
+      entry = coreBuilder.Data.Core.add
         "entry" : @toXMLString()
         "formatted" : @toXMLString(true)
+      entry.sources = @collection
       @remove()
       msg = $ '<div class="alert alert-success fade in">Added!</div>'
       @$el.html msg
@@ -342,8 +354,6 @@ root.coreBuilder = {}
 
   class CoreView extends Backbone.View
 
-    tagName: "pre"
-
     initialize: ->
       @listenTo @collection, 'add', @render
       @listenTo @collection, 'remove', @render
@@ -352,12 +362,30 @@ root.coreBuilder = {}
     render: ->
       @$el.empty()
       @collection.each (entry) =>
-        xml_string = entry.get("formatted")
-        xml_string = xml_string.replace(/</g, '&lt;')
-        xml_string = xml_string.replace(/>/g, '&gt;')
-        xml_string += '\n'
-        @$el.append xml_string
+        
+        @$el.append new CoreEntryView(model : entry).render()
+        
       $("#coreModal .modal-body").html(@$el)
+
+  class CoreEntryView extends Backbone.View
+
+    template: _.template $('#entry-tpl').html()
+
+    tagName: 'pre'
+
+    events:
+      "click .close" : "remove"
+
+    render: ->
+      console.log @model
+      xml_string = @model.get("formatted")
+      xml_string = xml_string.replace(/</g, '&lt;')
+      xml_string = xml_string.replace(/>/g, '&gt;')
+      @$el.html @template(escaped_xml : xml_string)
+
+    remove: ->
+      @model.collection.remove @model
+      @
 
   class coreBuilder.App extends Backbone.View
 
@@ -368,10 +396,10 @@ root.coreBuilder = {}
       coreBuilder.Components.SourceSelector '.sel-sources'
       coreBuilder.Components.FileUploader '#uploadCore'
       
-      # Start Editors View
-      new EditorsView collection: coreBuilder.Data.Editors
+      # Start Sources View
+      new SourcesView collection: coreBuilder.Data.Sources
       # Start Core Entry View on the same data
-      new CoreEntryView collection: coreBuilder.Data.Editors
+      new CoreEntryView collection: coreBuilder.Data.Sources
       # Start Core View on the same data
       new CoreView collection: coreBuilder.Data.Core
 
