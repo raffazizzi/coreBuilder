@@ -316,12 +316,12 @@ root.coreBuilder = {}
       for r in @collection.models
         if r.selectionGroup?.length > 0
           xml_string += nl + indent if format 
-          xml_string += '<rdg wit="'+r.get("source")+'>'
+          xml_string += '<rdg wit="'+r.get("source")+'">'
           for p in r.selectionGroup.models
             xml_string += nl + indent + indent if format 
             xml_string += '<!-- empty -->' if p.get("empty")?
             if p.get("xmlid")?.length > 0
-              xml_string += '<ptr target="'+p.get("xmlid")+'/>'
+              xml_string += '<ptr target='+p.get("xmlid")+'/>'
           xml_string += nl + indent if format 
           xml_string += '</rdg>'
       xml_string += nl if format 
