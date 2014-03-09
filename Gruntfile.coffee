@@ -61,7 +61,8 @@ module.exports = (grunt) ->
               'bower_components/backbone/backbone-min.js',
               'bower_components/bootstrap/dist/js/bootstrap.min.js',
               'bower_components/bootstrap-multiselect/js/bootstrap-multiselect.js',
-              'bower_components/FileSaver/FileSaver.js']
+              'bower_components/FileSaver/FileSaver.js',
+              'bower_components/vkbeautify/index.js']
         dest: 'dist/bower.js'
 
     copy:

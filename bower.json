@@ -21,6 +21,10 @@
     "backbone": "~1.1.0",
     "FileSaver": "*",
     "ace-builds": "~1.1.1",
-    "bootstrap-multiselect": "~0.9.1"
+    "bootstrap-multiselect": "~0.9.1",
+    "vkbeautify": "http://vkbeautify.googlecode.com/files/vkbeautify.0.99.00.beta.js"
+  },
+  "devDependencies": {
+    "highlight": "~7.0.1"
   }
 }
