@@ -42,6 +42,7 @@ root.coreBuilder = {}
           new FullCoreView collection: coreBuilder.Data.Core
 
           entries.each (i,e) ->
+            # The following won't work in IE. Replace with .html()?
             string = (new XMLSerializer()).serializeToString(e)
 
             entry = coreBuilder.Data.Core.add
@@ -83,7 +84,7 @@ root.coreBuilder = {}
             source: source
             url: url
           $.get(url, (data) ->
-            parser = new DOMParser()
+            parser = new DOMParser() 
             xmlDoc = parser.parseFromString data,"text/xml"
             source.set 
               text : data
@@ -227,10 +228,12 @@ root.coreBuilder = {}
           switch
             when token.type == "entity.other.attribute-name" and token.value == 'xml:id'
               # lookup id string (two tokens forward)
-              xmlid = tokenRow[token.index+2].value
+              xmlid = tokenRow[token.index+2].value.replace
+              xmlid = xmlid.replace(/['"]/g, "")
             when token.type == "string" and tokenRow[token.index-2].value == 'xml:id'
               # check this is an xml:id attribute vaule (two tokens back)
               xmlid = token.value
+              xmlid = xmlid.replace(/["']/g, "")
 
         if xmlid?
           xmldata = $(@model.get "xmldata")
@@ -294,13 +297,14 @@ root.coreBuilder = {}
     template: _.template $('#core-tpl').html()
 
     events: 
-      "click #entry_add" : "addEntry"
-      "click #entry_cancel" : "remove"
+      "click #entry_add"     : "addEntry"
+      "click #entry_cancel"  : "remove"
+      "click #entry_group li": "group"
 
     addEntry: ->
       entry = coreBuilder.Data.Core.add
-        "entry" : @toXMLString()
-        "formatted" : @toXMLString(true)
+        "entry" : @toDOM()
+        "formatted" : @toXMLString()
       entry.sources = @collection
       @remove()
       msg = $ '<div class="alert alert-success fade in">Added!</div>'
@@ -308,30 +312,44 @@ root.coreBuilder = {}
       $(msg).alert()
       window.setTimeout (-> $(msg).alert('close')), 500
 
-    toXMLString: (format=false) ->
-      nl = '\n'
-      indent = '  '
-
-      xml_string = '<app>'
-      for r in @collection.models
+    toDOM: ->
+      grp = null
+      entry = $("<app>")
+      for r in @collection.models 
         if r.selectionGroup?.length > 0
-          xml_string += nl + indent if format 
-          xml_string += '<rdg wit="'+r.get("source")+'">'
+          sel = $("<rdg>").attr
+            "wit" : r.get("source")
+          if r.get("grouped") 
+            if !grp?
+              grp = $("<rdgGrp>") 
+              entry.append grp
+            grp.append sel
+          else
+            entry.append sel
           for p in r.selectionGroup.models
-            xml_string += nl + indent + indent if format 
-            xml_string += '<!-- empty -->' if p.get("empty")?
+            # sel.text('<!-- empty -->') if p.get("empty")?
             if p.get("xmlid")?.length > 0
-              xml_string += '<ptr target='+p.get("xmlid")+'/>'
-          xml_string += nl + indent if format 
-          xml_string += '</rdg>'
-      xml_string += nl if format 
-      xml_string += '</app>'
+              ptr = $("<ptr>").attr
+                "target" : p.get("xmlid")
+              sel.append ptr
+      entry
 
-      xml_string
+    toXMLString: ->
+      xml_string = vkbeautify.xml(@toDOM().wrap('<s>').parent().html())
+      xml_string = xml_string.replace(/</g, '&lt;')
+      xml_string = xml_string.replace(/>/g, '&gt;')
 
     initialize: ->
       @listenTo @collection, 'add', @addOne
       @
+
+    group: (e) ->
+      source = $(e.target).data().source
+      model = @collection.find (m) ->
+        m.get("source") == source
+      model.set
+          "grouped" : true
+      @render()
 
     addOne: (model) ->
       @listenTo model.selectionGroup, 'add', @render
@@ -339,11 +357,41 @@ root.coreBuilder = {}
       @
 
     render: ->
-      xml_string = @toXMLString(true)
-      xml_string = xml_string.replace(/</g, '&lt;')
-      xml_string = xml_string.replace(/>/g, '&gt;')
-      @$el.html @template(xml_string : xml_string)
+
+      sources = []
+      for r in @collection.models
+        if r.selectionGroup?.length > 0
+          sources.push r.get("source")
+
+      @$el.html @template
+        xml_string : @toXMLString()
+        sources : sources
+
+      # Render multiselect for grouping
+      # grp_btn = $('#entry_group')
+      # for r in @collection.models
+      #   if r.selectionGroup?.length > 0
+      #     src = r.get "source"
+      #     grp_btn.append('<option value="'+src+'">'+src+'</option>')
+
+      # grp_btn.multiselect
+      #   buttonClass: 'btn'
+      #   buttonWidth: 'auto'
+      #   buttonContainer: '<div class="btn-group" />'
+      #   maxHeight: false
+      #   onChange: (opt, adding) =>
+      #     source = $(opt).val()
+      #     model = @collection.find (m) ->
+      #       m.get("source") == source
+      #     model.set
+      #         "grouped" : adding
+      #     @render()
+      #   buttonText: (options) ->
+      #     'Group Selections <b class="caret"></b>'
       @
+
+    # update: ->
+    #   @$el.html @template(xml_string : @toXMLString())
 
     remove: ->
       @collection.each (c) ->

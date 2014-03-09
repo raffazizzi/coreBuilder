@@ -26,7 +26,7 @@
         <button type="button" class="btn btn-primary" id="downloadCore">
           Download Core
         </button>
-        <button class="btn btn-success pull-right" data-toggle="modal" data-target="#coreModal">
+        <button class="btn btn-info pull-right" data-toggle="modal" data-target="#coreModal">
           Show full Core
         </button>
     </div>
@@ -76,12 +76,20 @@
 
   <script type="text/template" id="core-tpl">
       <pre class="sh_xml"><%=xml_string%></pre>
-  <button type="button" id="entry_add" class="btn btn-primary btn-success pull-right">
-    <span class="glyphicon glyphicon-plus"></span> Add
-  </button>
-  <button type="button" id="entry_cancel" class="btn btn-primary btn-danger pull-right">
-    <span class="glyphicon glyphicon-trash"></span> Cancel
-  </button>
+      <div class="pull-right">
+        <button type="button" id="entry_cancel" class="btn btn-danger">
+          <span class="glyphicon glyphicon-trash"></span> Cancel
+        </button>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          Group Selections <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" id="entry_group">
+          <% _.each(sources, function(s) { %>  <li><a href="#" data-source="<%= s %>"><%= s %></a></li> <% }); %>
+        </ul>
+        <button type="button" id="entry_add" class="btn btn-success">
+          <span class="glyphicon glyphicon-plus"></span> Add
+        </button>
+      </div>
   </script>
 
   <script type="text/template" id="entry-tpl"><button type="button" class="close yoyo">&times;</button><%=escaped_xml%></script>
