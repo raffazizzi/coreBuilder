@@ -62,7 +62,8 @@ module.exports = (grunt) ->
               'bower_components/bootstrap/dist/js/bootstrap.min.js',
               'bower_components/bootstrap-multiselect/js/bootstrap-multiselect.js',
               'bower_components/FileSaver/FileSaver.js',
-              'bower_components/vkbeautify/index.js']
+              'bower_components/vkbeautify/index.js',
+              'bower_components/prism/prism.js']
         dest: 'dist/bower.js'
 
     copy:

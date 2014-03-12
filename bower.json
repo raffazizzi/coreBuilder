@@ -22,9 +22,7 @@
     "FileSaver": "*",
     "ace-builds": "~1.1.1",
     "bootstrap-multiselect": "~0.9.1",
-    "vkbeautify": "http://vkbeautify.googlecode.com/files/vkbeautify.0.99.00.beta.js"
-  },
-  "devDependencies": {
-    "highlight": "~7.0.1"
+    "vkbeautify": "http://vkbeautify.googlecode.com/files/vkbeautify.0.99.00.beta.js",
+    "prism": "gh-pages"
   }
 }

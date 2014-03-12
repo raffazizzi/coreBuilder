@@ -65,6 +65,9 @@ root.coreBuilder = {}
 
           $("#coreModal").modal 'show'
 
+          # Highlight
+          Prism.highlightAll()
+
       )(file);
 
       reader.readAsText(file,"UTF-8")
@@ -367,31 +370,9 @@ root.coreBuilder = {}
         xml_string : @toXMLString()
         sources : sources
 
-      # Render multiselect for grouping
-      # grp_btn = $('#entry_group')
-      # for r in @collection.models
-      #   if r.selectionGroup?.length > 0
-      #     src = r.get "source"
-      #     grp_btn.append('<option value="'+src+'">'+src+'</option>')
-
-      # grp_btn.multiselect
-      #   buttonClass: 'btn'
-      #   buttonWidth: 'auto'
-      #   buttonContainer: '<div class="btn-group" />'
-      #   maxHeight: false
-      #   onChange: (opt, adding) =>
-      #     source = $(opt).val()
-      #     model = @collection.find (m) ->
-      #       m.get("source") == source
-      #     model.set
-      #         "grouped" : adding
-      #     @render()
-      #   buttonText: (options) ->
-      #     'Group Selections <b class="caret"></b>'
+      # Highlight
+      Prism.highlightAll()
       @
-
-    # update: ->
-    #   @$el.html @template(xml_string : @toXMLString())
 
     remove: ->
       @collection.each (c) ->
