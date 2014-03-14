@@ -113,7 +113,10 @@ root.coreBuilder = {}
         if sel.length == 0
           return 'Sources <b class="caret"></b>'
 
-        return sel.join(", ") + ' <b class="caret"></b>'
+        label = sel.join(", ")
+        label = label.substring(0,50) + "..." if label.length > 50
+
+        return label + ' <b class="caret"></b>'
 
   ## DATA ##
 
