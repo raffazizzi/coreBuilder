@@ -39,7 +39,8 @@ root.coreBuilder = {}
           # Start Core Entry View on the same data
           new CoreEntryView collection: coreBuilder.Data.Sources
           # Start Core View on the same data
-          new FullCoreView collection: coreBuilder.Data.Core
+          fcv = new FullCoreView collection: coreBuilder.Data.Core
+          $("#full").html fcv.$el
 
           entries.each (i,e) ->
             # The following won't work in IE. Replace with .html()?
@@ -63,10 +64,11 @@ root.coreBuilder = {}
               else
                 source.set "empty", true
 
-          $("#coreModal").modal 'show'
-
           # Highlight
           Prism.highlightAll()
+
+          # Show Full Core tab
+          $('#tabs a[href="#full"]').tab('show')
 
       )(file);
 
@@ -117,6 +119,12 @@ root.coreBuilder = {}
         label = label.substring(0,50) + "..." if label.length > 50
 
         return label + ' <b class="caret"></b>'
+
+  coreBuilder.Components.CoreTabs = (target) ->
+
+    $(target).click (e) ->
+      e.preventDefault()
+      $(this).tab('show')
 
   ## DATA ##
 
@@ -379,6 +387,7 @@ root.coreBuilder = {}
 
     remove: ->
       @collection.each (c) ->
+        if c.get('grouped') then c.set 'grouped', false
         c.selectionGroup.each (s) ->
           c.selectionGroup.remove s
       @$el.empty()
@@ -394,10 +403,12 @@ root.coreBuilder = {}
     render: ->
       @$el.empty()
       @collection.each (entry) =>
-        
-        @$el.append new FullCoreEntryView(model : entry).render()
-        
-      $("#coreModal .modal-body").html(@$el)
+        fcev = new FullCoreEntryView(model : entry)
+        fcev.delegateEvents()
+        @$el.append fcev.render()
+
+        # Highlight
+        Prism.highlightAll()
 
   class FullCoreEntryView extends Backbone.View
 
@@ -429,13 +440,15 @@ root.coreBuilder = {}
       # Bind UI components
       coreBuilder.Components.SourceSelector '.sel-sources'
       coreBuilder.Components.FileUploader '#uploadCore'
+      coreBuilder.Components.CoreTabs '#tabs'
       
       # Start Sources View
       new SourcesView collection: coreBuilder.Data.Sources
       # Start Core Entry View on the same data
       new CoreEntryView collection: coreBuilder.Data.Sources
       # Start Core View on the same data
-      new FullCoreView collection: coreBuilder.Data.Core
+      fcv = new FullCoreView collection: coreBuilder.Data.Core
+      $("#full").html fcv.$el
 
       @render()
 
