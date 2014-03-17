@@ -316,10 +316,21 @@ root.coreBuilder = {}
       "click #entry_group li": "group"
 
     addEntry: ->
+      
+      targets = {}
+      for r in @collection.models 
+        source = r.get("source")
+        targets[source] = []
+        for sg in r.selectionGroup.models
+          targets[source].push sg.get("xmlid")
+
       entry = coreBuilder.Data.Core.add
         "entry" : @toDOM()
         "formatted" : @toXMLString()
+        "targets" : targets
+
       entry.sources = @collection
+      entry.trigger 'sync'
       @remove()
       msg = $ '<div class="alert alert-success fade in">Added!</div>'
       @$el.html msg
@@ -382,7 +393,27 @@ root.coreBuilder = {}
         sources : sources
 
       # Highlight
-      Prism.highlightAll()
+      Prism.highlightElement(@$el.find('code')[0])
+
+      # Link targets
+      for r in @collection.models
+        for sg in r.selectionGroup.models
+          id = sg.get "xmlid"
+
+          attrs = @$el.find('.token.attr-name')
+          for a in attrs
+            if $(a).text() == 'target'
+              wrapper = $("<a href='#'></a>").click (e) ->
+                e.preventDefault()
+                source = r.get("source")
+                editor = ace.edit 'ed_'+source
+
+                punct = """["']"""
+                editor.find punct+id+punct, {regExp:true}, true
+
+                $('html, body').animate({scrollTop: $("#ed_"+source).offset().top}, 800)
+
+              $(a).next().contents().filter( -> @nodeType != 1).wrap(wrapper)
       @
 
     remove: ->
@@ -403,12 +434,8 @@ root.coreBuilder = {}
     render: ->
       @$el.empty()
       @collection.each (entry) =>
-        fcev = new FullCoreEntryView(model : entry)
-        fcev.delegateEvents()
-        @$el.append fcev.render()
-
-        # Highlight
-        Prism.highlightAll()
+        @$el.append (new FullCoreEntryView(model : entry)).delegateEvents().render().el
+      @
 
   class FullCoreEntryView extends Backbone.View
 
@@ -424,6 +451,35 @@ root.coreBuilder = {}
       xml_string = xml_string.replace(/</g, '&lt;')
       xml_string = xml_string.replace(/>/g, '&gt;')
       @$el.html @template(escaped_xml : xml_string)
+
+      linkTargets = =>
+        # Highlight
+        Prism.highlightElement(@$el.find('code')[0])
+
+        # console.log @model.get("targets")
+        targets = @model.get "targets"
+        for source of targets
+          for id in targets[source]
+            attrs = @$el.find('.token.attr-name')
+            for a in attrs
+              if $(a).text() == 'target' and $(a).next().contents().filter( -> @nodeType != 1).text() == id
+                wrapper = $("<a href='#'></a>").click (e) ->
+                  e.preventDefault()
+                  editor = ace.edit 'ed_'+source
+
+                  punct = """["']"""
+                  editor.find punct+id+punct, {regExp:true}, true
+
+                  $('html, body').animate({scrollTop: $("#ed_"+source).offset().top}, 800)
+
+                $(a).next().contents().filter( -> @nodeType != 1).wrap(wrapper)
+
+      if @model.sources.length > 0
+        linkTargets()
+      else
+        @listenToOnce @model, 'sync', ->
+          linkTargets()
+      @
 
     remove: ->
       @model.collection.remove @model
