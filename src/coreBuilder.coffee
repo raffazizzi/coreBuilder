@@ -126,6 +126,20 @@ root.coreBuilder = {}
       e.preventDefault()
       $(this).tab('show')
 
+  ## ROUTERS ##
+  coreBuilder.Routers = {}
+
+  class coreBuilder.Routers.GoToEditor extends Backbone.Router
+    routes:
+      "show/:source/:id" : "show"
+
+    show: (s, i) ->
+      editor = ace.edit 'ed_'+s
+
+      punct = """["']"""
+      editor.find punct+i+punct, {regExp:true}, true
+      $('html, body').animate({scrollTop: $("#ed_"+s).offset().top}, 800)
+
   ## DATA ##
 
   coreBuilder.Data = {}
@@ -382,7 +396,7 @@ root.coreBuilder = {}
       @
 
     render: ->
-
+      @$el.empty()
       sources = []
       for r in @collection.models
         if r.selectionGroup?.length > 0
@@ -397,23 +411,18 @@ root.coreBuilder = {}
 
       # Link targets
       for r in @collection.models
+
+        source = r.get("source")
+
         for sg in r.selectionGroup.models
           id = sg.get "xmlid"
 
           attrs = @$el.find('.token.attr-name')
-          for a in attrs
-            if $(a).text() == 'target'
-              wrapper = $("<a href='#'></a>").click (e) ->
-                e.preventDefault()
-                source = r.get("source")
-                editor = ace.edit 'ed_'+source
-
-                punct = """["']"""
-                editor.find punct+id+punct, {regExp:true}, true
-
-                $('html, body').animate({scrollTop: $("#ed_"+source).offset().top}, 800)
-
-              $(a).next().contents().filter( -> @nodeType != 1).wrap(wrapper)
+          for att in attrs
+            if $(att).text() == 'target'
+              target = $(att).next().contents().filter( -> @nodeType != 1)
+              if target.text() == id
+                target.wrap "<a href='#show/"+source+"/"+id+"''></a>"
       @
 
     remove: ->
@@ -456,23 +465,15 @@ root.coreBuilder = {}
         # Highlight
         Prism.highlightElement(@$el.find('code')[0])
 
-        # console.log @model.get("targets")
         targets = @model.get "targets"
         for source of targets
           for id in targets[source]
             attrs = @$el.find('.token.attr-name')
-            for a in attrs
-              if $(a).text() == 'target' and $(a).next().contents().filter( -> @nodeType != 1).text() == id
-                wrapper = $("<a href='#'></a>").click (e) ->
-                  e.preventDefault()
-                  editor = ace.edit 'ed_'+source
-
-                  punct = """["']"""
-                  editor.find punct+id+punct, {regExp:true}, true
-
-                  $('html, body').animate({scrollTop: $("#ed_"+source).offset().top}, 800)
-
-                $(a).next().contents().filter( -> @nodeType != 1).wrap(wrapper)
+            for att in attrs
+              if $(att).text() == 'target'
+                target = $(att).next().contents().filter( -> @nodeType != 1)
+                if target.text() == id
+                  target.wrap "<a href='#show/"+source+"/"+id+"''></a>"
 
       if @model.sources.length > 0
         linkTargets()
@@ -493,6 +494,10 @@ root.coreBuilder = {}
       "click #downloadCore": "download"
 
     initialize: ->
+      # Start history and routers
+      Backbone.history.start()
+      new coreBuilder.Routers.GoToEditor
+
       # Bind UI components
       coreBuilder.Components.SourceSelector '.sel-sources'
       coreBuilder.Components.FileUploader '#uploadCore'
