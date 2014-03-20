@@ -131,14 +131,45 @@ root.coreBuilder = {}
 
   class coreBuilder.Routers.GoToEditor extends Backbone.Router
     routes:
+      "show/:source" : "show"
       "show/:source/:id" : "show"
 
     show: (s, i) ->
-      editor = ace.edit 'ed_'+s
 
-      punct = """["']"""
-      editor.find punct+i+punct, {regExp:true}, true
-      $('html, body').animate({scrollTop: $("#ed_"+s).offset().top}, 800)
+      move = ->
+        editor = ace.edit 'ed_'+s
+
+        punct = """["']"""
+        editor.find punct+i+punct, {regExp:true}, true  
+
+        $('html, body').animate({scrollTop: $("#ed_"+s).offset().top}, 800)
+
+      ed = $("#ed_"+s)
+
+      if !ed.get(0)?
+        for sel in $('.sel-sources option')
+          if $(sel).text() == s
+            $('.sel-sources').multiselect('select', s)
+            setTimeout move, 100
+            # move()
+            # url = 'data/' + s + '.xml'
+            # source = coreBuilder.Data.Sources.add
+            #   source: s
+            #   url: url
+            # $.get(url, (data) ->
+            #   parser = new DOMParser() 
+            #   xmlDoc = parser.parseFromString data,"text/xml"
+            #   source.set 
+            #     text : data
+            #     xmldata : xmlDoc
+            #   # Get title, too and other data-related stuff
+            #   # so that the model can be mapped to a template in the view.
+            #   move()
+            # , 'text')
+      else
+        move()
+
+      @navigate '#'
 
   ## DATA ##
 
@@ -306,6 +337,7 @@ root.coreBuilder = {}
       $el.append(new SelectionGroupView({collection : @model.selectionGroup}).el)
 
     remove: ->
+      @editor.destroy()
       $(@el).remove()
       @
 
