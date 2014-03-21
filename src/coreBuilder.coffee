@@ -102,6 +102,7 @@ root.coreBuilder = {}
           coreBuilder.Data.Sources.remove source
           # Triggering destroy manually to remove view
           s.trigger 'destroy'
+          s = null
 
       buttonText: (options) ->
 
@@ -139,6 +140,9 @@ root.coreBuilder = {}
       move = ->
         editor = ace.edit 'ed_'+s
 
+        # Get focus on the editor
+        editor.moveCursorTo 1,1
+
         punct = """["']"""
         editor.find punct+i+punct, {regExp:true}, true  
 
@@ -151,21 +155,6 @@ root.coreBuilder = {}
           if $(sel).text() == s
             $('.sel-sources').multiselect('select', s)
             setTimeout move, 100
-            # move()
-            # url = 'data/' + s + '.xml'
-            # source = coreBuilder.Data.Sources.add
-            #   source: s
-            #   url: url
-            # $.get(url, (data) ->
-            #   parser = new DOMParser() 
-            #   xmlDoc = parser.parseFromString data,"text/xml"
-            #   source.set 
-            #     text : data
-            #     xmldata : xmlDoc
-            #   # Get title, too and other data-related stuff
-            #   # so that the model can be mapped to a template in the view.
-            #   move()
-            # , 'text')
       else
         move()
 
@@ -337,8 +326,8 @@ root.coreBuilder = {}
       $el.append(new SelectionGroupView({collection : @model.selectionGroup}).el)
 
     remove: ->
-      @editor.destroy()
-      $(@el).remove()
+      @editor.destroy() # Not sure whether this actually does anything
+      $(@el).empty().remove()
       @
 
 
