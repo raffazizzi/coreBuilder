@@ -11,46 +11,51 @@
 <body>
  
   <div class="container" id="coreBuilder">
-    <h1>CoreBuilder v 0.2</h1>
+
+    <div class="row" id="header">
+
+      <h1>CoreBuilder v 0.2</h1>
+      
+      <div id="sources" class="panel">
+        <select class="sel-sources" multiple="multiple">
+          <option value="KAtx4_III_2">KAtx4_III_2</option>
+          <option value="Ltx2_III_2">Ltx2_III_2</option>
+          <option value="Ktx6_III_2">Ktx6_III_2</option>
+          <option value="D_ptx2_III_2">D_ptx2_III_2</option>
+          <!--<option value="C_07_Autograph_Dialogtexte">C_07_Autograph_Dialogtexte</option>
+          <option value="C_07_Erstdruck_Arien">C_07_Erstdruck_Arien</option>
+          <option value="C_07_Handexemplar">C_07_Handexemplar</option>
+          <option value="C_07_Kind_Ausgabe_letzter_Hand">C_07_Kind_Ausgabe_letzter_Hand</option>
+          <option value="C_07_Kind_Autograph">C_07_Kind_Autograph</option>
+          <option value="C_07_Kind_Druck_1821_1822">C_07_Kind_Druck_1821_1822</option>
+          <option value="C_07_Kind_Druck_1822">C_07_Kind_Druck_1822</option>
+          <option value="C_07_Kind_Druck_1823">C_07_Kind_Druck_1823</option>
+          <option value="C_07_Kind_Druck_1827">C_07_Kind_Druck_1827</option>
+          <option value="C_07_Kind_Theaterschriften">C_07_Kind_Theaterschriften</option>
+          <option value="C_07_Kind_VD1_Penelope">C_07_Kind_VD1_Penelope</option>
+          <option value="C_07_Kind_VD2_1821">C_07_Kind_VD2_1821</option>
+          <option value="C_07_Kopie_Berlin">C_07_Kopie_Berlin</option>
+          <option value="C_07_Kopie_Detmold">C_07_Kopie_Detmold</option>
+          <option value="C_07_Kopie_Gotha">C_07_Kopie_Gotha</option>
+          <option value="C_07_Kopie_Hamburg">C_07_Kopie_Hamburg</option>
+          <option value="C_07_Kopie_Wien2">C_07_Kopie_Wien2</option>
+          <option value="C_07_Kopie_Wien">C_07_Kopie_Wien</option>-->
+        </select>
+          <span class="btn btn-primary btn-file" id="uploadCore">
+            Upload Core <input type="file">
+        </span>
+          <button type="button" class="btn btn-primary" id="downloadCore">
+            Download Core
+          </button>
+          <ul class="nav nav-tabs pull-right" id="tabs">
+            <li class="active"><a href="#cur_entry" data-toggle="tab">Current Entry</a></li>
+            <li><a href="#full" data-toggle="tab">Full Core</a></li>
+          </ul>
+      </div>
     
-    <div id="sources" class="panel">
-      <select class="sel-sources" multiple="multiple">
-        <option value="KAtx4_III_2">KAtx4_III_2</option>
-        <option value="Ltx2_III_2">Ltx2_III_2</option>
-        <option value="Ktx6_III_2">Ktx6_III_2</option>
-        <option value="D_ptx2_III_2">D_ptx2_III_2</option>
-        <!--<option value="C_07_Autograph_Dialogtexte">C_07_Autograph_Dialogtexte</option>
-        <option value="C_07_Erstdruck_Arien">C_07_Erstdruck_Arien</option>
-        <option value="C_07_Handexemplar">C_07_Handexemplar</option>
-        <option value="C_07_Kind_Ausgabe_letzter_Hand">C_07_Kind_Ausgabe_letzter_Hand</option>
-        <option value="C_07_Kind_Autograph">C_07_Kind_Autograph</option>
-        <option value="C_07_Kind_Druck_1821_1822">C_07_Kind_Druck_1821_1822</option>
-        <option value="C_07_Kind_Druck_1822">C_07_Kind_Druck_1822</option>
-        <option value="C_07_Kind_Druck_1823">C_07_Kind_Druck_1823</option>
-        <option value="C_07_Kind_Druck_1827">C_07_Kind_Druck_1827</option>
-        <option value="C_07_Kind_Theaterschriften">C_07_Kind_Theaterschriften</option>
-        <option value="C_07_Kind_VD1_Penelope">C_07_Kind_VD1_Penelope</option>
-        <option value="C_07_Kind_VD2_1821">C_07_Kind_VD2_1821</option>
-        <option value="C_07_Kopie_Berlin">C_07_Kopie_Berlin</option>
-        <option value="C_07_Kopie_Detmold">C_07_Kopie_Detmold</option>
-        <option value="C_07_Kopie_Gotha">C_07_Kopie_Gotha</option>
-        <option value="C_07_Kopie_Hamburg">C_07_Kopie_Hamburg</option>
-        <option value="C_07_Kopie_Wien2">C_07_Kopie_Wien2</option>
-        <option value="C_07_Kopie_Wien">C_07_Kopie_Wien</option>-->
-      </select>
-        <span class="btn btn-primary btn-file" id="uploadCore">
-          Upload Core <input type="file">
-      </span>
-        <button type="button" class="btn btn-primary" id="downloadCore">
-          Download Core
-        </button>
-        <ul class="nav nav-tabs pull-right" id="tabs">
-          <li class="active"><a href="#cur_entry" data-toggle="tab">Current Entry</a></li>
-          <li><a href="#full" data-toggle="tab">Full Core</a></li>
-        </ul>
     </div>
 
-    <div class="row">
+    <div class="row" id="main">
       <div class="col-md-7 well">
         <!--<div class="alert alert-info"><span class="glyphicon glyphicon-arrow-up"></span> Pick a source to start selecting elements.</div>-->
         <div class="row" id="editors"> </div>

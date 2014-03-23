@@ -138,6 +138,8 @@ root.coreBuilder = {}
     show: (s, i) ->
 
       move = ->
+        adjustment = 115
+
         editor = ace.edit 'ed_'+s
 
         # Get focus on the editor
@@ -146,7 +148,9 @@ root.coreBuilder = {}
         punct = """["']"""
         editor.find punct+i+punct, {regExp:true}, true  
 
-        $('html, body').animate({scrollTop: $("#ed_"+s).offset().top}, 800)
+        offset = $("#ed_"+s).offset().top - adjustment
+
+        $('html, body').animate({scrollTop: offset}, 800)
 
       ed = $("#ed_"+s)
 
