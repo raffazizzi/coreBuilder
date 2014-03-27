@@ -22,24 +22,6 @@
           <option value="Ltx2_III_2">Ltx2_III_2</option>
           <option value="Ktx6_III_2">Ktx6_III_2</option>
           <option value="D_ptx2_III_2">D_ptx2_III_2</option>
-          <!--<option value="C_07_Autograph_Dialogtexte">C_07_Autograph_Dialogtexte</option>
-          <option value="C_07_Erstdruck_Arien">C_07_Erstdruck_Arien</option>
-          <option value="C_07_Handexemplar">C_07_Handexemplar</option>
-          <option value="C_07_Kind_Ausgabe_letzter_Hand">C_07_Kind_Ausgabe_letzter_Hand</option>
-          <option value="C_07_Kind_Autograph">C_07_Kind_Autograph</option>
-          <option value="C_07_Kind_Druck_1821_1822">C_07_Kind_Druck_1821_1822</option>
-          <option value="C_07_Kind_Druck_1822">C_07_Kind_Druck_1822</option>
-          <option value="C_07_Kind_Druck_1823">C_07_Kind_Druck_1823</option>
-          <option value="C_07_Kind_Druck_1827">C_07_Kind_Druck_1827</option>
-          <option value="C_07_Kind_Theaterschriften">C_07_Kind_Theaterschriften</option>
-          <option value="C_07_Kind_VD1_Penelope">C_07_Kind_VD1_Penelope</option>
-          <option value="C_07_Kind_VD2_1821">C_07_Kind_VD2_1821</option>
-          <option value="C_07_Kopie_Berlin">C_07_Kopie_Berlin</option>
-          <option value="C_07_Kopie_Detmold">C_07_Kopie_Detmold</option>
-          <option value="C_07_Kopie_Gotha">C_07_Kopie_Gotha</option>
-          <option value="C_07_Kopie_Hamburg">C_07_Kopie_Hamburg</option>
-          <option value="C_07_Kopie_Wien2">C_07_Kopie_Wien2</option>
-          <option value="C_07_Kopie_Wien">C_07_Kopie_Wien</option>-->
         </select>
           <span class="btn btn-primary btn-file" id="uploadCore">
             Upload Core <input type="file">
@@ -70,12 +52,28 @@
 
   <!-- BACKBONE TEMPLATES -->
   <script type="text/template" id="editor-tpl">
-  <div>
-    <h3><%=source%></h3>
-    <div id="ed_<%=source%>" class="editor"></div>
-    <span class="label label-info">Selected Elements</span>
+  <div class="edit">
+    <div>
+      <div class="container-fluid">
+        <div class="row"> 
+          <div class="col-md-6 src-title"><%=source%></div>   
+          <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-default btn-md" data-toggle="button">
+              <span class="glyphicon glyphicon-pencil"></span> Edit
+            </button>
+            <button type="button" class="btn btn-default btn-md">
+              <span class="glyphicon glyphicon-cloud-upload"></span> Save to server
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div id="ed_<%=source%>" class="editor"></div>
+      <span class="label label-info">Selected Elements</span>
+    </div>
+    <div><button class="btn btn-xs btn-default pull-right add-empty">Add this source to the core as "empty"</button></div>
   </div>
-  <div><button class="btn btn-xs btn-default pull-right add-empty">Add this source to the core as "empty"</button></div>
   </script>
 
   <script type="text/template" id="selection-tpl">
@@ -106,8 +104,29 @@
   <script src="dist/coreBuilder.js"></script>
   <script type="text/javascript">
 
-    // UI
-    cb = new coreBuilder.App
+    // Get documents (eventually move this under a utils namespace)
+    url = "rest_tmp/texts.json";
+    // url = "http://freischuetz-digital.de/freidi-tools/rest/documents/texts/";
+    $.get(url, function (data) {
+      
+      resources = data.collection.resource;
+
+      sel = $("#sources select")
+
+      for (i=0; i<resources.length; i++) {
+        res = resources[i].name.slice(0, -4)
+        opt = $("<option/>");
+        opt.attr("value", res);
+        opt.text(res);
+
+        sel.append(opt);
+      }
+
+      // Start CoreBuilder UI
+      new coreBuilder.App({"data_url":"data"})
+      // new coreBuilder.App({"data_url":"http://freischuetz-digital.de/freidi-tools/rest/documents/texts"})
+
+    }, 'json')    
 
   </script>
 
