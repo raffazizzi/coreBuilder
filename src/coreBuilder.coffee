@@ -41,6 +41,9 @@ root.coreBuilder = {}
           # Start Core View on the same data
           fcv = new FullCoreView collection: coreBuilder.Data.Core
           $("#full").html fcv.$el
+          h = $(window).height() - 120
+          $("#full").css "height", h + 'px'
+
 
           entries.each (i,e) ->
             # The following won't work in IE. Replace with .html()?
@@ -50,22 +53,29 @@ root.coreBuilder = {}
               "entry" : string
               "formatted" : string
 
+            targets = {}
+
             $(e).find('rdg').each (i,r) ->
+
+              src = $(r).attr("wit")
               source = entry.sources.add 
-                "source" : $(r).attr("wit")
+                "source" : src
+
+              targets[src] = []              
 
               ptrs = $(r).find('ptr')
               if ptrs.length > 0
                 ptrs.each (i,p) ->
+                  trgt = $(p).attr("target")
                   source.selectionGroup.add
-                    "xmlid" : $(p).attr("target")
-                    # ident ?
-                    # pos ?
+                    "xmlid" : trgt
+
+                  targets[src].push trgt
+
               else
                 source.set "empty", true
 
-          # Highlight
-          Prism.highlightAll()
+              entry.set targets : targets
 
           # Show Full Core tab
           $('#tabs a[href="#full"]').tab('show')
@@ -74,7 +84,7 @@ root.coreBuilder = {}
 
       reader.readAsText(file,"UTF-8")
 
-  coreBuilder.Components.SourceSelector = (target) ->
+  coreBuilder.Components.SourceSelector = (target, data_url) ->
 
     $(target).multiselect
       buttonClass: 'btn'
@@ -84,7 +94,7 @@ root.coreBuilder = {}
       onChange: (opt, adding) ->
         source = $(opt).val()
         if adding
-          url = 'data/' + source + '.xml'
+          url = data_url + '/' + source + '.xml'
           source = coreBuilder.Data.Sources.add
             source: source
             url: url
@@ -382,7 +392,7 @@ root.coreBuilder = {}
       for r in @collection.models 
         if r.selectionGroup?.length > 0
           sel = $("<rdg>").attr
-            "wit" : r.get("source")
+            "wit" : '#' + r.get("source")
           if r.get("grouped") 
             if !grp?
               grp = $("<rdgGrp>") 
@@ -394,7 +404,7 @@ root.coreBuilder = {}
             # sel.text('<!-- empty -->') if p.get("empty")?
             if p.get("xmlid")?.length > 0
               ptr = $("<ptr>").attr
-                "target" : p.get("xmlid")
+                "target" : '#' + p.get("xmlid")
               sel.append ptr
       entry
 
@@ -441,12 +451,14 @@ root.coreBuilder = {}
 
         for sg in r.selectionGroup.models
           id = sg.get "xmlid"
-
+          check_id = if id.slice(0,1) != '#' then '#' + id else id
           attrs = @$el.find('.token.attr-name')
           for att in attrs
             if $(att).text() == 'target'
               target = $(att).next().contents().filter( -> @nodeType != 1)
-              if target.text() == id
+              if target.text() == check_id
+                if source.slice(0,1) == '#' then source = source.slice(1)
+                if id.slice(0,1) == '#' then id = id.slice(1)
                 target.wrap "<a href='#show/"+source+"/"+id+"''></a>"
       @
 
@@ -493,11 +505,14 @@ root.coreBuilder = {}
         targets = @model.get "targets"
         for source of targets
           for id in targets[source]
+            check_id = if id.slice(0,1) != '#' then '#' + id else id
             attrs = @$el.find('.token.attr-name')
             for att in attrs
               if $(att).text() == 'target'
                 target = $(att).next().contents().filter( -> @nodeType != 1)
-                if target.text() == id
+                if target.text() == check_id
+                  if source.slice(0,1) == '#' then source = source.slice(1)
+                  if id.slice(0,1) == '#' then id = id.slice(1)
                   target.wrap "<a href='#show/"+source+"/"+id+"''></a>"
 
       if @model.sources.length > 0
@@ -518,16 +533,16 @@ root.coreBuilder = {}
     events:
       "click #downloadCore": "download"
 
-    initialize: ->
+    initialize: (options) ->
       # Start history and routers
       Backbone.history.start()
       new coreBuilder.Routers.GoToEditor
 
       # Bind UI components
-      coreBuilder.Components.SourceSelector '.sel-sources'
+      coreBuilder.Components.SourceSelector '.sel-sources', options["data_url"]
       coreBuilder.Components.FileUploader '#uploadCore'
       coreBuilder.Components.CoreTabs '#tabs'
-      
+
       # Start Sources View
       new SourcesView collection: coreBuilder.Data.Sources
       # Start Core Entry View on the same data
@@ -535,6 +550,8 @@ root.coreBuilder = {}
       # Start Core View on the same data
       fcv = new FullCoreView collection: coreBuilder.Data.Core
       $("#full").html fcv.$el
+      h = $(window).height() - 120
+      $("#full").css "height", h + 'px'
 
       @render()
 
