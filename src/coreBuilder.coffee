@@ -90,13 +90,14 @@ root.coreBuilder = {}
       buttonClass: 'btn'
       buttonWidth: 'auto'
       buttonContainer: '<div class="btn-group" />'
-      maxHeight: false
+      maxHeight: 250
       onChange: (opt, adding) ->
         source = $(opt).val()
+        escaped_src = source.replace(/[\?=\.]/g, '_')
         if adding
-          url = data_url + '/' + source + '.xml'
-          source = coreBuilder.Data.Sources.add
-            source: source
+          url = data_url + '/' + source
+          source = coreBuilder.Data.Sources.add 
+            source: escaped_src
             url: url
           $.get(url, (data) ->
             parser = new DOMParser() 
@@ -108,8 +109,8 @@ root.coreBuilder = {}
             # so that the model can be mapped to a template in the view.
           , 'text')
         else
-          s = coreBuilder.Data.Sources.get source
-          coreBuilder.Data.Sources.remove source
+          s = coreBuilder.Data.Sources.get escaped_src
+          coreBuilder.Data.Sources.remove escaped_src
           # Triggering destroy manually to remove view
           s.trigger 'destroy'
           s = null
@@ -165,9 +166,13 @@ root.coreBuilder = {}
       ed = $("#ed_"+s)
 
       if !ed.get(0)?
+        ## FIX ME
+        fixeds = s.replace '_xml', '.xml'
+        fixeds = fixeds.replace '_id_', '?id='
+        console.log fixeds
         for sel in $('.sel-sources option')
-          if $(sel).text() == s
-            $('.sel-sources').multiselect('select', s)
+          if $(sel).val() == fixeds
+            $('.sel-sources').multiselect('select', fixeds)
             setTimeout move, 100
       else
         move()
