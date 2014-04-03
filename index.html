@@ -18,10 +18,10 @@
       
       <div id="sources" class="panel">
         <select class="sel-sources" multiple="multiple">
-          <option value="KAtx4_III_2">KAtx4_III_2</option>
+          <!-- <option value="KAtx4_III_2">KAtx4_III_2</option>
           <option value="Ltx2_III_2">Ltx2_III_2</option>
           <option value="Ktx6_III_2">Ktx6_III_2</option>
-          <option value="D_ptx2_III_2">D_ptx2_III_2</option>
+          <option value="D_ptx2_III_2">D_ptx2_III_2</option> -->
         </select>
           <span class="btn btn-primary btn-file" id="uploadCore">
             Upload Core <input type="file">
@@ -49,6 +49,14 @@
         <div class="tab-pane" id="full"></div>
     </div>
   </div>
+
+  <!-- <div class="modal fade" id="opensources" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        
+      </div>
+    </div>
+  </div> -->
 
   <!-- BACKBONE TEMPLATES -->
   <script type="text/template" id="editor-tpl">
@@ -98,6 +106,16 @@
       </div>
   </script>
 
+  <script type="text/template" id="modal-sources">
+      <div class="checkbox">
+        <% _.each(scenes, function(s) { %>  
+          <label>
+            <input type="checkbox"> <%=s%>
+          </label>
+        <% }); %>
+      </div>
+  </script>
+
   <script type="text/template" id="entry-tpl"><button type="button" class="close">&times;</button><code class="language-markup"><%=escaped_xml%></code></script>
 
   
@@ -105,26 +123,36 @@
   <script type="text/javascript">
 
     // Get documents (eventually move this under a utils namespace)
-    url = "rest_tmp/texts.json";
-    // url = "http://freischuetz-digital.de/freidi-tools/rest/documents/texts/";
+    // url = "rest_tmp/sources.json";
+    url = "http://freischuetz-digital.de/freidi-tools/rest/documents/texts/";
     $.get(url, function (data) {
-      
-      resources = data.collection.resource;
 
       sel = $("#sources select")
 
-      for (i=0; i<resources.length; i++) {
-        res = resources[i].name.slice(0, -4)
-        opt = $("<option/>");
-        opt.attr("value", res);
-        opt.text(res);
+      for (i=0; i<data.length; i++){
+        label = data[i].source.slice(0, -4)
 
-        sel.append(opt);
+        if (data[i].scenes.length > 0){          
+          for (j=0; j<data[i].scenes.length; j++){   
+            opt = $("<option/>");         
+            scene = data[i].source + '?id=' + data[i].scenes[j].id
+            opt.attr("value", scene);
+            opt.text(label + " Act " + data[i].scenes[j].act + " Scene " + data[i].scenes[j].n);
+            sel.append(opt);
+            console.log(scene)            
+          }
+        }
+        else {
+          opt = $("<option/>");   
+          opt.attr("value", data[i].source);
+          opt.text(label);
+          sel.append(opt);
+        }        
       }
 
       // Start CoreBuilder UI
-      new coreBuilder.App({"data_url":"data"})
-      // new coreBuilder.App({"data_url":"http://freischuetz-digital.de/freidi-tools/rest/documents/texts"})
+      // new coreBuilder.App({"data_url":"data"})
+      new coreBuilder.App({"data_url":"http://freischuetz-digital.de/freidi-tools/rest/documents/texts"})
 
     }, 'json')    
 
