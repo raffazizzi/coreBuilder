@@ -558,7 +558,7 @@ root.coreBuilder = {}
     download: ->
       xml = "<core>"
       coreBuilder.Data.Core.each (e,i) ->
-        xml += e.get("entry")
+        xml += "<app>" + e.get("entry").html() + "</app>"
       xml += "</core>"
 
       bb = new Blob [xml], "type":"text\/xml"

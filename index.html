@@ -106,7 +106,7 @@
 
     // Get documents (eventually move this under a utils namespace)
     url = "rest_tmp/texts.json";
-    // url = "http://freischuetz-digital.de/freidi-tools/rest/documents/texts/";
+    // url = "getScenes.xql";
     $.get(url, function (data) {
       
       resources = data.collection.resource;
@@ -124,7 +124,7 @@
 
       // Start CoreBuilder UI
       new coreBuilder.App({"data_url":"data"})
-      // new coreBuilder.App({"data_url":"http://freischuetz-digital.de/freidi-tools/rest/documents/texts"})
+      // new coreBuilder.App({"data_url":"/freidi-tools/rest/documents/texts"})
 
     }, 'json')    
 
