@@ -169,7 +169,6 @@ root.coreBuilder = {}
         ## FIX ME
         fixeds = s.replace '_xml', '.xml'
         fixeds = fixeds.replace '_id_', '?id='
-        console.log fixeds
         for sel in $('.sel-sources option')
           if $(sel).val() == fixeds
             $('.sel-sources').multiselect('select', fixeds)
@@ -380,7 +379,8 @@ root.coreBuilder = {}
 
       entry = coreBuilder.Data.Core.add
         "entry" : @toDOM()
-        "formatted" : @toXMLString()
+        "formatted" : @toXMLString(true)
+        "output" : @toXMLString(false)
         "targets" : targets
 
       entry.sources = @collection
@@ -413,10 +413,12 @@ root.coreBuilder = {}
               sel.append ptr
       entry
 
-    toXMLString: ->
+    toXMLString: (escape) ->
       xml_string = vkbeautify.xml(@toDOM().wrap('<s>').parent().html())
-      xml_string = xml_string.replace(/</g, '&lt;')
-      xml_string = xml_string.replace(/>/g, '&gt;')
+      if escape
+        xml_string = xml_string.replace(/</g, '&lt;')
+        xml_string = xml_string.replace(/>/g, '&gt;')
+      xml_string
 
     initialize: ->
       @listenTo @collection, 'add', @addOne
@@ -443,7 +445,7 @@ root.coreBuilder = {}
           sources.push r.get("source")
 
       @$el.html @template
-        xml_string : @toXMLString()
+        xml_string : @toXMLString(true)
         sources : sources
 
       # Highlight
@@ -563,7 +565,7 @@ root.coreBuilder = {}
     download: ->
       xml = "<core>"
       coreBuilder.Data.Core.each (e,i) ->
-        xml += e.get("entry")
+        xml += e.get("output")
       xml += "</core>"
 
       bb = new Blob [xml], "type":"text\/xml"
