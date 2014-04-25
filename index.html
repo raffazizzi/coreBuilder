@@ -64,7 +64,10 @@
     <div>
       <div class="container-fluid">
         <div class="row"> 
-          <div class="col-md-6 src-title"><%=source%></div>   
+          <div class="col-md-6 src-title">
+            <span class="glyphicon glyphicon-magnet grouping"></span>
+            <%=source%>
+          </div>   
           <div class="col-md-6 text-right">
             <button type="button" class="btn btn-default btn-md" data-toggle="button">
               <span class="glyphicon glyphicon-pencil"></span> Edit
@@ -93,9 +96,6 @@
       <div class="pull-right">
         <button type="button" id="entry_cancel" class="btn btn-danger">
           <span class="glyphicon glyphicon-trash"></span> Cancel
-        </button>
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          Group Selections <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu" id="entry_group">
           <% _.each(sources, function(s) { %>  <li><a href="#" data-source="<%= s %>"><%= s %></a></li> <% }); %>
@@ -138,8 +138,7 @@
             scene = data[i].source + '?id=' + data[i].scenes[j].id
             opt.attr("value", scene);
             opt.text(label + " Act " + data[i].scenes[j].act + " Scene " + data[i].scenes[j].n);
-            sel.append(opt);
-            console.log(scene)            
+            sel.append(opt);           
           }
         }
         else {
