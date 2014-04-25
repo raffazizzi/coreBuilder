@@ -247,7 +247,8 @@ root.coreBuilder = {}
     removeOne: =>
       @model.collection.remove @model.id, silent:false
 
-    render: ->
+    render: =>
+
       if !@model.get("empty")?
         @$el.addClass 'badge'
         id = 'sel_' + @model.id.replace(/\"/g, "")
@@ -260,13 +261,25 @@ root.coreBuilder = {}
     template: _.template $('#editor-tpl').html()
 
     initialize: ->
-      @listenTo @model, 'change', @render
+      @listenToOnce @model, 'change', @render
       @listenTo @model, 'destroy', @remove
+
+      @listenTo @model, "change:group", ->      
+        grpBtn = @$el.find('.grouping')
+        if @model.get("group")?
+          grpBtn.css
+            "background-color" : "#5bc0de" 
+          grpBtn.prepend " <span class='_grouping'>In group <strong>#{@model.get("group")}</strong> </span>" 
+        else
+          grpBtn.css
+            "background-color" : "transparent"
+          grpBtn.find('._grouping').remove()
 
     tagName: 'div'
 
     events:
       "click .add-empty" : "addEmpty"
+      "click .grouping" : "bindGrouping"
 
     addEmpty: (e) ->
       # Flush existing selections
@@ -278,6 +291,36 @@ root.coreBuilder = {}
       @listenTo @model.selectionGroup, 'remove', (m) ->
         if m.get('empty')?
           $(e.target).removeClass "disabled"
+
+    bindGrouping: (e) ->
+      e.stopPropagation()
+
+      getLatestGroup = =>
+        groups = []
+        @model.collection.each (sel) ->
+          g = sel.get("group")
+          groups.push(g) if g? 
+        if groups.length == 0
+          groups = [0]
+        Math.max.apply @, groups
+
+      if e.ctrlKey          
+        if @model.get("group")?
+          grp = @model.get("group")
+          @model.set "group", undefined
+          console.log "removed from group", grp
+        else if getLatestGroup() > 0
+          @model.set "group", getLatestGroup()
+          console.log "added to group", getLatestGroup()
+        else
+         console.log 'not grouped, right click will do nothing'
+
+      else
+        if !@model.get("group")?
+          console.log 'start grp', getLatestGroup()+1
+          @model.set "group", getLatestGroup()+1
+        else
+          console.log 'already grouped, do nothing'
 
     bindSelect: ->
 
@@ -324,13 +367,12 @@ root.coreBuilder = {}
             popup.remove()
 
     render: ->
-      $el = $(@el)
 
-      $el.html @template(@model.toJSON())
+      @$el.html @template(@model.toJSON())
 
       # Need to append the element to the DOM here
       # so that ace can be initialized.
-      $("#editors").append $el
+      $("#editors").append @$el
 
       @editor = ace.edit "ed_" + @model.get("source")
       @editor.setReadOnly(true)
@@ -341,7 +383,7 @@ root.coreBuilder = {}
 
       @bindSelect()
 
-      $el.append(new SelectionGroupView({collection : @model.selectionGroup}).el)
+      @$el.append(new SelectionGroupView({collection : @model.selectionGroup}).el)
 
     remove: ->
       @editor.destroy() # Not sure whether this actually does anything
@@ -366,7 +408,6 @@ root.coreBuilder = {}
     events: 
       "click #entry_add"     : "addEntry"
       "click #entry_cancel"  : "remove"
-      "click #entry_group li": "group"
 
     addEntry: ->
       
@@ -392,17 +433,18 @@ root.coreBuilder = {}
       window.setTimeout (-> $(msg).alert('close')), 500
 
     toDOM: ->
-      grp = null
+      grps = {}
       entry = $("<app>")
       for r in @collection.models 
         if r.selectionGroup?.length > 0
           sel = $("<rdg>").attr
             "wit" : '#' + r.get("source")
-          if r.get("grouped") 
-            if !grp?
-              grp = $("<rdgGrp>") 
-              entry.append grp
-            grp.append sel
+          if r.get("group")
+            grpNum = r.get("group")
+            if grpNum of grps
+              grps[grpNum].push(sel)
+            else
+              grps[grpNum] = [sel]
           else
             entry.append sel
           for p in r.selectionGroup.models
@@ -411,6 +453,12 @@ root.coreBuilder = {}
               ptr = $("<ptr>").attr
                 "target" : '#' + p.get("xmlid")
               sel.append ptr
+      
+      for k of grps
+        grp = $("<rdgGrp>")
+        for g in grps[k] 
+          entry.append grp
+          grp.append g
       entry
 
     toXMLString: (escape) ->
@@ -424,17 +472,10 @@ root.coreBuilder = {}
       @listenTo @collection, 'add', @addOne
       @
 
-    group: (e) ->
-      source = $(e.target).data().source
-      model = @collection.find (m) ->
-        m.get("source") == source
-      model.set
-          "grouped" : true
-      @render()
-
     addOne: (model) ->
       @listenTo model.selectionGroup, 'add', @render
       @listenTo model.selectionGroup, 'remove', @render
+      @listenTo model, 'change', @render
       @
 
     render: ->
@@ -444,34 +485,34 @@ root.coreBuilder = {}
         if r.selectionGroup?.length > 0
           sources.push r.get("source")
 
-      @$el.html @template
-        xml_string : @toXMLString(true)
-        sources : sources
+      if sources.length > 0
+        @$el.html @template
+          xml_string : @toXMLString(true)
+          sources : sources
 
-      # Highlight
-      Prism.highlightElement(@$el.find('code')[0])
+        # Highlight
+        Prism.highlightElement(@$el.find('code')[0])
 
-      # Link targets
-      for r in @collection.models
+        # Link targets
+        for r in @collection.models
 
-        source = r.get("source")
+          source = r.get("source")
 
-        for sg in r.selectionGroup.models
-          id = sg.get "xmlid"
-          check_id = if id.slice(0,1) != '#' then '#' + id else id
-          attrs = @$el.find('.token.attr-name')
-          for att in attrs
-            if $(att).text() == 'target'
-              target = $(att).next().contents().filter( -> @nodeType != 1)
-              if target.text() == check_id
-                if source.slice(0,1) == '#' then source = source.slice(1)
-                if id.slice(0,1) == '#' then id = id.slice(1)
-                target.wrap "<a href='#show/"+source+"/"+id+"''></a>"
+          for sg in r.selectionGroup.models
+            id = sg.get "xmlid"
+            check_id = if id?.slice(0,1) != '#' then '#' + id else id
+            attrs = @$el.find('.token.attr-name')
+            for att in attrs
+              if $(att).text() == 'target'
+                target = $(att).next().contents().filter( -> @nodeType != 1)
+                if target.text() == check_id
+                  if source.slice(0,1) == '#' then source = source.slice(1)
+                  if id.slice(0,1) == '#' then id = id.slice(1)
+                  target.wrap "<a href='#show/"+source+"/"+id+"''></a>"
       @
 
     remove: ->
       @collection.each (c) ->
-        if c.get('grouped') then c.set 'grouped', false
         c.selectionGroup.each (s) ->
           c.selectionGroup.remove s
       @$el.empty()
