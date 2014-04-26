@@ -42,7 +42,7 @@ root.coreBuilder = {}
           fcv = new FullCoreView collection: coreBuilder.Data.Core
           $("#full").html fcv.$el
           h = $(window).height() - 120
-          $("#full").css "height", h + 'px'
+          $("#corexml").css "height", h + 'px'
 
 
           entries.each (i,e) ->
@@ -599,7 +599,7 @@ root.coreBuilder = {}
       fcv = new FullCoreView collection: coreBuilder.Data.Core
       $("#full").html fcv.$el
       h = $(window).height() - 120
-      $("#full").css "height", h + 'px'
+      $("#corexml").css "height", h + 'px'
 
       @render()
 
