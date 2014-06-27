@@ -267,26 +267,10 @@ root.coreBuilder = {}
       @listenToOnce @model, 'change', @render
       @listenTo @model, 'destroy', @remove
 
-      @listenTo @model.collection, "coll:change:group", ->   
-
-        @$el.find('._group').remove()
-
-        if !@model.get("group")?
-          groups = []
-          @model.collection.each (sel) =>
-            g = sel.get("group")
-            groups.push(g) if g? and g not in groups
-          for gr in groups
-            li = $("<li class='_group' data-groupno='#{gr}'><a href='#'>Add to group #{gr}</a></li>")
-            @bindGrouping li, gr
-            @$el.find('.groupingmenu').append(li) if gr? 
-
     tagName: 'div'
 
     events:
       "click .add-empty" : "addEmpty"
-      "click .newGroup" : "newGroup"
-      "click .removeFromGroup" : "removeFromGroup"
 
     addEmpty: (e) ->
       # Flush existing selections
@@ -298,61 +282,6 @@ root.coreBuilder = {}
       @listenTo @model.selectionGroup, 'remove', (m) ->
         if m.get('empty')?
           $(e.target).removeClass "disabled"
-
-    # getLatestGroup = ->
-    #   groups = []
-    #   @model.collection.each (sel) ->
-    #     g = sel.get("group")
-    #     groups.push(g) if g? 
-    #   if groups.length == 0
-    #     groups = [0]
-    #   Math.max.apply @, groups
-
-    newGroup: (e) ->
-      e.stopPropagation()
-
-      # latestGroup = getLatestGroup() || 0
-
-      groups = []
-      @model.collection.each (sel) ->
-        g = sel.get("group")
-        groups.push(g) if g? 
-      if groups.length == 0
-        groups = [0]
-      latestGroup = Math.max.apply @, groups
-
-      @model.set "group", latestGroup + 1
-      @$el.find(".newGroup").addClass('hidden')
-      @$el.find(".removeFromGroup").removeClass('hidden')
-
-      @model.collection.trigger("coll:change:group")
-
-      console.log "added to new group", latestGroup + 1
-
-    removeFromGroup: (e) ->
-      e.stopPropagation()
-
-      console.log "removed from group", @model.get("group")
-
-      @model.set "group", undefined
-      @$el.find(".newGroup").removeClass('hidden')
-      @$el.find(".removeFromGroup").addClass('hidden')
-
-      @model.collection.trigger("coll:change:group")
-
-    bindGrouping: (li, g) ->
-
-      li.find("a").click (e) =>
-        e.stopPropagation()
-
-        @model.set "group", g
-
-        @$el.find(".newGroup").addClass('hidden')
-        @$el.find(".removeFromGroup").removeClass('hidden')
-
-        console.log 'added to group', g
-
-        @model.collection.trigger("coll:change:group")
 
     bindSelect: ->
 
@@ -416,10 +345,79 @@ root.coreBuilder = {}
 
       @$el.append(new SelectionGroupView({collection : @model.selectionGroup}).el)
 
+      (new GroupingView
+        model: @model
+        el: @$el.find('.groupingView')
+      ).render()
+
     remove: ->
       @editor.destroy() # Not sure whether this actually does anything
       $(@el).empty().remove()
       @
+
+
+  class GroupingView extends Backbone.View
+
+    template: _.template $('#grouping-tpl').html()
+
+    events:
+      "click .add-empty" : "addEmpty"
+      "click .newGroup" : "newGroup"
+      "click .removeFromGroup" : "removeFromGroup"
+      "click ._group" : "addToGroup"
+
+    initialize: ->
+      @listenTo @model.collection, "change", =>
+        @render()
+
+    newGroup: (e) ->
+      e.preventDefault()
+      e.stopPropagation()
+
+      groups = []
+      @model.collection.each (sel) ->
+        g = sel.get("group")
+        groups.push(g) if g? 
+      if groups.length == 0
+        groups = [0]
+      latestGroup = Math.max.apply @, groups
+
+      @model.set "group", latestGroup + 1
+
+      console.log "added to new group", latestGroup + 1
+
+      @model.collection.trigger "coll:change"
+
+    removeFromGroup: (e) ->
+      e.preventDefault()
+      e.stopPropagation()
+
+      console.log "removed from group", @model.get("group")
+
+      @model.set "group", undefined
+
+    addToGroup: (e) ->
+      e.preventDefault()
+      e.stopPropagation()
+
+      g = $(e.target).data("group")
+
+      @model.set "group", g
+      console.log 'added to group', g
+
+    render: ->
+
+      groups = []
+      @model.collection.each (sel) ->
+        g = sel.get("group")
+        groups.push(g) if g? and g not in groups
+
+      adjustedModel = @model.toJSON()
+      adjustedModel["groups"] = groups
+      adjustedModel["start"] = if @model.get("group")? then false else true
+      adjustedModel["remove"] = !adjustedModel.start
+
+      @$el.html @template(adjustedModel)
 
 
   class SourcesView extends Backbone.View

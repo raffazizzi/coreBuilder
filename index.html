@@ -64,16 +64,8 @@
     <div>
       <div class="container-fluid">
         <div class="row"> 
-          <div class="col-md-1">
-            <div class="btn-group pull-left">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <span class="glyphicon glyphicon-magnet grouping"></span>&nbsp;<span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu groupingmenu">
-                <li><a href="#" class="newGroup">Start new group</a></li>
-                <li><a href="#" class="removeFromGroup hidden">Remove from group</a></li>
-              </ul>
-            </div>
+          <div class="col-md-1 groupingView">
+
           </div>   
           <div class="col-md-5 src-title">
             <%=source%>
@@ -89,12 +81,29 @@
         </div>
       </div>
       
-      
       <div id="ed_<%=source%>" class="editor"></div>
       <span class="label label-info">Selected Elements</span>
     </div>
     <div><button class="btn btn-xs btn-default pull-right add-empty">Add this source to the core as "empty"</button></div>
   </div>
+  </script>
+
+  <script type="text/template" id="grouping-tpl">
+    <div class="btn-group pull-left">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <span class="glyphicon glyphicon-magnet grouping"></span>&nbsp;<span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu groupingmenu">
+        <% if (start) { %>
+          <li><a href="#" class="newGroup">Start new group</a></li>
+          <% _.each(groups, function(g) { %>
+            <li class='_group'><a href='#' data-group='<%=g%>'>Add to group <%=g%></a></li>
+          <% }); %>
+        <%} if (remove) { %>
+          <li><a href="#" class="removeFromGroup">Remove from group</a></li>
+        <%}%>
+      </ul>
+    </div>
   </script>
 
   <script type="text/template" id="selection-tpl">
