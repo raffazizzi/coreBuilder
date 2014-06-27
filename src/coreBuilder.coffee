@@ -187,6 +187,9 @@ root.coreBuilder = {}
   class Source extends Backbone.Model
     idAttribute : "source"
 
+    defaults : 
+      "group" : undefined
+
     # Using initialize instead of defaults for nested collections
     # is recommended by the Backbone FAQs:
     # http://documentcloud.github.io/backbone/#FAQ-nested
@@ -264,22 +267,26 @@ root.coreBuilder = {}
       @listenToOnce @model, 'change', @render
       @listenTo @model, 'destroy', @remove
 
-      @listenTo @model, "change:group", ->      
-        grpBtn = @$el.find('.grouping')
-        if @model.get("group")?
-          grpBtn.css
-            "background-color" : "#5bc0de" 
-          grpBtn.prepend " <span class='_grouping'>In group <strong>#{@model.get("group")}</strong> </span>" 
-        else
-          grpBtn.css
-            "background-color" : "transparent"
-          grpBtn.find('._grouping').remove()
+      @listenTo @model.collection, "coll:change:group", ->   
+
+        @$el.find('._group').remove()
+
+        if !@model.get("group")?
+          groups = []
+          @model.collection.each (sel) =>
+            g = sel.get("group")
+            groups.push(g) if g? and g not in groups
+          for gr in groups
+            li = $("<li class='_group' data-groupno='#{gr}'><a href='#'>Add to group #{gr}</a></li>")
+            @bindGrouping li, gr
+            @$el.find('.groupingmenu').append(li) if gr? 
 
     tagName: 'div'
 
     events:
       "click .add-empty" : "addEmpty"
-      "click .grouping" : "bindGrouping"
+      "click .newGroup" : "newGroup"
+      "click .removeFromGroup" : "removeFromGroup"
 
     addEmpty: (e) ->
       # Flush existing selections
@@ -292,35 +299,60 @@ root.coreBuilder = {}
         if m.get('empty')?
           $(e.target).removeClass "disabled"
 
-    bindGrouping: (e) ->
+    # getLatestGroup = ->
+    #   groups = []
+    #   @model.collection.each (sel) ->
+    #     g = sel.get("group")
+    #     groups.push(g) if g? 
+    #   if groups.length == 0
+    #     groups = [0]
+    #   Math.max.apply @, groups
+
+    newGroup: (e) ->
       e.stopPropagation()
 
-      getLatestGroup = =>
-        groups = []
-        @model.collection.each (sel) ->
-          g = sel.get("group")
-          groups.push(g) if g? 
-        if groups.length == 0
-          groups = [0]
-        Math.max.apply @, groups
+      # latestGroup = getLatestGroup() || 0
 
-      if e.ctrlKey          
-        if @model.get("group")?
-          grp = @model.get("group")
-          @model.set "group", undefined
-          console.log "removed from group", grp
-        else if getLatestGroup() > 0
-          @model.set "group", getLatestGroup()
-          console.log "added to group", getLatestGroup()
-        else
-         console.log 'not grouped, right click will do nothing'
+      groups = []
+      @model.collection.each (sel) ->
+        g = sel.get("group")
+        groups.push(g) if g? 
+      if groups.length == 0
+        groups = [0]
+      latestGroup = Math.max.apply @, groups
 
-      else
-        if !@model.get("group")?
-          console.log 'start grp', getLatestGroup()+1
-          @model.set "group", getLatestGroup()+1
-        else
-          console.log 'already grouped, do nothing'
+      @model.set "group", latestGroup + 1
+      @$el.find(".newGroup").addClass('hidden')
+      @$el.find(".removeFromGroup").removeClass('hidden')
+
+      @model.collection.trigger("coll:change:group")
+
+      console.log "added to new group", latestGroup + 1
+
+    removeFromGroup: (e) ->
+      e.stopPropagation()
+
+      console.log "removed from group", @model.get("group")
+
+      @model.set "group", undefined
+      @$el.find(".newGroup").removeClass('hidden')
+      @$el.find(".removeFromGroup").addClass('hidden')
+
+      @model.collection.trigger("coll:change:group")
+
+    bindGrouping: (li, g) ->
+
+      li.find("a").click (e) =>
+        e.stopPropagation()
+
+        @model.set "group", g
+
+        @$el.find(".newGroup").addClass('hidden')
+        @$el.find(".removeFromGroup").removeClass('hidden')
+
+        console.log 'added to group', g
+
+        @model.collection.trigger("coll:change:group")
 
     bindSelect: ->
 
@@ -367,7 +399,6 @@ root.coreBuilder = {}
             popup.remove()
 
     render: ->
-
       @$el.html @template(@model.toJSON())
 
       # Need to append the element to the DOM here
@@ -456,6 +487,7 @@ root.coreBuilder = {}
       
       for k of grps
         grp = $("<rdgGrp>")
+        grp.attr("n", k)
         for g in grps[k] 
           entry.append grp
           grp.append g

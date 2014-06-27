@@ -57,17 +57,27 @@
       </div>
     </div>
   </div> -->
-
+  <!-- <span class="glyphicon glyphicon-magnet grouping"></span> -->
   <!-- BACKBONE TEMPLATES -->
   <script type="text/template" id="editor-tpl">
   <div class="edit">
     <div>
       <div class="container-fluid">
         <div class="row"> 
-          <div class="col-md-6 src-title">
-            <span class="glyphicon glyphicon-magnet grouping"></span>
-            <%=source%>
+          <div class="col-md-1">
+            <div class="btn-group pull-left">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-magnet grouping"></span>&nbsp;<span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu groupingmenu">
+                <li><a href="#" class="newGroup">Start new group</a></li>
+                <li><a href="#" class="removeFromGroup hidden">Remove from group</a></li>
+              </ul>
+            </div>
           </div>   
+          <div class="col-md-5 src-title">
+            <%=source%>
+          </div>
           <div class="col-md-6 text-right">
             <button type="button" class="btn btn-default btn-md" data-toggle="button">
               <span class="glyphicon glyphicon-pencil"></span> Edit
@@ -123,8 +133,8 @@
   <script type="text/javascript">
 
     // Get documents (eventually move this under a utils namespace)
-    // url = "rest_tmp/sources.json";
-    url = "http://freischuetz-digital.de/freidi-tools/rest/documents/texts/";
+    url = "rest_tmp/sources.json";
+    // url = "http://freischuetz-digital.de/freidi-tools/rest/documents/texts/";
     $.get(url, function (data) {
 
       sel = $("#sources select")
@@ -150,8 +160,8 @@
       }
 
       // Start CoreBuilder UI
-      // new coreBuilder.App({"data_url":"data"})
-      new coreBuilder.App({"data_url":"http://freischuetz-digital.de/freidi-tools/rest/documents/texts"})
+      new coreBuilder.App({"data_url":"data"})
+      // new coreBuilder.App({"data_url":"http://freischuetz-digital.de/freidi-tools/rest/documents/texts"})
 
     }, 'json')    
 
