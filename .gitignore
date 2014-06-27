@@ -1,1 +1,8 @@
 .DS_Store
+dist
+data
+fonts
+node_modules
+rest_tmp
+css
+bower_components
