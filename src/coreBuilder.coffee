@@ -584,7 +584,7 @@ root.coreBuilder = {}
         targets = @model.get "targets"
         for source of targets
           for id in targets[source]
-            check_id = if id.slice(0,1) != '#' then '#' + id else id
+            check_id = if id?.slice(0,1) != '#' then '#' + id else id
             attrs = @$el.find('.token.attr-name')
             for att in attrs
               if $(att).text() == 'target'
