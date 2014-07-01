@@ -446,6 +446,7 @@ root.coreBuilder = {}
         targets[source] = []
         for sg in r.selectionGroup.models
           targets[source].push sg.get("xmlid")
+        r.set "group", undefined
 
       entry = coreBuilder.Data.Core.add
         "entry" : @toDOM()
