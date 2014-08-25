@@ -58,7 +58,7 @@ module.exports = (grunt) ->
           separator: "\n"
         src: ['bower_components/jquery/jquery.min.js', 
               'bower_components/underscore/underscore-min.js', 
-              'bower_components/backbone/backbone-min.js',
+              'bower_components/backbone/backbone.js',
               'bower_components/bootstrap/dist/js/bootstrap.min.js',
               'bower_components/bootstrap/js/tabs.js',
               'bower_components/bootstrap-multiselect/js/bootstrap-multiselect.js',
