@@ -294,13 +294,14 @@ root.coreBuilder = {}
         pos = @editor.getCursorPosition()
         token = @editor.session.getTokenAt(pos.row, pos.column)
         tokenRow = @editor.session.getTokens pos.row
+        
         if token?
           switch
-            when token.type == "entity.other.attribute-name" and token.value == 'xml:id'
+            when token.type == "entity.other.attribute-name.xml" and token.value == 'xml:id'
               # lookup id string (two tokens forward)
               xmlid = tokenRow[token.index+2].value.replace
               xmlid = xmlid.replace(/['"]/g, "")
-            when token.type == "string" and tokenRow[token.index-2].value == 'xml:id'
+            when token.type == "string.attribute-value.xml" and tokenRow[token.index-2].value == 'xml:id'
               # check this is an xml:id attribute vaule (two tokens back)
               xmlid = token.value
               xmlid = xmlid.replace(/["']/g, "")
