@@ -36,15 +36,6 @@ root.coreBuilder = {}
           XMLCore = parser.parseFromString e.target.result, "text/xml"
           entries = $(XMLCore).find('app')
 
-          # Start Core Entry View on the same data
-          new CoreEntryView collection: coreBuilder.Data.Sources
-          # Start Core View on the same data
-          fcv = new FullCoreView collection: coreBuilder.Data.Core
-          $("#full").html fcv.$el
-          h = $(window).height() - 120
-          $("#corexml").css "height", h + 'px'
-
-
           entries.each (i,e) ->
             # The following won't work in IE. Replace with .html()?
             string = (new XMLSerializer()).serializeToString(e)
@@ -78,7 +69,7 @@ root.coreBuilder = {}
 
               entry.set targets : targets
 
-              console.log entry
+              entry.trigger 'sync'
 
           # Show Full Core tab
           $('#tabs a[href="#full"]').tab('show')
@@ -443,7 +434,6 @@ root.coreBuilder = {}
       "click #entry_cancel"  : "remove"
 
     addEntry: ->
-      
       targets = {}
       for r in @collection.models 
         source = r.get("source")
@@ -457,8 +447,6 @@ root.coreBuilder = {}
         "formatted" : @toXMLString(true)
         "output" : @toXMLString(false)
         "targets" : targets
-
-      console.log entry
 
       entry.sources = @collection
       entry.trigger 'sync'
