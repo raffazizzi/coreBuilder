@@ -50,14 +50,15 @@ root.coreBuilder = {}
             string = (new XMLSerializer()).serializeToString(e)
 
             entry = coreBuilder.Data.Core.add
-              "entry" : string
-              "formatted" : string
+              "entry" : e
+              "output" : string
+              "formatted" : string.replace(/</g, "&lt;").replace(/>/g, "&gt;")
 
             targets = {}
 
             $(e).find('rdg').each (i,r) ->
 
-              src = $(r).attr("wit")
+              src = $(r).attr("wit").substring(1)
               source = entry.sources.add 
                 "source" : src
 
@@ -66,7 +67,7 @@ root.coreBuilder = {}
               ptrs = $(r).find('ptr')
               if ptrs.length > 0
                 ptrs.each (i,p) ->
-                  trgt = $(p).attr("target")
+                  trgt = $(p).attr("target").substring(1)
                   source.selectionGroup.add
                     "xmlid" : trgt
 
@@ -76,6 +77,8 @@ root.coreBuilder = {}
                 source.set "empty", true
 
               entry.set targets : targets
+
+              console.log entry
 
           # Show Full Core tab
           $('#tabs a[href="#full"]').tab('show')
@@ -454,6 +457,8 @@ root.coreBuilder = {}
         "formatted" : @toXMLString(true)
         "output" : @toXMLString(false)
         "targets" : targets
+
+      console.log entry
 
       entry.sources = @collection
       entry.trigger 'sync'
