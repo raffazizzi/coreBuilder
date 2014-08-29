@@ -8,8 +8,6 @@ To compile and run the code, try
 ```shell
 npm install
 bower install
-coffee -c Gruntfile.coffee
-grunt
 grunt build 
 grunt run
 ```
