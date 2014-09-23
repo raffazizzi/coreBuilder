@@ -71,7 +71,7 @@ module.exports = (grunt) ->
       ace:
         files: [{expand: true, cwd: 'bower_components/ace-builds/src-min/', src: ['**'], dest: 'dist/ace/'}]
       fonts:
-        files: [{expand: true, cwd: 'bower_components/bootstrap/fonts/', src: ['*'], dest: 'fonts/'}]
+        files: [{expand: true, cwd: 'bower_components/bootstrap/dist/fonts/', src: ['*'], dest: 'fonts/'}]
 
 
   # Task(s).
