@@ -537,7 +537,9 @@ root.coreBuilder = {}
       @
 
     remove: ->
+      console.log @collection
       @collection.each (c) ->
+        c.set("group", undefined)
         c.selectionGroup.each (s) ->
           c.selectionGroup.remove s
       @$el.empty()
