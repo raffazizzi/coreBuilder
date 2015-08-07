@@ -1,0 +1,13 @@
+{
+  "name": "vkbeautify",
+  "_cacheHeaders": {
+    "Last-Modified": "Thu, 23 Aug 2012 03:31:13 GMT",
+    "Content-Length": "10469",
+    "Content-Type": "text/plain; charset=us-ascii",
+    "Content-Disposition": "attachment; filename=\"vkbeautify.0.99.00.beta.js\""
+  },
+  "main": "index.js",
+  "_source": "http://vkbeautify.googlecode.com/files/vkbeautify.0.99.00.beta.js",
+  "_target": "*",
+  "_originalSource": "http://vkbeautify.googlecode.com/files/vkbeautify.0.99.00.beta.js"
+}

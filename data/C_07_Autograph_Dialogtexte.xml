@@ -1,0 +1,87 @@
+<?xml-model href="../../schema/freidi_libretto.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-stylesheet type="text/css" href="../../../../Freischu%CC%88tzsubversion/trunk/textData/css/KA-tx4.css"?><?xml-stylesheet type="text/css" href="../../../../Freischu%CC%88tzsubversion/trunk/textData/css/KA-tx4.css"?><?xml-stylesheet type="text/css" href="../../../../Freischu%CC%88tzsubversion/trunk/textData/css/A-pt_Probe.css"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>Der Freischütz</title>
+                <respStmt>
+                    <resp>Encoders</resp>
+                    <name xml:id="JV">Joachim Veit</name>
+                    <name xml:id="RV">Raffale Viglianti</name>
+                    <name xml:id="SS">Solveig Schreiter</name>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <p/>
+            </publicationStmt>
+            <sourceDesc>
+                <msDesc>
+                    <msIdentifier>
+                        <country>D</country>
+                        <settlement>Berlin</settlement>
+                        <repository n="D-B">Staatsbibliothek zu Berlin – Preußischer Kulturbesitz, Musikabteilung</repository>
+                        <idno/>
+                        <msName>Partiturautograph; Dialogtexte</msName>
+                    </msIdentifier>
+                </msDesc>
+            </sourceDesc>
+        </fileDesc>
+        <revisionDesc>
+            <change when="2014-03-13" who="SS">Datei eingerichtet</change>
+        </revisionDesc>
+    </teiHeader>
+    <text>
+        <pb n="25"/>
+        <body>
+            <div type="act" n="1">
+                <div type="scene" n="1">
+                    <lb/>
+                    <stage type="setting" rend="inline">/:<hi rend="underline" n="1">Platz vor einer Waldschenke, <seg>sogenanntem Schenkgiebel,/</seg> <name>
+                                <hi rend="underline" n="2">Max</hi>
+                            </name> sitzt allein 
+                        <lb/>im Vorgrunde an einem Tisch, vor sich den Krug, im Hintergrunde eine 
+                        <lb/>Vogelstange, von Volksgetümmel umgeben. Böhmische Bergmusik. In dem 
+                        <lb/>Augenblikke <seg>da der Vorhang</seg> aufgeht im <hi rend="underline" n="2">11<hi rend="superscript">t</hi> Takte</hi> fällt ein Schuß
+                        <pb n="26"/>und das letzte Stük einer Sternscheibe fliegt herunter. 
+                        <lb/>Das Volk ruft,</hi>
+                    </stage>
+                    <p rend="inline">ah, ah, brav, herrlich getroffen,</p>
+                    <stage rend="inline">
+                        <hi rend="underline" n="1">jubelt
+                        <lb/>und klatscht, <hi rend="underline" n="2">Max</hi>, bis jetzt die geballte Faust vor der
+                        <lb/>Stirn, schlägt damit heftig auf den Tisch</hi>:/</stage>
+                    <p rend="inline">Glück zu, 
+                        <lb/>Bauer!</p>
+                    <l>Victorja! Victorja! der Meister soll leben  der <pb n="27"/>wakker dem Sternlein den Rest hat gegeben, der wakker dem Sternlein den Rest hat gegeben, ihm gleichet kein Schütz’ von<pb n="28"/> fern und von nah! Victorja Victorja Victorja! ... </l>
+                    <pb n="30"/>
+                    <stage rend="inline">/:<hi rend="underline" n="1">Allgemeiner Jubel:/
+                    <lb/>/Die Stange wird
+                        <pb n="31"/>herabgelaßen</hi>:/ <hi rend="underline" n="2">Max</hi>
+                    </stage>
+                    <p rend="inline">Immer frisch! Schreit! schreit! – <stage rend="inline">
+                            <hi rend="underline" n="1">
+                                <w>stampft</w> mit der Büchse auf den Boden
+                            <lb/>und <w>lehnt</w> sie an einen Baum</hi>:/</stage> War ich denn blind? Sind die 
+                            <lb/>
+                        <w>Sennen</w> dieser Faust erschlafft? </p>
+                    <pb n="32"/>
+                    <stage rend="inline" type="business">/:Es <seg>ordnet sich</seg> ein Zug. Voran die <rs type="name">Musikanten</rs>, <w>diesen</w> Marsch spielend. Dann <rs type="name">Bauerknaben</rs>, die das 
+    <lb/>lezte Stük der Scheibe auf <seg>einem alten Degen</seg>, und mancherley Zinngeräth als Gewinn tragen. 
+                        <lb/>Hierauf <name>Kilian</name> als Schützen-König, <seg>mit gewaltigem Strauß</seg> und Ordensbande, worauf die von ihm
+               <lb/>getroffenen Sterne befestigt sind. <rs type="name">Schützen</rs> mit Büchsen, mehrere mit Sternen auf Mützen und Hüten, 
+    <lb/>
+                        <rs type="name">Weiber</rs> und <rs type="name">Mädchen</rs> folgen. Der Zug <seg>geht im Kreise herum</seg>, und alle, die bey <name>Max</name> vorbei kommen, deuten
+                    <pb n="33"/>höhnisch auf ihn, verneigen sich, flüstern und lachen. Zuletzt bleibt 
+                    <pb n="34"/>
+                        <name>Kilian</name> vor ihm stehen, wirft sich in die Brust und singt</stage>
+                    <pb n="35"/>
+                    <l>Schau’ der Herr mich an als König, dünkt ihm meine Macht zu wenig? </l>
+                    <pb n="36"/>
+                    <l>Gleich zieh’ er den Hut, Mosje!  Wird er, frag’ ich, He? he? he? ...</l>
+                    <pb n="40"/>
+                    <!-- hier weiter -->
+                </div>
+            </div>
+        </body>
+    </text>
+</TEI>

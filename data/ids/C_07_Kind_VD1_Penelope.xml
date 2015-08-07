@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-model href="../../schema/freidi_libretto.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-stylesheet type="text/css" href="../../../../Freischu%CC%88tzsubversion/trunk/textData/css/Kind_Druck_1821.css"?><TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>Der Freischütz</title>
+                <respStmt>
+                    <resp>Encoders</resp>
+                    <name xml:id="JV">Joachim Veit</name>
+                    <name xml:id="RV">Raffale Viglianti</name>
+                    <name xml:id="SS">Solveig Schreiter</name>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <p/>
+            </publicationStmt>
+            <sourceDesc>
+                <biblStruct>
+                    <monogr>
+                        <author>Theodor Hell</author>
+                        <title>Penelope. Taschenbuch für das Jahr 1820 der Häuslichkeit und Eintracht gewidmet.</title>
+                        <imprint>
+                            <pubPlace>Leipzig</pubPlace>
+                            <publisher>J.C.Hinrichssche Buchhandlung</publisher>
+                            <date when="1820">1820</date>
+                            <biblScope type="pp">380-381</biblScope>
+                            <!-- Ex. aus Klassik Stiftung Weimar, Anna Amalia Bibliothek, Monographien digital: http://ora-web.swkk.de/digimo_online/digimo.entry?source=digimo.Digitalisat_anzeigen&a_id=18460&p_ab=0 -->
+                        </imprint>
+                    </monogr>
+                </biblStruct>
+            </sourceDesc>
+        </fileDesc>
+        <revisionDesc>
+            <change who="SS" when="2014-02-06">Korrektur gelesen</change>
+            <change who="SS" when="2013-08-08">Datei eingerichtet</change>
+        </revisionDesc>
+    </teiHeader>
+    <text>
+        <pb n="380"/>
+        <body>
+            <div>
+                <head rend="center">
+                    <hi rend="spaced_out">Die geweiheten Rosen</hi>. </head>
+                <lb/>
+                <head rend="center" type="sub">(<hi rend="spaced_out">Duett</hi>.)</head>
+                <sp>
+                    <lb/>
+                    <speaker rend="spaced_out">Eremit.</speaker>
+                    <l>Nimm hin des Freundes Gabe, </l>
+                    <l>
+                        <seg>Wie Unschuld weiß</seg> und rein! </l>
+                </sp>
+                <sp>
+                    <lb/>
+                    <speaker rend="spaced_out">Mädchen. </speaker>
+                    <l>Vor aller meiner Habe </l>
+                    <l>Soll sie mir theuer seyn! </l>
+                </sp>
+                <sp>
+                    <lb/>
+                    <speaker rend="spaced_out">Eremit. </speaker>
+                    <l>Wird sich die Blüthe senken, </l>
+                    <l>Sollst du dabei <w>bedenken</w>: </l>
+                    <l>Was irdisch ist, vergeht! </l>
+                </sp>
+                <sp>
+                    <lb/>
+                    <speaker rend="spaced_out">Mädchen. </speaker>
+                    <l>Ich will der Blätter wahren, </l>
+                    <l>Daß noch in späten Jahren </l>
+                    <l>Erinn’rung mich umweht! </l>
+                </sp>
+                <pb n="381"/>
+                <sp>
+                    <lb/>
+                    <speaker rend="spaced_out">Eremit. </speaker>
+                    <l>Auch sollst du nicht vergessen: </l>
+                    <l>Man muß die Rose pressen, </l>
+                    <l>
+                        <w>Daß</w> Heilung sie gewährt. </l>
+                </sp>
+                <sp>
+                    <lb/>
+                    <speaker rend="spaced_out">Mädchen. </speaker>
+                    <l>So wird zu reinern Freuden </l>
+                    <l>Das Menschenherz durch Leiden </l>
+                    <l>Geläutert und geklärt! </l>
+                </sp>
+                <sp>
+                    <lb/>
+                    <speaker rend="spaced_out">Eremit. </speaker>
+                    <l>Nimm hin des Freundes Gabe, </l>
+                    <l>
+                        <seg>Wie Unschuld weiß</seg> und rein! </l>
+                </sp>
+                <sp>
+                    <lb/>
+                    <speaker rend="spaced_out">Mädchen. </speaker>
+                    <l>Vor aller meiner Habe </l>
+                    <l>Soll sie mir <w>theuer</w> seyn! </l>
+                </sp>
+                <signed rend="right">Fr. Kind.</signed>
+            </div>
+        </body>
+    </text>
+</TEI>
