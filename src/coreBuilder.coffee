@@ -119,12 +119,12 @@ root.coreBuilder = {}
             sel.push source_id  
 
         if sel.length == 0
-          return 'Sources <b class="caret"></b>'
+          return 'Load TEI'
 
         label = sel.join(", ")
         label = label.substring(0,50) + "..." if label.length > 50
 
-        return label + ' <b class="caret"></b>'
+        return label
 
   coreBuilder.Components.CoreTabs = (target) ->
 
@@ -331,7 +331,7 @@ root.coreBuilder = {}
 
       @editor = ace.edit "ed_" + @model.get("source")
       @editor.setReadOnly(true)
-      @editor.setTheme("ace/theme/monokai")
+      @editor.setTheme("ace/theme/github")
       @editor.getSession().setMode("ace/mode/xml")
       @editor.getSession().insert({column:0, row:0}, @model.get "text")          
       @editor.moveCursorTo({column:0, row:0})
