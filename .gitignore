@@ -1,5 +1,6 @@
 .DS_Store
 dist
+!dist/main.js
 data
 fonts
 node_modules
