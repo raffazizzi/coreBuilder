@@ -18,16 +18,12 @@
       
       <div id="sources" class="panel">
         <select class="sel-sources" multiple="multiple">
-          <!-- <option value="KAtx4_III_2">KAtx4_III_2</option>
-          <option value="Ltx2_III_2">Ltx2_III_2</option>
-          <option value="Ktx6_III_2">Ktx6_III_2</option>
-          <option value="D_ptx2_III_2">D_ptx2_III_2</option> -->
         </select>
           <span class="btn btn-primary btn-file" id="uploadCore">
-            Upload Core <input type="file">
+            Load Core <input type="file">
         </span>
           <button type="button" class="btn btn-primary" id="downloadCore">
-            Download Core
+            Save Core
           </button>
           <ul class="nav nav-tabs pull-right" id="tabs">
             <li class="active"><a href="#cur_entry" data-toggle="tab">Current Entry</a></li>
@@ -139,42 +135,7 @@
 
   
   <script src="dist/coreBuilder.js"></script>
-  <script type="text/javascript">
-
-    // Get documents (eventually move this under a utils namespace)
-    url = "rest_tmp/sources.json";
-    // url = "http://freischuetz-digital.de/freidi-tools/rest/documents/texts/";
-    $.get(url, function (data) {
-
-      sel = $("#sources select")
-
-      for (i=0; i<data.length; i++){
-        label = data[i].source.slice(0, -4)
-
-        if (data[i].scenes.length > 0){          
-          for (j=0; j<data[i].scenes.length; j++){   
-            opt = $("<option/>");         
-            scene = data[i].source + '?id=' + data[i].scenes[j].id
-            opt.attr("value", scene);
-            opt.text(label + " Act " + data[i].scenes[j].act + " Scene " + data[i].scenes[j].n);
-            sel.append(opt);           
-          }
-        }
-        else {
-          opt = $("<option/>");   
-          opt.attr("value", data[i].source);
-          opt.text(label);
-          sel.append(opt);
-        }        
-      }
-
-      // Start CoreBuilder UI
-      new coreBuilder.App({"data_url":"data"})
-      // new coreBuilder.App({"data_url":"http://freischuetz-digital.de/freidi-tools/rest/documents/texts"})
-
-    }, 'json')    
-
-  </script>
+  <script src="dist/main.js"></script>
 
 </body>
 </html>
