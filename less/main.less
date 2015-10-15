@@ -84,19 +84,27 @@
     content:"\e080";
 }
 
-.remove {
+a.plain {
   color: Black;
 }
 
-.remove:hover {
+a.plain:link, .plain:visited, .plain:active, .plain:hover  {
   color: Black;
   text-decoration: none;
 }
 
-.remove.on:after {
+a.remove.on:after {
   content: "\2716";
 }
 
-.remove.off:after {
+a.remove.off:after {
   content: "\270E";
+}
+
+.panel-att {
+  padding-left: 3em;
+}
+
+.space-above {
+  margin-top: 1em;
 }
