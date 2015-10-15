@@ -73,3 +73,30 @@
 #sources {
   padding-right: 5em;
 }
+
+.panel-heading a:after {
+    font-family:'Glyphicons Halflings';
+    content:"\e114";
+    float: right;
+    color: grey;
+}
+.panel-heading a.collapsed:after {
+    content:"\e080";
+}
+
+.remove {
+  color: Black;
+}
+
+.remove:hover {
+  color: Black;
+  text-decoration: none;
+}
+
+.remove.on:after {
+  content: "\2716";
+}
+
+.remove.off:after {
+  content: "\270E";
+}

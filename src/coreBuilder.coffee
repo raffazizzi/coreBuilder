@@ -132,6 +132,26 @@ root.coreBuilder = {}
       e.preventDefault()
       $(this).tab('show')
 
+  coreBuilder.Components.ElementsSelector = (target) ->
+    $(target).find(".input-group").each (i,ig) ->
+      $ig = $(ig)
+      $ig.find('.remove').each (i,x) ->
+        $x = $(x)
+        $x.click (e) ->
+          e.preventDefault()
+          $inp = $ig.find("input")
+          if $x.hasClass 'on'
+            $inp.val "None"
+            $inp.prop('disabled', true)
+            $x.addClass('off')
+            $x.removeClass('on')
+          else 
+            $inp.val ""
+            $inp.prop('disabled', false)
+            $x.addClass('on')
+            $x.removeClass('off')
+
+
   ## ROUTERS ##
   coreBuilder.Routers = {}
 
@@ -620,6 +640,7 @@ root.coreBuilder = {}
       coreBuilder.Components.SourceSelector '.sel-sources', options["data_url"]
       coreBuilder.Components.FileUploader '#uploadCore'
       coreBuilder.Components.CoreTabs '#tabs'
+      coreBuilder.Components.ElementsSelector '#el_opts'
 
       # Start Sources View
       new SourcesView collection: coreBuilder.Data.Sources

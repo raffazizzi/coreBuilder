@@ -26,7 +26,7 @@
             Save Core
           </button>
           <ul class="nav nav-tabs pull-right" id="tabs">
-            <li class="active"><a href="#cur_entry" data-toggle="tab">Current Entry</a></li>
+            <li class="active"><a href="#cur_entry_wrapper" data-toggle="tab">Current Entry</a></li>
             <li><a href="#full" data-toggle="tab">Full Core</a></li>
           </ul>
       </div>
@@ -39,21 +39,65 @@
         <div class="row" id="editors"> </div>
       </div>
       <div class="col-md-5 panel tab-content" id="corexml">
-        <div class="tab-pane active" id="cur_entry">
+        <div class="tab-pane active" id="cur_entry_wrapper">
+          <div class="panel-group" id="el_opts">
+            <div class="panel panel-default" id="panel1">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-target="#collapseOne" 
+                     class="collapsed">
+                    Select stand-off elements
+                  </a>
 
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <p class="alert alert-info">Click &#x2716; to remove an unwanted element</p>
+                    <form role="form">
+                      <div class="form-group">
+                        <label for="wrapper">Wrapper</label>
+                        <div class="input-group">
+                          <div class="input-group-addon"><a class="remove on" href="#"></a></div>
+                          <input type="text" class="form-control" id="wrapper"
+                                 value="app">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="grp">Grouping element</label>
+                        <div class="input-group">
+                          <div class="input-group-addon"><a class="remove on" href="#"></a></div>
+                          <input type="text" class="form-control" id="grp"
+                               value="rdgGrp">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="container">Container</label>
+                        <div class="input-group">
+                          <div class="input-group-addon"><a class="remove on " href="#"></a></div>
+                          <input type="text" class="form-control" id="container"
+                               value="rdg">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="ptr">Pointer</label>
+                        <div class="input-group">
+                          <div class="input-group-addon"><a class="remove on" href="#"></a></div>
+                          <input type="text" class="form-control" id="ptr"
+                               value="ptr">
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div id="cur_entry"></div>
         </div>
         <div class="tab-pane" id="full"></div>
     </div>
   </div>
 
-  <!-- <div class="modal fade" id="opensources" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        
-      </div>
-    </div>
-  </div> -->
-  <!-- <span class="glyphicon glyphicon-magnet grouping"></span> -->
   <!-- BACKBONE TEMPLATES -->
   <script type="text/template" id="editor-tpl">
   <div class="edit">
