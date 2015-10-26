@@ -133,7 +133,28 @@ root.coreBuilder = {}
       $(this).tab('show')
 
   coreBuilder.Components.ElementsSelector = (target) ->
-    $(target).find(".input-group").each (i,ig) ->
+
+    $target = $(target)
+
+    # Create four Elements
+    coreBuilder.Data.ElementSet.set
+      "wrapper": new Element
+      "grp": new Element
+      "container": new Element
+      "ptr": new Element
+
+    $("#apply_els").click (e) ->
+      e.preventDefault()
+      coreBuilder.Data.ElementSet.get("wrapper").set
+        "name" : $("#wrapper").val()
+      coreBuilder.Data.ElementSet.get("grp").set
+        "name" : $("#grp").val()
+      coreBuilder.Data.ElementSet.get("container").set
+        "name" : $("#container").val()
+      coreBuilder.Data.ElementSet.get("ptr").set
+        "name" : $("#ptr").val()
+
+    $target.find(".input-group").each (i,ig) ->
       $ig = $(ig)
       $ig.find('.remove').each (i,x) ->
         $x = $(x)
@@ -150,6 +171,15 @@ root.coreBuilder = {}
             $inp.prop('disabled', false)
             $x.addClass('on')
             $x.removeClass('off')
+
+      coreBuilder.Data.ElementSet.get("wrapper").set
+        "name" : $("#wrapper").val()
+      coreBuilder.Data.ElementSet.get("grp").set
+        "name" : $("#grp").val()
+      coreBuilder.Data.ElementSet.get("container").set
+        "name" : $("#container").val()
+      coreBuilder.Data.ElementSet.get("ptr").set
+        "name" : $("#ptr").val()
 
 
   ## ROUTERS ##
@@ -210,6 +240,10 @@ root.coreBuilder = {}
     initialize : ->
       @selectionGroup = new SelectionGroup
 
+  class Element extends Backbone.Model
+
+  class ElementSet extends Backbone.Model
+
   class CoreEntry extends Backbone.Model
     initialize : ->
       @sources = new Sources
@@ -230,6 +264,7 @@ root.coreBuilder = {}
 
   # Expose Collections
   coreBuilder.Data.Sources = new Sources
+  coreBuilder.Data.ElementSet = new ElementSet
   coreBuilder.Data.Core = new Core
 
   ## VIEWS ##
@@ -351,7 +386,7 @@ root.coreBuilder = {}
 
       @editor = ace.edit "ed_" + @model.get("source")
       @editor.setReadOnly(true)
-      @editor.setTheme("ace/theme/github")
+      @editor.setTheme("ace/theme/chrome")
       @editor.getSession().setMode("ace/mode/xml")
       @editor.getSession().insert({column:0, row:0}, @model.get "text")          
       @editor.moveCursorTo({column:0, row:0})
