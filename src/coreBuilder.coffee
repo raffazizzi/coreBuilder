@@ -132,56 +132,6 @@ root.coreBuilder = {}
       e.preventDefault()
       $(this).tab('show')
 
-  coreBuilder.Components.ElementsSelector = (target) ->
-
-    $target = $(target)
-
-    # Create four Elements
-    coreBuilder.Data.ElementSet.set
-      "wrapper": new Element
-      "grp": new Element
-      "container": new Element
-      "ptr": new Element
-
-    $("#apply_els").click (e) ->
-      e.preventDefault()
-      coreBuilder.Data.ElementSet.get("wrapper").set
-        "name" : $("#wrapper").val()
-      coreBuilder.Data.ElementSet.get("grp").set
-        "name" : $("#grp").val()
-      coreBuilder.Data.ElementSet.get("container").set
-        "name" : $("#container").val()
-      coreBuilder.Data.ElementSet.get("ptr").set
-        "name" : $("#ptr").val()
-
-    $target.find(".input-group").each (i,ig) ->
-      $ig = $(ig)
-      $ig.find('.remove').each (i,x) ->
-        $x = $(x)
-        $x.click (e) ->
-          e.preventDefault()
-          $inp = $ig.find("input")
-          if $x.hasClass 'on'
-            $inp.val "None"
-            $inp.prop('disabled', true)
-            $x.addClass('off')
-            $x.removeClass('on')
-          else 
-            $inp.val ""
-            $inp.prop('disabled', false)
-            $x.addClass('on')
-            $x.removeClass('off')
-
-      coreBuilder.Data.ElementSet.get("wrapper").set
-        "name" : $("#wrapper").val()
-      coreBuilder.Data.ElementSet.get("grp").set
-        "name" : $("#grp").val()
-      coreBuilder.Data.ElementSet.get("container").set
-        "name" : $("#container").val()
-      coreBuilder.Data.ElementSet.get("ptr").set
-        "name" : $("#ptr").val()
-
-
   ## ROUTERS ##
   coreBuilder.Routers = {}
 
@@ -241,8 +191,12 @@ root.coreBuilder = {}
       @selectionGroup = new SelectionGroup
 
   class Element extends Backbone.Model
+    initialize : ->
+      @atts = new Attributes
 
   class ElementSet extends Backbone.Model
+
+  class Attribute extends Backbone.Model
 
   class CoreEntry extends Backbone.Model
     initialize : ->
@@ -252,6 +206,9 @@ root.coreBuilder = {}
     idAttribute : "xmlid"
 
   # Collections
+
+  class Attributes extends Backbone.Collection
+    model: Attribute
 
   class Sources extends Backbone.Collection
     model: Source
@@ -659,6 +616,125 @@ root.coreBuilder = {}
       @model.collection.remove @model
       @
 
+  class ElementSetView extends Backbone.View
+
+    el: "#el_opts" 
+
+    events:
+      "click #apply_els" : "apply"
+
+    initialize: ->
+      # Create four Elements
+      @model.set
+        "wrapper": new Element
+        "grp": new Element
+        "container": new Element
+        "ptr": new Element
+
+      # Create four Attribute views
+      (new AttributesView 
+        collection: @model.get("wrapper").atts
+        el: "#att-wrapper").render()
+      (new AttributesView 
+        collection: @model.get("grp").atts
+        el: "#att-grp").render()
+      (new AttributesView 
+        collection: @model.get("container").atts
+        el: "#att-container").render()
+      (new AttributesView 
+        collection: @model.get("ptr").atts
+        el: "#att-ptr"
+        defaults: 
+          "atts": []
+          "target_att": "target").render()
+
+      @$el.find(".input-group").each (i,ig) =>
+        $ig = $(ig)
+        m = @model
+        $ig.find('.remove').each (i,x) ->
+          $x = $(x)
+          $x.click (e) ->
+            e.preventDefault()
+            $inp = $ig.find("input")
+            id = $inp.attr("id")
+            el = m.get(id)
+            if $x.hasClass 'on'
+              $inp.val "None"
+              $inp.prop('disabled', true)
+              $x.addClass('off')
+              $x.removeClass('on')
+              # kill element model
+              to_remove = {}
+              to_remove[id] = null
+              m.set to_remove
+              el.destroy()
+            else 
+              $inp.val ""
+              $inp.prop('disabled', false)
+              $x.addClass('on')
+              $x.removeClass('off')
+              # create new element
+              to_create = {}
+              to_create[id] = new Element
+              m.set to_create
+
+      @model.get("wrapper").set
+        "name" : $("#wrapper").val()
+      @model.get("grp").set
+        "name" : $("#grp").val()
+      @model.get("container").set
+        "name" : $("#container").val()
+      @model.get("ptr").set
+        "name" : $("#ptr").val()
+
+    apply: ->
+      $("#apply_els").click (e) ->
+        e.preventDefault()
+        coreBuilder.Data.ElementSet.get("wrapper").set
+          "name" : $("#wrapper").val()
+        coreBuilder.Data.ElementSet.get("grp").set
+          "name" : $("#grp").val()
+        coreBuilder.Data.ElementSet.get("container").set
+          "name" : $("#container").val()
+        coreBuilder.Data.ElementSet.get("ptr").set
+          "name" : $("#ptr").val()
+
+  class AttributesView extends Backbone.View
+
+    events:
+      "click .add_att": "addClick"
+
+    template: _.template $('#atts-tpl').html()
+
+    initialize: (options) ->
+
+      if options.defaults?
+
+        if options.defaults.atts?
+          for d in options.defaults.atts
+            @addOne(d, null)
+
+        if options.defaults.target_att?
+          @addOne(options.defaults.target_att, null, true)
+
+    addClick: (e) ->
+      e.preventDefault()
+      @addOne()
+
+    addOne: (name="", value="", target=false)->
+      atts = @collection.add
+        "name": name
+        "value": null
+        "target": target
+
+      @render()
+
+    removeOne: ->
+
+    render: ->
+      atts = {"atts": @collection.toJSON()}
+      @$el.html @template(atts)
+
   class coreBuilder.App extends Backbone.View
 
     el: "#coreBuilder"
@@ -675,8 +751,10 @@ root.coreBuilder = {}
       coreBuilder.Components.SourceSelector '.sel-sources', options["data_url"]
       coreBuilder.Components.FileUploader '#uploadCore'
       coreBuilder.Components.CoreTabs '#tabs'
-      coreBuilder.Components.ElementsSelector '#el_opts'
+      # coreBuilder.Components.ElementsSelector '#el_opts'
 
+      # Start elements selection view
+      new ElementSetView model: coreBuilder.Data.ElementSet
       # Start Sources View
       new SourcesView collection: coreBuilder.Data.Sources
       # Start Core Entry View on the same data
