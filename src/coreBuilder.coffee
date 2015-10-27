@@ -624,6 +624,8 @@ root.coreBuilder = {}
       "click #apply_els" : "apply"
 
     initialize: ->
+      # A lot of this is inelegant - fix
+
       # Create four Elements
       @model.set
         "wrapper": new Element
@@ -631,22 +633,32 @@ root.coreBuilder = {}
         "container": new Element
         "ptr": new Element
 
-      # Create four Attribute views
-      (new AttributesView 
-        collection: @model.get("wrapper").atts
-        el: "#att-wrapper").render()
-      (new AttributesView 
-        collection: @model.get("grp").atts
-        el: "#att-grp").render()
-      (new AttributesView 
-        collection: @model.get("container").atts
-        el: "#att-container").render()
-      (new AttributesView 
-        collection: @model.get("ptr").atts
-        el: "#att-ptr"
-        defaults: 
-          "atts": []
-          "target_att": "target").render()
+      attViews = {}
+
+      new_att_view = (name) =>
+        if name == "ptr"
+          attViews[name] = new AttributesView 
+            collection: @model.get(name).atts
+            el: "#att-"+name
+            defaults: 
+              "atts": []
+              "target_att": "target"
+        else
+          attViews[name] = new AttributesView 
+            collection: @model.get(name).atts
+            el: "#att-"+name
+        attViews[name].render()
+
+      new_att_view("wrapper")
+      new_att_view("grp")
+      new_att_view("container")
+      new_att_view("ptr")
+
+      destroyViews = 
+        "wrapper" : attViews["wrapper"].close
+        "grp" : attViews["grp"].close
+        "container" : attViews["container"].close
+        "ptr" : attViews["ptr"].close
 
       @$el.find(".input-group").each (i,ig) =>
         $ig = $(ig)
@@ -668,6 +680,7 @@ root.coreBuilder = {}
               to_remove[id] = null
               m.set to_remove
               el.destroy()
+              destroyViews[id]()
             else 
               $inp.val ""
               $inp.prop('disabled', false)
@@ -677,6 +690,7 @@ root.coreBuilder = {}
               to_create = {}
               to_create[id] = new Element
               m.set to_create
+              new_att_view(id)
 
       @model.get("wrapper").set
         "name" : $("#wrapper").val()
@@ -734,6 +748,10 @@ root.coreBuilder = {}
     render: ->
       atts = {"atts": @collection.toJSON()}
       @$el.html @template(atts)
+
+    close: =>
+      @$el.empty()
+      @unbind()
 
   class coreBuilder.App extends Backbone.View
 
