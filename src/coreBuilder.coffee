@@ -197,6 +197,10 @@ root.coreBuilder = {}
   class ElementSet extends Backbone.Model
 
   class Attribute extends Backbone.Model
+    toJSON: ->
+      atts = _.clone(@attributes);
+      atts["id"] = @cid
+      atts
 
   class CoreEntry extends Backbone.Model
     initialize : ->
@@ -552,7 +556,6 @@ root.coreBuilder = {}
       @
 
     remove: ->
-      console.log @collection
       @collection.each (c) ->
         c.set("group", undefined)
         c.selectionGroup.each (s) ->
@@ -717,6 +720,7 @@ root.coreBuilder = {}
 
     events:
       "click .add_att": "addClick"
+      "click .rem_att": "removeClick"
 
     template: _.template $('#atts-tpl').html()
 
@@ -743,7 +747,16 @@ root.coreBuilder = {}
 
       @render()
 
-    removeOne: ->
+    removeClick: (e) ->
+      e.preventDefault()
+      target = $(e.target)
+      @removeOne target.data("attid")
+      target.closest(".input-group").remove()
+
+    removeOne: (id) ->
+      att = @collection.get(id)
+      @collection.remove(att)
+      att.destroy()
 
     render: ->
       atts = {"atts": @collection.toJSON()}
