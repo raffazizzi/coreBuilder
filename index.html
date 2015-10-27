@@ -81,19 +81,7 @@
                         </div>
                       </div>
                       <div id="att-wrapper" class="panel-collapse collapse">
-                        <div class="panel-default panel-att">
-                          <div class="form-group">
-                            <!-- <div class="input-group">
-                              <div class="input-group-addon">&#x2716;</div>
-                              <div class="input-group-addon">@</div>
-                              <input type="text" class="form-control-static" id="att1"
-                                   value="">
-                             <input type="text" class="form-control-static" id="val1"
-                             value="">
-                            </div> -->
-                            <a href="#">add new attribute</a>
-                          </div>
-                        </div>
+
                       </div>
                       <div class="form-group">
                         <label for="grp">Grouping element</label>
@@ -110,11 +98,7 @@
                         </div>
                       </div>
                       <div id="att-grp" class="panel-collapse collapse">
-                        <div class="panel-default panel-att">
-                          <div class="form-group">
-                            <a href="#">add new attribute</a>
-                          </div>
-                        </div>
+                      
                       </div>
                       <div class="form-group">
                         <label for="container">Container</label>
@@ -131,11 +115,7 @@
                         </div>
                       </div>
                       <div id="att-container" class="panel-collapse collapse">
-                        <div class="panel-default panel-att">
-                          <div class="form-group">
-                            <a href="#">add attribute</a>
-                          </div>
-                        </div>
+                        
                       </div>
                       <div class="form-group">
                         <label for="ptr">Pointer</label>
@@ -152,16 +132,7 @@
                         </div>
                       </div>
                       <div id="att-ptr" class="panel-collapse collapse in">
-                        <div class="panel-default panel-att">
-                          <div class="form-group">
-                            <div class="input-group">
-                              <div class="input-group-addon">@</div>
-                              <input type="text" class="form-control" id="att1"
-                                   value="target">
-                            </div>
-                            <a href="#">add attribute</a>
-                          </div>
-                        </div>
+                        
                       </div>
                     </form>
                     <button id="apply_els" class="btn btn-md pull-right">Apply</button>
@@ -242,14 +213,26 @@
       </div>
   </script>
 
-  <script type="text/template" id="modal-sources">
-      <div class="checkbox">
-        <% _.each(scenes, function(s) { %>  
-          <label>
-            <input type="checkbox"> <%=s%>
-          </label>
+  <script type="text/template" id="atts-tpl">
+    <div class="panel-default panel-att">
+      <div class="form-group">
+        <% _.each(atts, function(a) { %>
+          <div class="input-group">
+            <% if (a.target) {%>
+              <div class="input-group-addon">@</div>
+              <input type="text" class="form-control"
+                   value="<%=a.name%>">             
+            <%} else {%>
+              <div class="input-group-addon">&#x2716;</div>
+              <div class="input-group-addon">@</div>
+              <input type="text" class="form-control-static"
+                   value="<%=a.name%>"> 
+            <% } %>
+          </div> 
         <% }); %>
+        <a href="#" class="add_att">add new attribute</a>
       </div>
+    </div>
   </script>
 
   <script type="text/template" id="entry-tpl"><button type="button" class="close">&times;</button><code class="language-markup"><%=escaped_xml%></code></script>
