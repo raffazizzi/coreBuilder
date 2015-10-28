@@ -60,9 +60,18 @@
                         <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" aria-labelledby="preset">
-                        <li><a href="#">Apparatus entry (&lt;app>, &lt;rdg>)</a></li>
-                        <li><a href="#">Links (&lt;linkGrp>, &lt;link>)</a></li>
-                        <li><a href="#">Stand off poetry (&lt;lg>, &lt;l>)</a></li>
+                        <li><a href="#" class="preset" 
+                                        data-wrapper="app"
+                                        data-grp="rdgGrp"
+                                        data-container="rdg"
+                                        data-ptr="ptr">Apparatus entry (&lt;app>, &lt;rdg>)</a></li>
+                        <li><a href="#" class="preset"
+                                        data-wrapper="linkGrp"
+                                        data-ptr="link">Links (&lt;linkGrp>, &lt;link>)</a></li>
+                        <li><a href="#" class="preset"
+                                        data-wrapper="lg"
+                                        data-container="l"
+                                        data-ptr="ptr">Stand off poetry (&lt;lg>, &lt;l>)</a></li>
                       </ul>
                     </div>
                     <form role="form" class="space-above">

@@ -190,17 +190,25 @@ root.coreBuilder = {}
     initialize : ->
       @selectionGroup = new SelectionGroup
 
-  class Element extends Backbone.Model
-    initialize : ->
-      @atts = new Attributes
-
-  class ElementSet extends Backbone.Model
-
   class Attribute extends Backbone.Model
     toJSON: ->
       atts = _.clone(@attributes);
       atts["id"] = @cid
       atts
+  
+  class Attributes extends Backbone.Collection
+    model: Attribute
+
+  class Element extends Backbone.Model
+    initialize : ->
+      @atts = new Attributes
+
+  class ElementSet extends Backbone.Model
+    defaults:
+      "wrapper" : new Element {"name": "app"}
+      "grp" : new Element {"name": "rdgGrp"}
+      "container" : new Element {"name": "rdg"}
+      "ptr" : new Element {"name": "ptr"}
 
   class CoreEntry extends Backbone.Model
     initialize : ->
@@ -210,9 +218,6 @@ root.coreBuilder = {}
     idAttribute : "xmlid"
 
   # Collections
-
-  class Attributes extends Backbone.Collection
-    model: Attribute
 
   class Sources extends Backbone.Collection
     model: Source
@@ -627,14 +632,68 @@ root.coreBuilder = {}
       "click #apply_els" : "apply"
 
     initialize: ->
+      super
       # A lot of this is inelegant - fix
 
-      # Create four Elements
-      @model.set
-        "wrapper": new Element
-        "grp": new Element
-        "container": new Element
-        "ptr": new Element
+      @$el.find('.preset').each (i, preset) =>
+        $preset = $(preset)
+        wrapper = $preset.data("wrapper")
+        grp = $preset.data("grp")
+        container = $preset.data("container")
+        ptr = $preset.data("ptr")
+
+        setToNone = (inp, name) =>
+          inp.val "None"
+          inp.prop('disabled', true)
+          to_remove = {}
+          to_remove[name] = null
+          @model.set to_remove
+          # @model.get("grp").destroy()
+          destroyViews[name]()
+          $x = inp.prev().find('a')
+          $x.addClass('off')
+          $x.removeClass('on')
+
+        restore = (inp, name) =>
+          inp.prop('disabled', false)
+          $x = inp.prev().find('a')
+          $x.addClass('on')
+          $x.removeClass('off')
+          # create new element
+          to_create = {}
+          to_create[name] = new Element "name" : name
+          @model.set to_create
+          new_att_view(name)
+
+        $preset.click (e) =>
+          e.preventDefault()
+          $inp_w = $("#wrapper")
+          if wrapper?
+            $inp_w.val wrapper
+            restore($inp_w, "wrapper")
+          else
+            setToNone($inp_w, "wrapper")
+          
+          $inp_g = $("#grp")
+          if grp?
+            $inp_g.val grp
+            restore($inp_g, "grp")
+          else
+            setToNone($inp_g, "grp")
+
+          $inp_c = $("#container")
+          if container?
+            $inp_c.val container
+            restore($inp_c, "container")
+          else
+            setToNone($inp_c, "container")
+
+          $inp_p = $("#ptr")
+          if ptr?
+            $inp_p.val ptr
+            restore($inp_p, "ptr")
+          else
+            setToNone($inp_p, "ptr")
 
       attViews = {}
 
@@ -799,7 +858,6 @@ root.coreBuilder = {}
       coreBuilder.Components.SourceSelector '.sel-sources', options["data_url"]
       coreBuilder.Components.FileUploader '#uploadCore'
       coreBuilder.Components.CoreTabs '#tabs'
-      # coreBuilder.Components.ElementsSelector '#el_opts'
 
       # Start elements selection view
       new ElementSetView model: coreBuilder.Data.ElementSet
