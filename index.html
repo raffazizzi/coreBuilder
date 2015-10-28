@@ -216,24 +216,26 @@
   <script type="text/template" id="atts-tpl">
     <div class="panel-default panel-att">
       <div class="form-group">
-        <% _.each(atts, function(a) { %>
-          <div class="input-group">
-            <% if (a.target) {%>
-              <div class="input-group-addon">@</div>
-              <input type="text" class="form-control"
-                   value="<%=a.name%>">             
-            <%} else {%>
-              <div class="input-group-addon"><a class="plain rem_att" data-attid="<%=a.id%>" href="#" >&#x2716;</a></div>
-              <div class="input-group-addon">@</div>
-              <input type="text" class="form-control-static"
-                   value="<%=a.name%>"> 
-              <input type="text" class="form-control-static"
-                   value="<%=a.value%>"> 
-            <% } %>
-          </div> 
-        <% }); %>
+        <div id="<%=name%>"></div>
         <a href="#" class="add_att">add new attribute</a>
       </div>
+    </div>
+  </script>
+
+  <script type="text/template" id="att-tpl">
+    <div class="input-group" id="<%=id%>">
+      <% if (target) {%>
+        <div class="input-group-addon">@</div>
+        <input type="text" class="form-control"
+             value="<%=name%>">             
+      <%} else {%>
+        <div class="input-group-addon"><a class="plain rem_att" href="#" >&#x2716;</a></div>
+        <div class="input-group-addon">@</div>
+        <input type="text" class="form-control-static"
+             value="<%=name%>"> 
+        <input type="text" class="form-control-static"
+             value="<%=value%>"> 
+      <% } %>
     </div>
   </script>
 

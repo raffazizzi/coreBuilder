@@ -650,7 +650,7 @@ root.coreBuilder = {}
           attViews[name] = new AttributesView 
             collection: @model.get(name).atts
             el: "#att-"+name
-        attViews[name].render()
+        attViews[name]
 
       new_att_view("wrapper")
       new_att_view("grp")
@@ -720,11 +720,14 @@ root.coreBuilder = {}
 
     events:
       "click .add_att": "addClick"
-      "click .rem_att": "removeClick"
 
     template: _.template $('#atts-tpl').html()
 
     initialize: (options) ->
+
+      @for_el = "for-" + @$el.attr("id")
+
+      @render()
 
       if options.defaults?
 
@@ -740,31 +743,45 @@ root.coreBuilder = {}
       @addOne()
 
     addOne: (name="", value="", target=false)->
-      atts = @collection.add
+      att = @collection.add
         "name": name
         "value": null
         "target": target
 
-      @render()
+      @renderOne(att)
 
-    removeClick: (e) ->
-      e.preventDefault()
-      target = $(e.target)
-      @removeOne target.data("attid")
-      target.closest(".input-group").remove()
-
-    removeOne: (id) ->
-      att = @collection.get(id)
-      @collection.remove(att)
-      att.destroy()
+    renderOne: (att) ->
+      (new AttributeView
+        model: att
+        el: $("#"+@for_el)
+      ).render()
 
     render: ->
-      atts = {"atts": @collection.toJSON()}
-      @$el.html @template(atts)
+      @$el.html @template
+        "name": @for_el
 
     close: =>
       @$el.empty()
       @unbind()
+
+  class AttributeView extends Backbone.View
+
+    template: _.template $('#att-tpl').html()
+
+    close: ->
+      @att_el.remove()
+      @model.destroy()
+
+    render: ->
+      att = @model.toJSON()
+      att["id"] = @model.cid
+
+      @att_el = $(@template(att))
+      @att_el.find('.rem_att').click (e) =>
+        e.preventDefault()
+        @close()
+
+      @$el.append @att_el
 
   class coreBuilder.App extends Backbone.View
 
