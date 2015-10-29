@@ -518,8 +518,16 @@ root.coreBuilder = {}
             for p in r.selectionGroup.models
               # sel.text('<!-- empty -->') if p.get("empty")?
               if p.get("xmlid")?.length > 0
-                ptr = $("<"+ptr_model.get("name")+">").attr
-                  "target" : '#' + p.get("xmlid")
+                ptr = $("<"+ptr_model.get("name")+">")
+                for att in ptr_model.atts.models
+                  compiled = {}
+                  isTarget = att.get("target")
+                  if isTarget
+                    compiled[att.get("name")] = '#' + p.get("xmlid") 
+                    ptr.attr compiled
+                  else
+                    compiled[att.get("name")] = att.get("value")
+                    ptr.attr compiled
                 sel.append ptr            
 
           else
@@ -717,6 +725,10 @@ root.coreBuilder = {}
             $x.addClass('on')
             $x.removeClass('off')
             # create new element
+            to_remove = {}
+            to_remove["wrapper"] = null
+            @model.set to_remove
+            destroyViews["wrapper"]()
             to_create = {}
             to_create["wrapper"] = new Element
             to_create["wrapper"].set "name" : wrapper_name
@@ -809,21 +821,21 @@ root.coreBuilder = {}
           # and apply
           @apply()
 
-      attViews = {}
+      @attViews = {}
 
       new_att_view = (name) =>
         if name == "ptr"
-          attViews[name] = new AttributesView 
+          @attViews[name] = new AttributesView 
             collection: @model.get(name).atts
             el: "#att-"+name
             defaults: 
               "atts": []
               "target_att": "target"
         else
-          attViews[name] = new AttributesView 
+          @attViews[name] = new AttributesView 
             collection: @model.get(name).atts
             el: "#att-"+name
-        attViews[name]
+        @attViews[name]
 
       new_att_view("wrapper")
       new_att_view("grp")
@@ -831,10 +843,10 @@ root.coreBuilder = {}
       new_att_view("ptr")
 
       destroyViews = 
-        "wrapper" : attViews["wrapper"].close
-        "grp" : attViews["grp"].close
-        "container" : attViews["container"].close
-        "ptr" : attViews["ptr"].close
+        "wrapper" : @attViews["wrapper"].close
+        "grp" : @attViews["grp"].close
+        "container" : @attViews["container"].close
+        "ptr" : @attViews["ptr"].close
 
       @$el.find(".input-group").each (i,ig) =>
         $ig = $(ig)
@@ -878,16 +890,20 @@ root.coreBuilder = {}
         "name" : $("#ptr").val()
 
     apply: ->
-      $("#apply_els").click (e) ->
+      $("#apply_els").click (e) =>
         e.preventDefault()
         coreBuilder.Data.ElementSet.get("wrapper").set
           "name" : $("#wrapper").val()
+        @attViews["wrapper"].updateCollection()
         coreBuilder.Data.ElementSet.get("grp").set
           "name" : $("#grp").val()
+        @attViews["grp"].updateCollection()
         coreBuilder.Data.ElementSet.get("container").set
           "name" : $("#container").val()
+        @attViews["container"].updateCollection()
         coreBuilder.Data.ElementSet.get("ptr").set
           "name" : $("#ptr").val()
+        @attViews["ptr"].updateCollection()
 
   class AttributesView extends Backbone.View
 
@@ -899,6 +915,7 @@ root.coreBuilder = {}
     initialize: (options) ->
 
       @for_el = "for-" + @$el.attr("id")
+      @subviews = []
 
       @render()
 
@@ -924,16 +941,23 @@ root.coreBuilder = {}
       @renderOne(att)
 
     renderOne: (att) ->
-      (new AttributeView
+      app_view = new AttributeView
         model: att
         el: $("#"+@for_el)
-      ).render()
+      @subviews.push app_view
+      app_view.render()
 
     render: ->
       @$el.html @template
         "name": @for_el
 
+    updateCollection: ->
+      for app_view in @subviews
+        app_view.updateModel()
+
     close: =>
+      for app_view in @subviews
+        app_view.close()
       @$el.empty()
       @unbind()
 
@@ -943,7 +967,13 @@ root.coreBuilder = {}
 
     close: ->
       @att_el.remove()
+      @unbind()
       @model.destroy()
+
+    updateModel: =>
+      @model.set
+        "name": @att_el.find('.app_name').val()
+        "value": @att_el.find('.app_value').val()
 
     render: ->
       att = @model.toJSON()
