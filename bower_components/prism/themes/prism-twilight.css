@@ -7,12 +7,13 @@ code[class*="language-"],
 pre[class*="language-"] {
 	color: white;
 	direction: ltr;
-	font-family: Consolas, Monaco, 'Andale Mono', monospace;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 	text-align: left;
 	text-shadow: 0 -.1em .2em black;
 	white-space: pre;
 	word-spacing: normal;
 	word-break: normal;
+	word-wrap: normal;
 	line-height: 1.5;
 
 	-moz-tab-size: 4;
@@ -69,6 +70,7 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 	border: .13em solid hsl(0, 0%, 33%); /* #545454 */
 	box-shadow: 1px 1px .3em -.1em black inset;
 	padding: .15em .2em .05em;
+	white-space: normal;
 }
 
 .token.comment,
@@ -88,7 +90,8 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 
 .token.tag,
 .token.boolean,
-.token.number {
+.token.number,
+.token.deleted {
 	color: hsl(14, 58%, 55%); /* #CF6A4C */
 }
 
@@ -110,7 +113,8 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 .token.url,
 .language-css .token.string,
 .style .token.string,
-.token.variable {
+.token.variable,
+.token.inserted {
 	color: hsl(76, 21%, 52%); /* #8F9D6A */
 }
 
@@ -123,8 +127,12 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 	color: hsl(42, 75%, 65%); /* #E9C062 */
 }
 
-.token.important {
+.token.important,
+.token.bold {
 	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
 }
 
 .token.entity {

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:/home/rviglian/Projects/tasso/schema/tassotei.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>La bella pargoletta</title>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>University of Massachusetts Amherst</publisher>
+                <availability status="free">
+                    <p>CC BY SA</p>
+                </availability>
+            </publicationStmt>
+            <sourceDesc>
+                <msDesc>
+                    <msIdentifier>
+                        <region>United Kingdom</region>
+                        <settlement>London</settlement>
+                        <repository>British Museum</repository>
+                        <idno>Greenville 10772</idno>
+                    </msIdentifier>
+                    <msContents>
+                        <p>exemplar of the Print 8, with Aldo Manuzio’s autograph annotations and corrections</p>
+                    </msContents>
+                    <history>
+                        <origin>
+                            <origDate notBefore="1501" notAfter="1600">16th century</origDate>
+                        </origin>
+                    </history>
+                </msDesc>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body xml:space="preserve">
+            <lg>
+                <l xml:id="l1">La bella pargoletta</l>
+                <l xml:id="l2"><seg xml:id="v1">Che non conosce</seg> Amore</l>
+                <l xml:id="l3">Ne <seg xml:id="v2">per fama ha pur noto</seg> il suo valore</l>
+                <l xml:id="l4"><seg xml:id="v3">Co' begli occhi</seg> saetta</l>
+                <l xml:id="l5">E col <seg xml:id="v4">leggiadro</seg> riso</l>
+                <l xml:id="l6">Ne <seg xml:id="v5">si accorge che l'arme ha nel bel</seg> viso.</l>
+                <l xml:id="l7"><seg xml:id="v6">Che</seg> colpa ha <seg xml:id="v7">del</seg> morire</l>
+                <l xml:id="l8">De la trafitta gente</l>
+                <l xml:id="l9">Come si puo' punire,</l>
+                <l xml:id="l10">Se non sa di ferire</l>
+                <l xml:id="l11">O <seg xml:id="v7">beltà micidiale</seg> et innocente,</l>
+                <l xml:id="l12">Tempo <seg xml:id="v8">è ch'omai ti mostri</seg></l>
+                <l xml:id="l13"><seg xml:id="v9">Amor ne le tue piaghe i dolor</seg> nostri.</l>
+            </lg>
+        </body>
+    </text>
+</TEI>

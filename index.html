@@ -3,7 +3,7 @@
 <head>
   <meta charset='utf-8'>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core Builder 0.2</title>
+  <title>coreBuilder 0.3</title>
   <script src="dist/bower.js"></script>
   <script src="dist/ace/ace.js"></script>
   <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -14,23 +14,19 @@
 
     <div class="row" id="header">
 
-      <h1>CoreBuilder v 0.2</h1>
+      <h1><img src="images/logo.svg" id="logo" />coreBuilder v 0.3</h1>
       
       <div id="sources" class="panel">
         <select class="sel-sources" multiple="multiple">
-          <!-- <option value="KAtx4_III_2">KAtx4_III_2</option>
-          <option value="Ltx2_III_2">Ltx2_III_2</option>
-          <option value="Ktx6_III_2">Ktx6_III_2</option>
-          <option value="D_ptx2_III_2">D_ptx2_III_2</option> -->
         </select>
           <span class="btn btn-primary btn-file" id="uploadCore">
-            Upload Core <input type="file">
+            Load Core <input type="file">
         </span>
           <button type="button" class="btn btn-primary" id="downloadCore">
-            Download Core
+            Save Core
           </button>
           <ul class="nav nav-tabs pull-right" id="tabs">
-            <li class="active"><a href="#cur_entry" data-toggle="tab">Current Entry</a></li>
+            <li class="active"><a href="#cur_entry_wrapper" data-toggle="tab">Current Entry</a></li>
             <li><a href="#full" data-toggle="tab">Full Core</a></li>
           </ul>
       </div>
@@ -43,21 +39,122 @@
         <div class="row" id="editors"> </div>
       </div>
       <div class="col-md-5 panel tab-content" id="corexml">
-        <div class="tab-pane active" id="cur_entry">
+        <div class="tab-pane active" id="cur_entry_wrapper">
+          <div class="panel-group" id="el_opts">
+            <div class="panel panel-default" id="panel1">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-target="#collapseOne" 
+                     class="collapsed" href="#">
+                    Select stand-off elements
+                  </a>
 
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <!-- <p class="alert alert-info">Click &#x2716; to disable an unwanted element (but a pointer is required)</p> -->
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" id="preset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Choose preset
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="preset">
+                        <li><a href="#" class="preset" 
+                                        data-wrapper="app"
+                                        data-grp="rdgGrp"
+                                        data-container="rdg"
+                                        data-ptr="ptr">Apparatus entry (&lt;app>, &lt;rdg>)</a></li>
+                        <li><a href="#" class="preset"
+                                        data-wrapper="linkGrp"
+                                        data-ptr="link">Links (&lt;linkGrp>, &lt;link>)</a></li>
+                        <li><a href="#" class="preset"
+                                        data-wrapper="lg"
+                                        data-container="l"
+                                        data-ptr="ptr">Stand off poetry (&lt;lg>, &lt;l>)</a></li>
+                      </ul>
+                    </div>
+                    <form role="form" class="space-above">
+                      <div class="form-group">
+                        <label for="wrapper">Wrapper</label>
+                        <div class="input-group">
+                          <div class="input-group-addon">&nbsp;</div>
+                          <input type="text" class="form-control" id="wrapper"
+                                 value="app">
+                          <!-- <div class="input-group-addon">
+                            <a data-toggle="collapse" data-target="#att-wrapper" 
+                               class="plain collapsed" href="#">
+                              @
+                            </a>
+                          </div> -->
+                        </div>
+                      </div>
+                      <div id="att-wrapper" class="panel-collapse collapse">
+
+                      </div>
+                      <div class="form-group">
+                        <label for="grp">Grouping element</label>
+                        <div class="input-group">
+                          <div class="input-group-addon"><a class="plain remove on" href="#"></a></div>
+                          <input type="text" class="form-control" id="grp"
+                               value="rdgGrp">
+                          <!-- <div class="input-group-addon">
+                            <a data-toggle="collapse" data-target="#att-grp" 
+                               class="plain collapsed" href="#">
+                              @
+                            </a>
+                          </div> -->
+                        </div>
+                      </div>
+                      <div id="att-grp" class="panel-collapse collapse">
+                      
+                      </div>
+                      <div class="form-group">
+                        <label for="container">Container</label>
+                        <div class="input-group">
+                          <div class="input-group-addon"><a class="plain remove on " href="#"></a></div>
+                          <input type="text" class="form-control" id="container"
+                               value="rdg">
+                          <!-- <div class="input-group-addon">
+                            <a data-toggle="collapse" data-target="#att-container" 
+                               class="plain collapsed" href="#">
+                              @
+                            </a>
+                          </div> -->
+                        </div>
+                      </div>
+                      <div id="att-container" class="panel-collapse collapse">
+                        
+                      </div>
+                      <div class="form-group">
+                        <label for="ptr">Pointer</label>
+                        <div class="input-group">
+                          <div class="input-group-addon">&nbsp;</div>
+                          <input type="text" class="form-control" id="ptr"
+                               value="ptr">
+                          <!-- <div class="input-group-addon">
+                            <a data-toggle="collapse" data-target="#att-ptr" 
+                               class="plain" href="#">
+                              @
+                            </a>
+                          </div> -->
+                        </div>
+                      </div>
+                      <div id="att-ptr" class="panel-collapse collapse in">
+                        
+                      </div>
+                    </form>
+                    <button id="apply_els" class="btn btn-md pull-right">Apply</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div id="cur_entry"></div>
         </div>
         <div class="tab-pane" id="full"></div>
     </div>
   </div>
 
-  <!-- <div class="modal fade" id="opensources" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        
-      </div>
-    </div>
-  </div> -->
-  <!-- <span class="glyphicon glyphicon-magnet grouping"></span> -->
   <!-- BACKBONE TEMPLATES -->
   <script type="text/template" id="editor-tpl">
   <div class="edit">
@@ -70,21 +167,13 @@
           <div class="col-md-5 src-title">
             <%=source%>
           </div>
-          <div class="col-md-6 text-right">
-            <button type="button" class="btn btn-default btn-md" data-toggle="button">
-              <span class="glyphicon glyphicon-pencil"></span> Edit
-            </button>
-            <button type="button" class="btn btn-default btn-md">
-              <span class="glyphicon glyphicon-cloud-upload"></span> Save to server
-            </button>
-          </div>
         </div>
       </div>
       
       <div id="ed_<%=source%>" class="editor"></div>
       <span class="label label-info">Selected Elements</span>
     </div>
-    <div><button class="btn btn-xs btn-default pull-right add-empty">Add this source to the core as "empty"</button></div>
+    <div><button class="btn btn-xs btn-default pull-right add-empty">Add an empty container</button></div>
   </div>
   </script>
 
@@ -125,56 +214,37 @@
       </div>
   </script>
 
-  <script type="text/template" id="modal-sources">
-      <div class="checkbox">
-        <% _.each(scenes, function(s) { %>  
-          <label>
-            <input type="checkbox"> <%=s%>
-          </label>
-        <% }); %>
+  <script type="text/template" id="atts-tpl">
+    <div class="panel-default panel-att">
+      <div class="form-group">
+        <div id="<%=name%>"></div>
+        <!-- <a href="#" class="add_att">add new attribute</a> -->
       </div>
+    </div>
+  </script>
+
+  <script type="text/template" id="att-tpl">
+    <div class="input-group" id="<%=id%>">
+      <% if (target) {%>
+        <div class="input-group-addon">@</div>
+        <input type="text" class="form-control app_name"
+             value="<%=name%>">             
+      <%} else {%>
+        <div class="input-group-addon"><a class="plain rem_att" href="#" >&#x2716;</a></div>
+        <div class="input-group-addon">@</div>
+        <input type="text" class="form-control-static app_name"
+             value="<%=name%>"> 
+        <input type="text" class="form-control-static app_value"
+             value="<%=value%>"> 
+      <% } %>
+    </div>
   </script>
 
   <script type="text/template" id="entry-tpl"><button type="button" class="close">&times;</button><code class="language-markup"><%=escaped_xml%></code></script>
 
   
   <script src="dist/coreBuilder.js"></script>
-  <script type="text/javascript">
-
-    // Get documents (eventually move this under a utils namespace)
-    url = "rest_tmp/sources.json";
-    // url = "http://freischuetz-digital.de/freidi-tools/rest/documents/texts/";
-    $.get(url, function (data) {
-
-      sel = $("#sources select")
-
-      for (i=0; i<data.length; i++){
-        label = data[i].source.slice(0, -4)
-
-        if (data[i].scenes.length > 0){          
-          for (j=0; j<data[i].scenes.length; j++){   
-            opt = $("<option/>");         
-            scene = data[i].source + '?id=' + data[i].scenes[j].id
-            opt.attr("value", scene);
-            opt.text(label + " Act " + data[i].scenes[j].act + " Scene " + data[i].scenes[j].n);
-            sel.append(opt);           
-          }
-        }
-        else {
-          opt = $("<option/>");   
-          opt.attr("value", data[i].source);
-          opt.text(label);
-          sel.append(opt);
-        }        
-      }
-
-      // Start CoreBuilder UI
-      new coreBuilder.App({"data_url":"data"})
-      // new coreBuilder.App({"data_url":"http://freischuetz-digital.de/freidi-tools/rest/documents/texts"})
-
-    }, 'json')    
-
-  </script>
+  <script src="dist/main.js"></script>
 
 </body>
 </html>

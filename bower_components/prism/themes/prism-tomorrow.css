@@ -7,12 +7,13 @@
 code[class*="language-"],
 pre[class*="language-"] {
 	color: #ccc;
-	font-family: Consolas, Monaco, 'Andale Mono', monospace;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 	direction: ltr;
 	text-align: left;
 	white-space: pre;
 	word-spacing: normal;
 	word-break: normal;
+	word-wrap: normal;
 	line-height: 1.5;
 
 	-moz-tab-size: 4;
@@ -42,6 +43,7 @@ pre[class*="language-"] {
 :not(pre) > code[class*="language-"] {
 	padding: .1em;
 	border-radius: .3em;
+	white-space: normal;
 }
 
 .token.comment,
@@ -58,7 +60,8 @@ pre[class*="language-"] {
 
 .token.tag,
 .token.attr-name,
-.token.namespace {
+.token.namespace,
+.token.deleted {
 	color: #e2777a;
 }
 
@@ -101,10 +104,18 @@ pre[class*="language-"] {
 	color: #67cdcc;
 }
 
-.token.important {
+.token.important,
+.token.bold {
 	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
 }
 
 .token.entity {
 	cursor: help;
+}
+
+.token.inserted {
+	color: green;
 }

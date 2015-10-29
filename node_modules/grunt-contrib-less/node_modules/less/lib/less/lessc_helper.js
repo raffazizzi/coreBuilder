@@ -44,6 +44,7 @@ var lessc_helper = {
         console.log("  --source-map-basepath=X  Sets sourcemap base path, defaults to current working directory.");
         console.log("  --source-map-less-inline puts the less files into the map instead of referencing them");
         console.log("  --source-map-map-inline  puts the map (and any less files) into the output css file");
+        console.log("  --source-map-url=URL     the complete url and filename put in the less file");
         console.log("  -rp, --rootpath=URL      Set rootpath for url rewriting in relative imports and urls.");
         console.log("                           Works with or without the relative-urls option.");
         console.log("  -ru, --relative-urls     re-write relative urls to the base less file.");
@@ -52,6 +53,8 @@ var lessc_helper = {
         console.log("                           be removed in the future.");
         console.log("  -su=on|off               Allow mixed units, e.g. 1px+1em or 1px*1px which have units");
         console.log("  --strict-units=on|off    that cannot be represented.");
+        console.log("  --global-var='VAR=VALUE' Defines a variable that can be referenced by the file.");
+        console.log("  --modify-var='VAR=VALUE' Modifies a variable already declared in the file.");
         console.log("");
         console.log("-------------------------- Deprecated ----------------");
         console.log("  -O0, -O1, -O2            Set the parser's optimization level. The lower");

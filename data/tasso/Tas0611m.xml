@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:/home/rviglian/Projects/tasso/schema/tassotei.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>La bella pargoletta</title>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>University of Massachusetts Amherst</publisher>
+                <availability status="free">
+                    <p>CC BY SA</p>
+                </availability>
+            </publicationStmt>
+            <sourceDesc>
+                <bibl>
+                    <title>in Fiori musicali. Libro primo</title>
+                    <author role="composer">Bellaver, Vincenzo</author>
+                    <publisher>Vincenti</publisher>
+                    <pubPlace>Venetia</pubPlace>
+                    <date when="1587">1587</date>
+                    <idno type="RISM">1587-6</idno>
+                </bibl>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body xml:space="preserve">
+            <lg>
+                <head>Prima parte</head>
+                <l xml:id="l1">La bella pargoletta</l>
+                <l xml:id="l2"><seg xml:id="v1">Ch'anchor non sente</seg> amore</l>
+                <l xml:id="l3">Ne <seg xml:id="v2">pur noto ha per fam'</seg>il suo valore</l>
+                <l xml:id="l4"><seg xml:id="v3">Co' begl'occhi</seg> saetta</l>
+                <l xml:id="l5">E co'l <seg xml:id="v4">soave</seg> riso</l>
+                <l xml:id="l6">Ne <seg xml:id="v5">s’accorge che l’arme ha nel bel</seg> viso.</l>
+            </lg>
+            <lg>
+                <head>Seconda parte</head>
+                <l xml:id="l7"><seg xml:id="v6">Qual</seg> colp'ha <seg xml:id="v7">del</seg> morire</l>
+                <l xml:id="l8">De la trafitta gente</l>
+                <l xml:id="l9">Se non sa di ferire</l>
+                <l xml:id="l10">O <seg xml:id="v7">bellezza homicida</seg> &amp; innocente</l>
+                <l xml:id="l11">Temp<seg xml:id="v8">è ch'amor ti mostri</seg></l>
+                <l xml:id="l12"><seg xml:id="v9">Homai ne le tue piaghe i dolor</seg> nostri.</l>
+            </lg>
+        </body>
+    </text>
+</TEI>

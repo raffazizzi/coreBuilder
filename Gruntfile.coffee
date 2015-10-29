@@ -56,12 +56,13 @@ module.exports = (grunt) ->
       bower_js:
         options:
           separator: "\n"
-        src: ['bower_components/jquery/jquery.min.js', 
+        src: ['bower_components/jquery/jquery.min.js',
+              'bower_components/async/dist/async.min.js', 
               'bower_components/underscore/underscore-min.js', 
               'bower_components/backbone/backbone.js',
               'bower_components/bootstrap/dist/js/bootstrap.min.js',
-              'bower_components/bootstrap/js/tabs.js',
-              'bower_components/bootstrap-multiselect/js/bootstrap-multiselect.js',
+              'bower_components/bootstrap/js/tab.js',
+              'bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js',
               'bower_components/FileSaver/FileSaver.js',
               'bower_components/vkbeautify/index.js',
               'bower_components/prism/prism.js']

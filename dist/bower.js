@@ -1627,107 +1627,296 @@
  */
 
 if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict";function b(){var a=document.createElement("bootstrap"),b={WebkitTransition:"webkitTransitionEnd",MozTransition:"transitionend",OTransition:"oTransitionEnd otransitionend",transition:"transitionend"};for(var c in b)if(void 0!==a.style[c])return{end:b[c]}}a.fn.emulateTransitionEnd=function(b){var c=!1,d=this;a(this).one(a.support.transition.end,function(){c=!0});var e=function(){c||a(d).trigger(a.support.transition.end)};return setTimeout(e,b),this},a(function(){a.support.transition=b()})}(jQuery),+function(a){"use strict";var b='[data-dismiss="alert"]',c=function(c){a(c).on("click",b,this.close)};c.prototype.close=function(b){function c(){f.trigger("closed.bs.alert").remove()}var d=a(this),e=d.attr("data-target");e||(e=d.attr("href"),e=e&&e.replace(/.*(?=#[^\s]*$)/,""));var f=a(e);b&&b.preventDefault(),f.length||(f=d.hasClass("alert")?d:d.parent()),f.trigger(b=a.Event("close.bs.alert")),b.isDefaultPrevented()||(f.removeClass("in"),a.support.transition&&f.hasClass("fade")?f.one(a.support.transition.end,c).emulateTransitionEnd(150):c())};var d=a.fn.alert;a.fn.alert=function(b){return this.each(function(){var d=a(this),e=d.data("bs.alert");e||d.data("bs.alert",e=new c(this)),"string"==typeof b&&e[b].call(d)})},a.fn.alert.Constructor=c,a.fn.alert.noConflict=function(){return a.fn.alert=d,this},a(document).on("click.bs.alert.data-api",b,c.prototype.close)}(jQuery),+function(a){"use strict";var b=function(c,d){this.$element=a(c),this.options=a.extend({},b.DEFAULTS,d)};b.DEFAULTS={loadingText:"loading..."},b.prototype.setState=function(a){var b="disabled",c=this.$element,d=c.is("input")?"val":"html",e=c.data();a+="Text",e.resetText||c.data("resetText",c[d]()),c[d](e[a]||this.options[a]),setTimeout(function(){"loadingText"==a?c.addClass(b).attr(b,b):c.removeClass(b).removeAttr(b)},0)},b.prototype.toggle=function(){var a=this.$element.closest('[data-toggle="buttons"]'),b=!0;if(a.length){var c=this.$element.find("input");"radio"===c.prop("type")&&(c.prop("checked")&&this.$element.hasClass("active")?b=!1:a.find(".active").removeClass("active")),b&&c.prop("checked",!this.$element.hasClass("active")).trigger("change")}b&&this.$element.toggleClass("active")};var c=a.fn.button;a.fn.button=function(c){return this.each(function(){var d=a(this),e=d.data("bs.button"),f="object"==typeof c&&c;e||d.data("bs.button",e=new b(this,f)),"toggle"==c?e.toggle():c&&e.setState(c)})},a.fn.button.Constructor=b,a.fn.button.noConflict=function(){return a.fn.button=c,this},a(document).on("click.bs.button.data-api","[data-toggle^=button]",function(b){var c=a(b.target);c.hasClass("btn")||(c=c.closest(".btn")),c.button("toggle"),b.preventDefault()})}(jQuery),+function(a){"use strict";var b=function(b,c){this.$element=a(b),this.$indicators=this.$element.find(".carousel-indicators"),this.options=c,this.paused=this.sliding=this.interval=this.$active=this.$items=null,"hover"==this.options.pause&&this.$element.on("mouseenter",a.proxy(this.pause,this)).on("mouseleave",a.proxy(this.cycle,this))};b.DEFAULTS={interval:5e3,pause:"hover",wrap:!0},b.prototype.cycle=function(b){return b||(this.paused=!1),this.interval&&clearInterval(this.interval),this.options.interval&&!this.paused&&(this.interval=setInterval(a.proxy(this.next,this),this.options.interval)),this},b.prototype.getActiveIndex=function(){return this.$active=this.$element.find(".item.active"),this.$items=this.$active.parent().children(),this.$items.index(this.$active)},b.prototype.to=function(b){var c=this,d=this.getActiveIndex();return b>this.$items.length-1||0>b?void 0:this.sliding?this.$element.one("slid.bs.carousel",function(){c.to(b)}):d==b?this.pause().cycle():this.slide(b>d?"next":"prev",a(this.$items[b]))},b.prototype.pause=function(b){return b||(this.paused=!0),this.$element.find(".next, .prev").length&&a.support.transition.end&&(this.$element.trigger(a.support.transition.end),this.cycle(!0)),this.interval=clearInterval(this.interval),this},b.prototype.next=function(){return this.sliding?void 0:this.slide("next")},b.prototype.prev=function(){return this.sliding?void 0:this.slide("prev")},b.prototype.slide=function(b,c){var d=this.$element.find(".item.active"),e=c||d[b](),f=this.interval,g="next"==b?"left":"right",h="next"==b?"first":"last",i=this;if(!e.length){if(!this.options.wrap)return;e=this.$element.find(".item")[h]()}this.sliding=!0,f&&this.pause();var j=a.Event("slide.bs.carousel",{relatedTarget:e[0],direction:g});if(!e.hasClass("active")){if(this.$indicators.length&&(this.$indicators.find(".active").removeClass("active"),this.$element.one("slid.bs.carousel",function(){var b=a(i.$indicators.children()[i.getActiveIndex()]);b&&b.addClass("active")})),a.support.transition&&this.$element.hasClass("slide")){if(this.$element.trigger(j),j.isDefaultPrevented())return;e.addClass(b),e[0].offsetWidth,d.addClass(g),e.addClass(g),d.one(a.support.transition.end,function(){e.removeClass([b,g].join(" ")).addClass("active"),d.removeClass(["active",g].join(" ")),i.sliding=!1,setTimeout(function(){i.$element.trigger("slid.bs.carousel")},0)}).emulateTransitionEnd(600)}else{if(this.$element.trigger(j),j.isDefaultPrevented())return;d.removeClass("active"),e.addClass("active"),this.sliding=!1,this.$element.trigger("slid.bs.carousel")}return f&&this.cycle(),this}};var c=a.fn.carousel;a.fn.carousel=function(c){return this.each(function(){var d=a(this),e=d.data("bs.carousel"),f=a.extend({},b.DEFAULTS,d.data(),"object"==typeof c&&c),g="string"==typeof c?c:f.slide;e||d.data("bs.carousel",e=new b(this,f)),"number"==typeof c?e.to(c):g?e[g]():f.interval&&e.pause().cycle()})},a.fn.carousel.Constructor=b,a.fn.carousel.noConflict=function(){return a.fn.carousel=c,this},a(document).on("click.bs.carousel.data-api","[data-slide], [data-slide-to]",function(b){var c,d=a(this),e=a(d.attr("data-target")||(c=d.attr("href"))&&c.replace(/.*(?=#[^\s]+$)/,"")),f=a.extend({},e.data(),d.data()),g=d.attr("data-slide-to");g&&(f.interval=!1),e.carousel(f),(g=d.attr("data-slide-to"))&&e.data("bs.carousel").to(g),b.preventDefault()}),a(window).on("load",function(){a('[data-ride="carousel"]').each(function(){var b=a(this);b.carousel(b.data())})})}(jQuery),+function(a){"use strict";var b=function(c,d){this.$element=a(c),this.options=a.extend({},b.DEFAULTS,d),this.transitioning=null,this.options.parent&&(this.$parent=a(this.options.parent)),this.options.toggle&&this.toggle()};b.DEFAULTS={toggle:!0},b.prototype.dimension=function(){var a=this.$element.hasClass("width");return a?"width":"height"},b.prototype.show=function(){if(!this.transitioning&&!this.$element.hasClass("in")){var b=a.Event("show.bs.collapse");if(this.$element.trigger(b),!b.isDefaultPrevented()){var c=this.$parent&&this.$parent.find("> .panel > .in");if(c&&c.length){var d=c.data("bs.collapse");if(d&&d.transitioning)return;c.collapse("hide"),d||c.data("bs.collapse",null)}var e=this.dimension();this.$element.removeClass("collapse").addClass("collapsing")[e](0),this.transitioning=1;var f=function(){this.$element.removeClass("collapsing").addClass("in")[e]("auto"),this.transitioning=0,this.$element.trigger("shown.bs.collapse")};if(!a.support.transition)return f.call(this);var g=a.camelCase(["scroll",e].join("-"));this.$element.one(a.support.transition.end,a.proxy(f,this)).emulateTransitionEnd(350)[e](this.$element[0][g])}}},b.prototype.hide=function(){if(!this.transitioning&&this.$element.hasClass("in")){var b=a.Event("hide.bs.collapse");if(this.$element.trigger(b),!b.isDefaultPrevented()){var c=this.dimension();this.$element[c](this.$element[c]())[0].offsetHeight,this.$element.addClass("collapsing").removeClass("collapse").removeClass("in"),this.transitioning=1;var d=function(){this.transitioning=0,this.$element.trigger("hidden.bs.collapse").removeClass("collapsing").addClass("collapse")};return a.support.transition?(this.$element[c](0).one(a.support.transition.end,a.proxy(d,this)).emulateTransitionEnd(350),void 0):d.call(this)}}},b.prototype.toggle=function(){this[this.$element.hasClass("in")?"hide":"show"]()};var c=a.fn.collapse;a.fn.collapse=function(c){return this.each(function(){var d=a(this),e=d.data("bs.collapse"),f=a.extend({},b.DEFAULTS,d.data(),"object"==typeof c&&c);e||d.data("bs.collapse",e=new b(this,f)),"string"==typeof c&&e[c]()})},a.fn.collapse.Constructor=b,a.fn.collapse.noConflict=function(){return a.fn.collapse=c,this},a(document).on("click.bs.collapse.data-api","[data-toggle=collapse]",function(b){var c,d=a(this),e=d.attr("data-target")||b.preventDefault()||(c=d.attr("href"))&&c.replace(/.*(?=#[^\s]+$)/,""),f=a(e),g=f.data("bs.collapse"),h=g?"toggle":d.data(),i=d.attr("data-parent"),j=i&&a(i);g&&g.transitioning||(j&&j.find('[data-toggle=collapse][data-parent="'+i+'"]').not(d).addClass("collapsed"),d[f.hasClass("in")?"addClass":"removeClass"]("collapsed")),f.collapse(h)})}(jQuery),+function(a){"use strict";function b(){a(d).remove(),a(e).each(function(b){var d=c(a(this));d.hasClass("open")&&(d.trigger(b=a.Event("hide.bs.dropdown")),b.isDefaultPrevented()||d.removeClass("open").trigger("hidden.bs.dropdown"))})}function c(b){var c=b.attr("data-target");c||(c=b.attr("href"),c=c&&/#/.test(c)&&c.replace(/.*(?=#[^\s]*$)/,""));var d=c&&a(c);return d&&d.length?d:b.parent()}var d=".dropdown-backdrop",e="[data-toggle=dropdown]",f=function(b){a(b).on("click.bs.dropdown",this.toggle)};f.prototype.toggle=function(d){var e=a(this);if(!e.is(".disabled, :disabled")){var f=c(e),g=f.hasClass("open");if(b(),!g){if("ontouchstart"in document.documentElement&&!f.closest(".navbar-nav").length&&a('<div class="dropdown-backdrop"/>').insertAfter(a(this)).on("click",b),f.trigger(d=a.Event("show.bs.dropdown")),d.isDefaultPrevented())return;f.toggleClass("open").trigger("shown.bs.dropdown"),e.focus()}return!1}},f.prototype.keydown=function(b){if(/(38|40|27)/.test(b.keyCode)){var d=a(this);if(b.preventDefault(),b.stopPropagation(),!d.is(".disabled, :disabled")){var f=c(d),g=f.hasClass("open");if(!g||g&&27==b.keyCode)return 27==b.which&&f.find(e).focus(),d.click();var h=a("[role=menu] li:not(.divider):visible a",f);if(h.length){var i=h.index(h.filter(":focus"));38==b.keyCode&&i>0&&i--,40==b.keyCode&&i<h.length-1&&i++,~i||(i=0),h.eq(i).focus()}}}};var g=a.fn.dropdown;a.fn.dropdown=function(b){return this.each(function(){var c=a(this),d=c.data("bs.dropdown");d||c.data("bs.dropdown",d=new f(this)),"string"==typeof b&&d[b].call(c)})},a.fn.dropdown.Constructor=f,a.fn.dropdown.noConflict=function(){return a.fn.dropdown=g,this},a(document).on("click.bs.dropdown.data-api",b).on("click.bs.dropdown.data-api",".dropdown form",function(a){a.stopPropagation()}).on("click.bs.dropdown.data-api",e,f.prototype.toggle).on("keydown.bs.dropdown.data-api",e+", [role=menu]",f.prototype.keydown)}(jQuery),+function(a){"use strict";var b=function(b,c){this.options=c,this.$element=a(b),this.$backdrop=this.isShown=null,this.options.remote&&this.$element.load(this.options.remote)};b.DEFAULTS={backdrop:!0,keyboard:!0,show:!0},b.prototype.toggle=function(a){return this[this.isShown?"hide":"show"](a)},b.prototype.show=function(b){var c=this,d=a.Event("show.bs.modal",{relatedTarget:b});this.$element.trigger(d),this.isShown||d.isDefaultPrevented()||(this.isShown=!0,this.escape(),this.$element.on("click.dismiss.modal",'[data-dismiss="modal"]',a.proxy(this.hide,this)),this.backdrop(function(){var d=a.support.transition&&c.$element.hasClass("fade");c.$element.parent().length||c.$element.appendTo(document.body),c.$element.show(),d&&c.$element[0].offsetWidth,c.$element.addClass("in").attr("aria-hidden",!1),c.enforceFocus();var e=a.Event("shown.bs.modal",{relatedTarget:b});d?c.$element.find(".modal-dialog").one(a.support.transition.end,function(){c.$element.focus().trigger(e)}).emulateTransitionEnd(300):c.$element.focus().trigger(e)}))},b.prototype.hide=function(b){b&&b.preventDefault(),b=a.Event("hide.bs.modal"),this.$element.trigger(b),this.isShown&&!b.isDefaultPrevented()&&(this.isShown=!1,this.escape(),a(document).off("focusin.bs.modal"),this.$element.removeClass("in").attr("aria-hidden",!0).off("click.dismiss.modal"),a.support.transition&&this.$element.hasClass("fade")?this.$element.one(a.support.transition.end,a.proxy(this.hideModal,this)).emulateTransitionEnd(300):this.hideModal())},b.prototype.enforceFocus=function(){a(document).off("focusin.bs.modal").on("focusin.bs.modal",a.proxy(function(a){this.$element[0]===a.target||this.$element.has(a.target).length||this.$element.focus()},this))},b.prototype.escape=function(){this.isShown&&this.options.keyboard?this.$element.on("keyup.dismiss.bs.modal",a.proxy(function(a){27==a.which&&this.hide()},this)):this.isShown||this.$element.off("keyup.dismiss.bs.modal")},b.prototype.hideModal=function(){var a=this;this.$element.hide(),this.backdrop(function(){a.removeBackdrop(),a.$element.trigger("hidden.bs.modal")})},b.prototype.removeBackdrop=function(){this.$backdrop&&this.$backdrop.remove(),this.$backdrop=null},b.prototype.backdrop=function(b){var c=this.$element.hasClass("fade")?"fade":"";if(this.isShown&&this.options.backdrop){var d=a.support.transition&&c;if(this.$backdrop=a('<div class="modal-backdrop '+c+'" />').appendTo(document.body),this.$element.on("click.dismiss.modal",a.proxy(function(a){a.target===a.currentTarget&&("static"==this.options.backdrop?this.$element[0].focus.call(this.$element[0]):this.hide.call(this))},this)),d&&this.$backdrop[0].offsetWidth,this.$backdrop.addClass("in"),!b)return;d?this.$backdrop.one(a.support.transition.end,b).emulateTransitionEnd(150):b()}else!this.isShown&&this.$backdrop?(this.$backdrop.removeClass("in"),a.support.transition&&this.$element.hasClass("fade")?this.$backdrop.one(a.support.transition.end,b).emulateTransitionEnd(150):b()):b&&b()};var c=a.fn.modal;a.fn.modal=function(c,d){return this.each(function(){var e=a(this),f=e.data("bs.modal"),g=a.extend({},b.DEFAULTS,e.data(),"object"==typeof c&&c);f||e.data("bs.modal",f=new b(this,g)),"string"==typeof c?f[c](d):g.show&&f.show(d)})},a.fn.modal.Constructor=b,a.fn.modal.noConflict=function(){return a.fn.modal=c,this},a(document).on("click.bs.modal.data-api",'[data-toggle="modal"]',function(b){var c=a(this),d=c.attr("href"),e=a(c.attr("data-target")||d&&d.replace(/.*(?=#[^\s]+$)/,"")),f=e.data("modal")?"toggle":a.extend({remote:!/#/.test(d)&&d},e.data(),c.data());b.preventDefault(),e.modal(f,this).one("hide",function(){c.is(":visible")&&c.focus()})}),a(document).on("show.bs.modal",".modal",function(){a(document.body).addClass("modal-open")}).on("hidden.bs.modal",".modal",function(){a(document.body).removeClass("modal-open")})}(jQuery),+function(a){"use strict";var b=function(a,b){this.type=this.options=this.enabled=this.timeout=this.hoverState=this.$element=null,this.init("tooltip",a,b)};b.DEFAULTS={animation:!0,placement:"top",selector:!1,template:'<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',trigger:"hover focus",title:"",delay:0,html:!1,container:!1},b.prototype.init=function(b,c,d){this.enabled=!0,this.type=b,this.$element=a(c),this.options=this.getOptions(d);for(var e=this.options.trigger.split(" "),f=e.length;f--;){var g=e[f];if("click"==g)this.$element.on("click."+this.type,this.options.selector,a.proxy(this.toggle,this));else if("manual"!=g){var h="hover"==g?"mouseenter":"focus",i="hover"==g?"mouseleave":"blur";this.$element.on(h+"."+this.type,this.options.selector,a.proxy(this.enter,this)),this.$element.on(i+"."+this.type,this.options.selector,a.proxy(this.leave,this))}}this.options.selector?this._options=a.extend({},this.options,{trigger:"manual",selector:""}):this.fixTitle()},b.prototype.getDefaults=function(){return b.DEFAULTS},b.prototype.getOptions=function(b){return b=a.extend({},this.getDefaults(),this.$element.data(),b),b.delay&&"number"==typeof b.delay&&(b.delay={show:b.delay,hide:b.delay}),b},b.prototype.getDelegateOptions=function(){var b={},c=this.getDefaults();return this._options&&a.each(this._options,function(a,d){c[a]!=d&&(b[a]=d)}),b},b.prototype.enter=function(b){var c=b instanceof this.constructor?b:a(b.currentTarget)[this.type](this.getDelegateOptions()).data("bs."+this.type);return clearTimeout(c.timeout),c.hoverState="in",c.options.delay&&c.options.delay.show?(c.timeout=setTimeout(function(){"in"==c.hoverState&&c.show()},c.options.delay.show),void 0):c.show()},b.prototype.leave=function(b){var c=b instanceof this.constructor?b:a(b.currentTarget)[this.type](this.getDelegateOptions()).data("bs."+this.type);return clearTimeout(c.timeout),c.hoverState="out",c.options.delay&&c.options.delay.hide?(c.timeout=setTimeout(function(){"out"==c.hoverState&&c.hide()},c.options.delay.hide),void 0):c.hide()},b.prototype.show=function(){var b=a.Event("show.bs."+this.type);if(this.hasContent()&&this.enabled){if(this.$element.trigger(b),b.isDefaultPrevented())return;var c=this.tip();this.setContent(),this.options.animation&&c.addClass("fade");var d="function"==typeof this.options.placement?this.options.placement.call(this,c[0],this.$element[0]):this.options.placement,e=/\s?auto?\s?/i,f=e.test(d);f&&(d=d.replace(e,"")||"top"),c.detach().css({top:0,left:0,display:"block"}).addClass(d),this.options.container?c.appendTo(this.options.container):c.insertAfter(this.$element);var g=this.getPosition(),h=c[0].offsetWidth,i=c[0].offsetHeight;if(f){var j=this.$element.parent(),k=d,l=document.documentElement.scrollTop||document.body.scrollTop,m="body"==this.options.container?window.innerWidth:j.outerWidth(),n="body"==this.options.container?window.innerHeight:j.outerHeight(),o="body"==this.options.container?0:j.offset().left;d="bottom"==d&&g.top+g.height+i-l>n?"top":"top"==d&&g.top-l-i<0?"bottom":"right"==d&&g.right+h>m?"left":"left"==d&&g.left-h<o?"right":d,c.removeClass(k).addClass(d)}var p=this.getCalculatedOffset(d,g,h,i);this.applyPlacement(p,d),this.$element.trigger("shown.bs."+this.type)}},b.prototype.applyPlacement=function(a,b){var c,d=this.tip(),e=d[0].offsetWidth,f=d[0].offsetHeight,g=parseInt(d.css("margin-top"),10),h=parseInt(d.css("margin-left"),10);isNaN(g)&&(g=0),isNaN(h)&&(h=0),a.top=a.top+g,a.left=a.left+h,d.offset(a).addClass("in");var i=d[0].offsetWidth,j=d[0].offsetHeight;if("top"==b&&j!=f&&(c=!0,a.top=a.top+f-j),/bottom|top/.test(b)){var k=0;a.left<0&&(k=-2*a.left,a.left=0,d.offset(a),i=d[0].offsetWidth,j=d[0].offsetHeight),this.replaceArrow(k-e+i,i,"left")}else this.replaceArrow(j-f,j,"top");c&&d.offset(a)},b.prototype.replaceArrow=function(a,b,c){this.arrow().css(c,a?50*(1-a/b)+"%":"")},b.prototype.setContent=function(){var a=this.tip(),b=this.getTitle();a.find(".tooltip-inner")[this.options.html?"html":"text"](b),a.removeClass("fade in top bottom left right")},b.prototype.hide=function(){function b(){"in"!=c.hoverState&&d.detach()}var c=this,d=this.tip(),e=a.Event("hide.bs."+this.type);return this.$element.trigger(e),e.isDefaultPrevented()?void 0:(d.removeClass("in"),a.support.transition&&this.$tip.hasClass("fade")?d.one(a.support.transition.end,b).emulateTransitionEnd(150):b(),this.$element.trigger("hidden.bs."+this.type),this)},b.prototype.fixTitle=function(){var a=this.$element;(a.attr("title")||"string"!=typeof a.attr("data-original-title"))&&a.attr("data-original-title",a.attr("title")||"").attr("title","")},b.prototype.hasContent=function(){return this.getTitle()},b.prototype.getPosition=function(){var b=this.$element[0];return a.extend({},"function"==typeof b.getBoundingClientRect?b.getBoundingClientRect():{width:b.offsetWidth,height:b.offsetHeight},this.$element.offset())},b.prototype.getCalculatedOffset=function(a,b,c,d){return"bottom"==a?{top:b.top+b.height,left:b.left+b.width/2-c/2}:"top"==a?{top:b.top-d,left:b.left+b.width/2-c/2}:"left"==a?{top:b.top+b.height/2-d/2,left:b.left-c}:{top:b.top+b.height/2-d/2,left:b.left+b.width}},b.prototype.getTitle=function(){var a,b=this.$element,c=this.options;return a=b.attr("data-original-title")||("function"==typeof c.title?c.title.call(b[0]):c.title)},b.prototype.tip=function(){return this.$tip=this.$tip||a(this.options.template)},b.prototype.arrow=function(){return this.$arrow=this.$arrow||this.tip().find(".tooltip-arrow")},b.prototype.validate=function(){this.$element[0].parentNode||(this.hide(),this.$element=null,this.options=null)},b.prototype.enable=function(){this.enabled=!0},b.prototype.disable=function(){this.enabled=!1},b.prototype.toggleEnabled=function(){this.enabled=!this.enabled},b.prototype.toggle=function(b){var c=b?a(b.currentTarget)[this.type](this.getDelegateOptions()).data("bs."+this.type):this;c.tip().hasClass("in")?c.leave(c):c.enter(c)},b.prototype.destroy=function(){this.hide().$element.off("."+this.type).removeData("bs."+this.type)};var c=a.fn.tooltip;a.fn.tooltip=function(c){return this.each(function(){var d=a(this),e=d.data("bs.tooltip"),f="object"==typeof c&&c;e||d.data("bs.tooltip",e=new b(this,f)),"string"==typeof c&&e[c]()})},a.fn.tooltip.Constructor=b,a.fn.tooltip.noConflict=function(){return a.fn.tooltip=c,this}}(jQuery),+function(a){"use strict";var b=function(a,b){this.init("popover",a,b)};if(!a.fn.tooltip)throw new Error("Popover requires tooltip.js");b.DEFAULTS=a.extend({},a.fn.tooltip.Constructor.DEFAULTS,{placement:"right",trigger:"click",content:"",template:'<div class="popover"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'}),b.prototype=a.extend({},a.fn.tooltip.Constructor.prototype),b.prototype.constructor=b,b.prototype.getDefaults=function(){return b.DEFAULTS},b.prototype.setContent=function(){var a=this.tip(),b=this.getTitle(),c=this.getContent();a.find(".popover-title")[this.options.html?"html":"text"](b),a.find(".popover-content")[this.options.html?"html":"text"](c),a.removeClass("fade top bottom left right in"),a.find(".popover-title").html()||a.find(".popover-title").hide()},b.prototype.hasContent=function(){return this.getTitle()||this.getContent()},b.prototype.getContent=function(){var a=this.$element,b=this.options;return a.attr("data-content")||("function"==typeof b.content?b.content.call(a[0]):b.content)},b.prototype.arrow=function(){return this.$arrow=this.$arrow||this.tip().find(".arrow")},b.prototype.tip=function(){return this.$tip||(this.$tip=a(this.options.template)),this.$tip};var c=a.fn.popover;a.fn.popover=function(c){return this.each(function(){var d=a(this),e=d.data("bs.popover"),f="object"==typeof c&&c;e||d.data("bs.popover",e=new b(this,f)),"string"==typeof c&&e[c]()})},a.fn.popover.Constructor=b,a.fn.popover.noConflict=function(){return a.fn.popover=c,this}}(jQuery),+function(a){"use strict";function b(c,d){var e,f=a.proxy(this.process,this);this.$element=a(c).is("body")?a(window):a(c),this.$body=a("body"),this.$scrollElement=this.$element.on("scroll.bs.scroll-spy.data-api",f),this.options=a.extend({},b.DEFAULTS,d),this.selector=(this.options.target||(e=a(c).attr("href"))&&e.replace(/.*(?=#[^\s]+$)/,"")||"")+" .nav li > a",this.offsets=a([]),this.targets=a([]),this.activeTarget=null,this.refresh(),this.process()}b.DEFAULTS={offset:10},b.prototype.refresh=function(){var b=this.$element[0]==window?"offset":"position";this.offsets=a([]),this.targets=a([]);var c=this;this.$body.find(this.selector).map(function(){var d=a(this),e=d.data("target")||d.attr("href"),f=/^#\w/.test(e)&&a(e);return f&&f.length&&[[f[b]().top+(!a.isWindow(c.$scrollElement.get(0))&&c.$scrollElement.scrollTop()),e]]||null}).sort(function(a,b){return a[0]-b[0]}).each(function(){c.offsets.push(this[0]),c.targets.push(this[1])})},b.prototype.process=function(){var a,b=this.$scrollElement.scrollTop()+this.options.offset,c=this.$scrollElement[0].scrollHeight||this.$body[0].scrollHeight,d=c-this.$scrollElement.height(),e=this.offsets,f=this.targets,g=this.activeTarget;if(b>=d)return g!=(a=f.last()[0])&&this.activate(a);for(a=e.length;a--;)g!=f[a]&&b>=e[a]&&(!e[a+1]||b<=e[a+1])&&this.activate(f[a])},b.prototype.activate=function(b){this.activeTarget=b,a(this.selector).parents(".active").removeClass("active");var c=this.selector+'[data-target="'+b+'"],'+this.selector+'[href="'+b+'"]',d=a(c).parents("li").addClass("active");d.parent(".dropdown-menu").length&&(d=d.closest("li.dropdown").addClass("active")),d.trigger("activate.bs.scrollspy")};var c=a.fn.scrollspy;a.fn.scrollspy=function(c){return this.each(function(){var d=a(this),e=d.data("bs.scrollspy"),f="object"==typeof c&&c;e||d.data("bs.scrollspy",e=new b(this,f)),"string"==typeof c&&e[c]()})},a.fn.scrollspy.Constructor=b,a.fn.scrollspy.noConflict=function(){return a.fn.scrollspy=c,this},a(window).on("load",function(){a('[data-spy="scroll"]').each(function(){var b=a(this);b.scrollspy(b.data())})})}(jQuery),+function(a){"use strict";var b=function(b){this.element=a(b)};b.prototype.show=function(){var b=this.element,c=b.closest("ul:not(.dropdown-menu)"),d=b.data("target");if(d||(d=b.attr("href"),d=d&&d.replace(/.*(?=#[^\s]*$)/,"")),!b.parent("li").hasClass("active")){var e=c.find(".active:last a")[0],f=a.Event("show.bs.tab",{relatedTarget:e});if(b.trigger(f),!f.isDefaultPrevented()){var g=a(d);this.activate(b.parent("li"),c),this.activate(g,g.parent(),function(){b.trigger({type:"shown.bs.tab",relatedTarget:e})})}}},b.prototype.activate=function(b,c,d){function e(){f.removeClass("active").find("> .dropdown-menu > .active").removeClass("active"),b.addClass("active"),g?(b[0].offsetWidth,b.addClass("in")):b.removeClass("fade"),b.parent(".dropdown-menu")&&b.closest("li.dropdown").addClass("active"),d&&d()}var f=c.find("> .active"),g=d&&a.support.transition&&f.hasClass("fade");g?f.one(a.support.transition.end,e).emulateTransitionEnd(150):e(),f.removeClass("in")};var c=a.fn.tab;a.fn.tab=function(c){return this.each(function(){var d=a(this),e=d.data("bs.tab");e||d.data("bs.tab",e=new b(this)),"string"==typeof c&&e[c]()})},a.fn.tab.Constructor=b,a.fn.tab.noConflict=function(){return a.fn.tab=c,this},a(document).on("click.bs.tab.data-api",'[data-toggle="tab"], [data-toggle="pill"]',function(b){b.preventDefault(),a(this).tab("show")})}(jQuery),+function(a){"use strict";var b=function(c,d){this.options=a.extend({},b.DEFAULTS,d),this.$window=a(window).on("scroll.bs.affix.data-api",a.proxy(this.checkPosition,this)).on("click.bs.affix.data-api",a.proxy(this.checkPositionWithEventLoop,this)),this.$element=a(c),this.affixed=this.unpin=null,this.checkPosition()};b.RESET="affix affix-top affix-bottom",b.DEFAULTS={offset:0},b.prototype.checkPositionWithEventLoop=function(){setTimeout(a.proxy(this.checkPosition,this),1)},b.prototype.checkPosition=function(){if(this.$element.is(":visible")){var c=a(document).height(),d=this.$window.scrollTop(),e=this.$element.offset(),f=this.options.offset,g=f.top,h=f.bottom;"object"!=typeof f&&(h=g=f),"function"==typeof g&&(g=f.top()),"function"==typeof h&&(h=f.bottom());var i=null!=this.unpin&&d+this.unpin<=e.top?!1:null!=h&&e.top+this.$element.height()>=c-h?"bottom":null!=g&&g>=d?"top":!1;this.affixed!==i&&(this.unpin&&this.$element.css("top",""),this.affixed=i,this.unpin="bottom"==i?e.top-d:null,this.$element.removeClass(b.RESET).addClass("affix"+(i?"-"+i:"")),"bottom"==i&&this.$element.offset({top:document.body.offsetHeight-h-this.$element.height()}))}};var c=a.fn.affix;a.fn.affix=function(c){return this.each(function(){var d=a(this),e=d.data("bs.affix"),f="object"==typeof c&&c;e||d.data("bs.affix",e=new b(this,f)),"string"==typeof c&&e[c]()})},a.fn.affix.Constructor=b,a.fn.affix.noConflict=function(){return a.fn.affix=c,this},a(window).on("load",function(){a('[data-spy="affix"]').each(function(){var b=a(this),c=b.data();c.offset=c.offset||{},c.offsetBottom&&(c.offset.bottom=c.offsetBottom),c.offsetTop&&(c.offset.top=c.offsetTop),b.affix(c)})})}(jQuery);
+/* ========================================================================
+ * Bootstrap: tab.js v3.0.3
+ * http://getbootstrap.com/javascript/#tabs
+ * ========================================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ======================================================================== */
+
+
++function ($) { "use strict";
+
+  // TAB CLASS DEFINITION
+  // ====================
+
+  var Tab = function (element) {
+    this.element = $(element)
+  }
+
+  Tab.prototype.show = function () {
+    var $this    = this.element
+    var $ul      = $this.closest('ul:not(.dropdown-menu)')
+    var selector = $this.data('target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
+    }
+
+    if ($this.parent('li').hasClass('active')) return
+
+    var previous = $ul.find('.active:last a')[0]
+    var e        = $.Event('show.bs.tab', {
+      relatedTarget: previous
+    })
+
+    $this.trigger(e)
+
+    if (e.isDefaultPrevented()) return
+
+    var $target = $(selector)
+
+    this.activate($this.parent('li'), $ul)
+    this.activate($target, $target.parent(), function () {
+      $this.trigger({
+        type: 'shown.bs.tab'
+      , relatedTarget: previous
+      })
+    })
+  }
+
+  Tab.prototype.activate = function (element, container, callback) {
+    var $active    = container.find('> .active')
+    var transition = callback
+      && $.support.transition
+      && $active.hasClass('fade')
+
+    function next() {
+      $active
+        .removeClass('active')
+        .find('> .dropdown-menu > .active')
+        .removeClass('active')
+
+      element.addClass('active')
+
+      if (transition) {
+        element[0].offsetWidth // reflow for transition
+        element.addClass('in')
+      } else {
+        element.removeClass('fade')
+      }
+
+      if (element.parent('.dropdown-menu')) {
+        element.closest('li.dropdown').addClass('active')
+      }
+
+      callback && callback()
+    }
+
+    transition ?
+      $active
+        .one($.support.transition.end, next)
+        .emulateTransitionEnd(150) :
+      next()
+
+    $active.removeClass('in')
+  }
+
+
+  // TAB PLUGIN DEFINITION
+  // =====================
+
+  var old = $.fn.tab
+
+  $.fn.tab = function ( option ) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.tab')
+
+      if (!data) $this.data('bs.tab', (data = new Tab(this)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  $.fn.tab.Constructor = Tab
+
+
+  // TAB NO CONFLICT
+  // ===============
+
+  $.fn.tab.noConflict = function () {
+    $.fn.tab = old
+    return this
+  }
+
+
+  // TAB DATA-API
+  // ============
+
+  $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+    e.preventDefault()
+    $(this).tab('show')
+  })
+
+}(jQuery);
+
 /**
- * Bootstrap Multiselect v0.9.8 (https://github.com/davidstutz/bootstrap-multiselect)
+ * Bootstrap Multiselect (https://github.com/davidstutz/bootstrap-multiselect)
  * 
- * Copyright 2012 - 2014 David Stutz
+ * Apache License, Version 2.0:
+ * Copyright (c) 2012 - 2015 David Stutz
  * 
- * Dual licensed under the BSD-3-Clause and the Apache License, Version 2.0.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a
+ * copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ * 
+ * BSD 3-Clause License:
+ * Copyright (c) 2012 - 2015 David Stutz
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    - Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *    - Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *    - Neither the name of David Stutz nor the names of its contributors may be
+ *      used to endorse or promote products derived from this software without
+ *      specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-!function($) {
- 
+!function ($) {
     "use strict";// jshint ;_;
 
     if (typeof ko !== 'undefined' && ko.bindingHandlers && !ko.bindingHandlers.multiselect) {
         ko.bindingHandlers.multiselect = {
+            after: ['options', 'value', 'selectedOptions'],
 
-            init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var $element = $(element);
+                var config = ko.toJS(valueAccessor());
 
-                var listOfSelectedItems = allBindingsAccessor().selectedOptions;
-                var config = ko.utils.unwrapObservable(valueAccessor());
+                $element.multiselect(config);
 
-                $(element).multiselect(config);
-
-                if (isObservableArray(listOfSelectedItems)) {
-                    
-                    // Set the initial selection state on the multiselect list.
-                    $(element).multiselect('select', ko.utils.unwrapObservable(listOfSelectedItems));
-                    
-                    // Subscribe to the selectedOptions: ko.observableArray
-                    listOfSelectedItems.subscribe(function (changes) {
-                        var addedArray = [], deletedArray = [];
-                        forEach(changes, function (change) {
-                            switch (change.status) {
-                                case 'added':
-                                    addedArray.push(change.value);
-                                    break;
-                                case 'deleted':
-                                    deletedArray.push(change.value);
-                                    break;
-                            }
+                if (allBindings.has('options')) {
+                    var options = allBindings.get('options');
+                    if (ko.isObservable(options)) {
+                        ko.computed({
+                            read: function() {
+                                options();
+                                setTimeout(function() {
+                                    var ms = $element.data('multiselect');
+                                    if (ms)
+                                        ms.updateOriginalOptions();//Not sure how beneficial this is.
+                                    $element.multiselect('rebuild');
+                                }, 1);
+                            },
+                            disposeWhenNodeIsRemoved: element
                         });
-                        
-                        if (addedArray.length > 0) {
-                            $(element).multiselect('select', addedArray);
-                        }
-                        
-                        if (deletedArray.length > 0) {
-                            $(element).multiselect('deselect', deletedArray);
-                        }
-                    }, null, "arrayChange");
+                    }
                 }
+
+                //value and selectedOptions are two-way, so these will be triggered even by our own actions.
+                //It needs some way to tell if they are triggered because of us or because of outside change.
+                //It doesn't loop but it's a waste of processing.
+                if (allBindings.has('value')) {
+                    var value = allBindings.get('value');
+                    if (ko.isObservable(value)) {
+                        ko.computed({
+                            read: function() {
+                                value();
+                                setTimeout(function() {
+                                    $element.multiselect('refresh');
+                                }, 1);
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        }).extend({ rateLimit: 100, notifyWhenChangesStop: true });
+                    }
+                }
+
+                //Switched from arrayChange subscription to general subscription using 'refresh'.
+                //Not sure performance is any better using 'select' and 'deselect'.
+                if (allBindings.has('selectedOptions')) {
+                    var selectedOptions = allBindings.get('selectedOptions');
+                    if (ko.isObservable(selectedOptions)) {
+                        ko.computed({
+                            read: function() {
+                                selectedOptions();
+                                setTimeout(function() {
+                                    $element.multiselect('refresh');
+                                }, 1);
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        }).extend({ rateLimit: 100, notifyWhenChangesStop: true });
+                    }
+                }
+
+                ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                    $element.multiselect('destroy');
+                });
             },
 
-            update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            update: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var $element = $(element);
+                var config = ko.toJS(valueAccessor());
 
-                var listOfItems = allBindingsAccessor().options,
-                    ms = $(element).data('multiselect'),
-                    config = ko.utils.unwrapObservable(valueAccessor());
-
-                if (isObservableArray(listOfItems)) {
-                    // Subscribe to the options: ko.observableArray incase it changes later
-                    listOfItems.subscribe(function (theArray) {
-                        $(element).multiselect('rebuild');
-                    });
-                }
-
-                if (!ms) {
-                    $(element).multiselect(config);
-                }
-                else {
-                    ms.updateOriginalOptions();
-                }
+                $element.multiselect('setOptions', config);
+                $element.multiselect('rebuild');
             }
         };
     }
 
-    function isObservableArray(obj) {
-        return ko.isObservable(obj) && !(obj.destroyAll === undefined);
-    }
-
     function forEach(array, callback) {
         for (var index = 0; index < array.length; ++index) {
-            callback(array[index]);
+            callback(array[index], index);
         }
     }
 
     /**
      * Constructor to create a new multiselect using the given select.
-     * 
+     *
      * @param {jQuery} select
      * @param {Object} options
      * @returns {Multiselect}
      */
     function Multiselect(select, options) {
 
-        this.options = this.mergeOptions(options);
         this.$select = $(select);
+        
+        // Placeholder via data attributes
+        if (this.$select.attr("data-placeholder")) {
+            options.nonSelectedText = this.$select.data("placeholder");
+        }
+        
+        this.options = this.mergeOptions($.extend({}, options, this.$select.data()));
 
         // Initialization.
         // We have to clone to create a new reference.
         this.originalOptions = this.$select.clone()[0].options;
         this.query = '';
         this.searchTimeout = null;
+        this.lastToggledInput = null
 
         this.options.multiple = this.$select.attr('multiple') === "multiple";
         this.options.onChange = $.proxy(this.options.onChange, this);
@@ -1743,12 +1932,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         this.buildSelectAll();
         this.buildDropdownOptions();
         this.buildFilter();
-        
+
         this.updateButtonText();
         this.updateSelectAll();
-        
-        if (this.options.disableIfEmpty) {
-            this.disableIfEmpty();
+
+        if (this.options.disableIfEmpty && $('option', this.$select).length <= 0) {
+            this.disable();
         }
         
         this.$select.hide().after(this.$container);
@@ -1768,21 +1957,33 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
              */
             buttonText: function(options, select) {
                 if (options.length === 0) {
-                    return this.nonSelectedText + ' <b class="caret"></b>';
+                    return this.nonSelectedText;
                 }
-                else {
-                    if (options.length > this.numberDisplayed) {
-                        return options.length + ' ' + this.nSelectedText + ' <b class="caret"></b>';
+                else if (this.allSelectedText 
+                            && options.length === $('option', $(select)).length 
+                            && $('option', $(select)).length !== 1 
+                            && this.multiple) {
+
+                    if (this.selectAllNumber) {
+                        return this.allSelectedText + ' (' + options.length + ')';
                     }
                     else {
-                        var selected = '';
-                        options.each(function() {
-                            var label = ($(this).attr('label') !== undefined) ? $(this).attr('label') : $(this).html();
-
-                            selected += label + ', ';
-                        });
-                        return selected.substr(0, selected.length - 2) + ' <b class="caret"></b>';
+                        return this.allSelectedText;
                     }
+                }
+                else if (options.length > this.numberDisplayed) {
+                    return options.length + ' ' + this.nSelectedText;
+                }
+                else {
+                    var selected = '';
+                    var delimiter = this.delimiterText;
+                    
+                    options.each(function() {
+                        var label = ($(this).attr('label') !== undefined) ? $(this).attr('label') : $(this).text();
+                        selected += label + delimiter;
+                    });
+                    
+                    return selected.substr(0, selected.length - 2);
                 }
             },
             /**
@@ -1798,20 +1999,23 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 }
                 else {
                     var selected = '';
+                    var delimiter = this.delimiterText;
+                    
                     options.each(function () {
-                        selected += $(this).text() + ', ';
+                        var label = ($(this).attr('label') !== undefined) ? $(this).attr('label') : $(this).text();
+                        selected += label + delimiter;
                     });
                     return selected.substr(0, selected.length - 2);
                 }
             },
             /**
              * Create a label.
-             * 
+             *
              * @param {jQuery} element
              * @returns {String}
              */
-            label: function(element){
-                return $(element).attr('label') || $(element).html();
+            optionLabel: function(element){
+                return $(element).attr('label') || $(element).text();
             },
             /**
              * Triggered on change of the multiselect.
@@ -1826,19 +2030,19 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             },
             /**
              * Triggered when the dropdown is shown.
-             * 
+             *
              * @param {jQuery} event
              */
             onDropdownShow: function(event) {
-                
+
             },
             /**
              * Triggered when the dropdown is hidden.
-             * 
+             *
              * @param {jQuery} event
              */
             onDropdownHide: function(event) {
-                
+
             },
             /**
              * Triggered after the dropdown is shown.
@@ -1856,11 +2060,19 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             onDropdownHidden: function(event) {
                 
             },
+            /**
+             * Triggered on select all.
+             */
+            onSelectAll: function() {
+                
+            },
+            enableHTML: false,
             buttonClass: 'btn btn-default',
-            dropRight: false,
-            selectedClass: 'active',
+            inheritClass: false,
             buttonWidth: 'auto',
             buttonContainer: '<div class="btn-group" />',
+            dropRight: false,
+            selectedClass: 'active',
             // Maximum height of the dropdown menu.
             // If maximum height is exceeded a scrollbar will be displayed.
             maxHeight: false,
@@ -1869,23 +2081,30 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             includeSelectAllIfMoreThan: 0,
             selectAllText: ' Select all',
             selectAllValue: 'multiselect-all',
+            selectAllName: false,
+            selectAllNumber: true,
             enableFiltering: false,
             enableCaseInsensitiveFiltering: false,
+            enableClickableOptGroups: false,
             filterPlaceholder: 'Search',
             // possible options: 'text', 'value', 'both'
             filterBehavior: 'text',
+            includeFilterClearBtn: true,
             preventInputChangeEvent: false,
             nonSelectedText: 'None selected',
             nSelectedText: 'selected',
+            allSelectedText: 'All selected',
             numberDisplayed: 3,
             disableIfEmpty: false,
+            delimiterText: ', ',
             templates: {
-                button: '<button type="button" class="multiselect dropdown-toggle" data-toggle="dropdown"></button>',
+                button: '<button type="button" class="multiselect dropdown-toggle" data-toggle="dropdown"><span class="multiselect-selected-text"></span> <b class="caret"></b></button>',
                 ul: '<ul class="multiselect-container dropdown-menu"></ul>',
                 filter: '<li class="multiselect-item filter"><div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span><input class="form-control multiselect-search" type="text"></div></li>',
-                li: '<li><a href="javascript:void(0);"><label></label></a></li>',
+                filterClearBtn: '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="glyphicon glyphicon-remove-circle"></i></button></span>',
+                li: '<li><a tabindex="0"><label></label></a></li>',
                 divider: '<li class="multiselect-item divider"></li>',
-                liGroup: '<li class="multiselect-item group"><label class="multiselect-group"></label></li>'
+                liGroup: '<li class="multiselect-item multiselect-group"><label></label></li>'
             }
         },
 
@@ -1907,7 +2126,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
          */
         buildButton: function() {
             this.$button = $(this.options.templates.button).addClass(this.options.buttonClass);
-
+            if (this.$select.attr('class') && this.options.inheritClass) {
+                this.$button.addClass(this.$select.attr('class'));
+            }
             // Adopt active state.
             if (this.$select.prop('disabled')) {
                 this.disable();
@@ -1919,7 +2140,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             // Manually add button width if set.
             if (this.options.buttonWidth && this.options.buttonWidth !== 'auto') {
                 this.$button.css({
-                    'width' : this.options.buttonWidth
+                    'width' : this.options.buttonWidth,
+                    'overflow' : 'hidden',
+                    'text-overflow' : 'ellipsis'
                 });
                 this.$container.css({
                     'width': this.options.buttonWidth
@@ -1968,12 +2191,13 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         buildDropdownOptions: function() {
 
             this.$select.children().each($.proxy(function(index, element) {
-                
+
+                var $element = $(element);
                 // Support optgroups and options without a group simultaneously.
-                var tag = $(element).prop('tagName')
+                var tag = $element.prop('tagName')
                     .toLowerCase();
             
-                if ($(element).prop('value') === this.options.selectAllValue) {
+                if ($element.prop('value') === this.options.selectAllValue) {
                     return;
                 }
 
@@ -1982,7 +2206,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 }
                 else if (tag === 'option') {
 
-                    if ($(element).data('role') === 'divider') {
+                    if ($element.data('role') === 'divider') {
                         this.createDivider();
                     }
                     else {
@@ -1990,7 +2214,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                     }
 
                 }
-                
+
                 // Other illegal tags will be ignored.
             }, this));
 
@@ -2004,11 +2228,11 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 // Apply or unapply the configured selected class.
                 if (this.options.selectedClass) {
                     if (checked) {
-                        $target.parents('li')
+                        $target.closest('li')
                             .addClass(this.options.selectedClass);
                     }
                     else {
-                        $target.parents('li')
+                        $target.closest('li')
                             .removeClass(this.options.selectedClass);
                     }
                 }
@@ -2040,7 +2264,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                         else {
                             // Unselect all other options and corresponding checkboxes.
                             if (this.options.selectedClass) {
-                                $($checkboxesNotThis).parents('li').removeClass(this.options.selectedClass);
+                                $($checkboxesNotThis).closest('li').removeClass(this.options.selectedClass);
                             }
 
                             $($checkboxesNotThis).prop('checked', false);
@@ -2051,7 +2275,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                         }
 
                         if (this.options.selectedClass === "active") {
-                            $optionsNotThis.parents("a").css("outline", "");
+                            $optionsNotThis.closest("a").css("outline", "");
                         }
                     }
                     else {
@@ -2064,7 +2288,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
                 this.updateButtonText();
                 this.updateSelectAll();
-                
+
                 this.options.onChange($option, checked);
 
                 if(this.options.preventInputChangeEvent) {
@@ -2072,53 +2296,77 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 }
             }, this));
 
-            $('li a', this.$ul).on('touchstart click', function(event) {
+            $('li a', this.$ul).on('mousedown', function(e) {
+                if (e.shiftKey) {
+                    // Prevent selecting text by Shift+click
+                    return false;
+                }
+            });
+        
+            $('li a', this.$ul).on('touchstart click', $.proxy(function(event) {
                 event.stopPropagation();
 
                 var $target = $(event.target);
-
-                if (event.shiftKey) {
+                
+                if (event.shiftKey && this.options.multiple) {
+                    if($target.is("label")){ // Handles checkbox selection manually (see https://github.com/davidstutz/bootstrap-multiselect/issues/431)
+                        event.preventDefault();
+                        $target = $target.find("input");
+                        $target.prop("checked", !$target.prop("checked"));
+                    }
                     var checked = $target.prop('checked') || false;
 
-                    if (checked) {
-                        var prev = $target.parents('li:last')
-                            .siblings('li[class="active"]:first');
-
-                        var currentIdx = $target.parents('li')
-                            .index();
-                        var prevIdx = prev.index();
-
-                        if (currentIdx > prevIdx) {
-                            $target.parents("li:last").prevUntil(prev).each(
-                                function() {
-                                    $(this).find("input:first").prop("checked", true)
-                                        .trigger("change");
-                                }
-                            );
+                    if (this.lastToggledInput !== null && this.lastToggledInput !== $target) { // Make sure we actually have a range
+                        var from = $target.closest("li").index();
+                        var to = this.lastToggledInput.closest("li").index();
+                        
+                        if (from > to) { // Swap the indices
+                            var tmp = to;
+                            to = from;
+                            from = tmp;
                         }
-                        else {
-                            $target.parents("li:last").nextUntil(prev).each(
-                                function() {
-                                    $(this).find("input:first").prop("checked", true)
-                                        .trigger("change");
-                                }
-                            );
+                        
+                        // Make sure we grab all elements since slice excludes the last index
+                        ++to;
+                        
+                        // Change the checkboxes and underlying options
+                        var range = this.$ul.find("li").slice(from, to).find("input");
+                        
+                        range.prop('checked', checked);
+                        
+                        if (this.options.selectedClass) {
+                            range.closest('li')
+                                .toggleClass(this.options.selectedClass, checked);
                         }
+                        
+                        for (var i = 0, j = range.length; i < j; i++) {
+                            var $checkbox = $(range[i]);
+
+                            var $option = this.getOptionByValue($checkbox.val());
+
+                            $option.prop('selected', checked);
+                        }                   
                     }
+                    
+                    // Trigger the select "change" event
+                    $target.trigger("change");
+                }
+                
+                // Remembers last clicked option
+                if($target.is("input") && !$target.closest("li").is(".multiselect-item")){
+                    this.lastToggledInput = $target;
                 }
 
                 $target.blur();
-            });
+            }, this));
 
             // Keyboard support.
             this.$container.off('keydown.multiselect').on('keydown.multiselect', $.proxy(function(event) {
                 if ($('input[type="text"]', this.$container).is(':focus')) {
                     return;
                 }
-                if ((event.keyCode === 9 || event.keyCode === 27)
-                        && this.$container.hasClass('open')) {
-                    
-                    // Close on tab or escape.
+
+                if (event.keyCode === 9 && this.$container.hasClass('open')) {
                     this.$button.click();
                 }
                 else {
@@ -2156,35 +2404,64 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                     event.preventDefault();
                 }
             }, this));
+
+            if(this.options.enableClickableOptGroups && this.options.multiple) {
+                $('li.multiselect-group', this.$ul).on('click', $.proxy(function(event) {
+                    event.stopPropagation();
+
+                    var group = $(event.target).parent();
+
+                    // Search all option in optgroup
+                    var $options = group.nextUntil('li.multiselect-group');
+                    var $visibleOptions = $options.filter(":visible:not(.disabled)");
+
+                    // check or uncheck items
+                    var allChecked = true;
+                    var optionInputs = $visibleOptions.find('input');
+                    optionInputs.each(function() {
+                        allChecked = allChecked && $(this).prop('checked');
+                    });
+
+                    optionInputs.prop('checked', !allChecked).trigger('change');
+               }, this));
+            }
         },
 
         /**
          * Create an option using the given select option.
-         * 
+         *
          * @param {jQuery} element
          */
         createOptionValue: function(element) {
-            if ($(element).is(':selected')) {
-                $(element).prop('selected', true);
+            var $element = $(element);
+            if ($element.is(':selected')) {
+                $element.prop('selected', true);
             }
 
             // Support the label attribute on options.
-            var label = this.options.label(element);
-            var value = $(element).val();
+            var label = this.options.optionLabel(element);
+            var value = $element.val();
             var inputType = this.options.multiple ? "checkbox" : "radio";
 
             var $li = $(this.options.templates.li);
-            $('label', $li).addClass(inputType);
-            
-            if (this.options.checkboxName) {
-                $('label', $li).append('<input type="' + inputType + '" name="' + this.options.checkboxName + '" />');
+            var $label = $('label', $li);
+            $label.addClass(inputType);
+
+            if (this.options.enableHTML) {
+                $label.html(" " + label);
             }
             else {
-                $('label', $li).append('<input type="' + inputType + '" />');
+                $label.text(" " + label);
             }
-            
-            var selected = $(element).prop('selected') || false;
-            var $checkbox = $('input', $li);
+        
+            var $checkbox = $('<input/>').attr('type', inputType);
+
+            if (this.options.checkboxName) {
+                $checkbox.attr('name', this.options.checkboxName);
+            }
+            $label.prepend($checkbox);
+
+            var selected = $element.prop('selected') || false;
             $checkbox.val(value);
 
             if (value === this.options.selectAllValue) {
@@ -2193,30 +2470,30 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                     .addClass('multiselect-all');
             }
 
-            $('label', $li).append(" " + label);
+            $label.attr('title', $element.attr('title'));
 
             this.$ul.append($li);
 
-            if ($(element).is(':disabled')) {
+            if ($element.is(':disabled')) {
                 $checkbox.attr('disabled', 'disabled')
                     .prop('disabled', true)
-                    .parents('a')
+                    .closest('a')
                     .attr("tabindex", "-1")
-                    .parents('li')
+                    .closest('li')
                     .addClass('disabled');
             }
 
             $checkbox.prop('checked', selected);
 
             if (selected && this.options.selectedClass) {
-                $checkbox.parents('li')
+                $checkbox.closest('li')
                     .addClass(this.options.selectedClass);
             }
         },
 
         /**
          * Creates a divider using the given select option.
-         * 
+         *
          * @param {jQuery} element
          */
         createDivider: function(element) {
@@ -2226,7 +2503,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         /**
          * Creates an optgroup.
-         * 
+         *
          * @param {jQuery} group
          */
         createOptgroup: function(group) {
@@ -2234,7 +2511,17 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
             // Add a header for the group.
             var $li = $(this.options.templates.liGroup);
-            $('label', $li).text(groupName);
+            
+            if (this.options.enableHTML) {
+                $('label', $li).html(groupName);
+            }
+            else {
+                $('label', $li).text(groupName);
+            }
+            
+            if (this.options.enableClickableOptGroups) {
+                $li.addClass('multiselect-group-clickable');
+            }
 
             this.$ul.append($li);
 
@@ -2254,11 +2541,15 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
          * Checks if a select all has already been created.
          */
         buildSelectAll: function() {
-            var alreadyHasSelectAll = this.hasSelectAll();
+            if (typeof this.options.selectAllValue === 'number') {
+                this.options.selectAllValue = this.options.selectAllValue.toString();
+            }
             
+            var alreadyHasSelectAll = this.hasSelectAll();
+
             if (!alreadyHasSelectAll && this.options.includeSelectAllOption && this.options.multiple
                     && $('option', this.$select).length > this.options.includeSelectAllIfMoreThan) {
-                
+
                 // Check whether to add a divider after the select all.
                 if (this.options.includeSelectAllDivider) {
                     this.$ul.prepend($(this.options.templates.divider));
@@ -2267,11 +2558,18 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 var $li = $(this.options.templates.li);
                 $('label', $li).addClass("checkbox");
                 
-                if (this.options.checkboxName) {
-                    $('label', $li).append('<input type="checkbox" name="' + this.options.checkboxName + '" />');
+                if (this.options.enableHTML) {
+                    $('label', $li).html(" " + this.options.selectAllText);
                 }
                 else {
-                    $('label', $li).append('<input type="checkbox" />');
+                    $('label', $li).text(" " + this.options.selectAllText);
+                }
+                
+                if (this.options.selectAllName) {
+                    $('label', $li).prepend('<input type="checkbox" name="' + this.options.selectAllName + '" />');
+                }
+                else {
+                    $('label', $li).prepend('<input type="checkbox" />');
                 }
                 
                 var $checkbox = $('input', $li);
@@ -2280,8 +2578,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 $li.addClass("multiselect-item multiselect-all");
                 $checkbox.parent().parent()
                     .addClass('multiselect-all');
-
-                $('label', $li).append(" " + this.options.selectAllText);
 
                 this.$ul.prepend($li);
 
@@ -2302,11 +2598,29 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
                     this.$filter = $(this.options.templates.filter);
                     $('input', this.$filter).attr('placeholder', this.options.filterPlaceholder);
+                    
+                    // Adds optional filter clear button
+                    if(this.options.includeFilterClearBtn){
+                        var clearBtn = $(this.options.templates.filterClearBtn);
+                        clearBtn.on('click', $.proxy(function(event){
+                            clearTimeout(this.searchTimeout);
+                            this.$filter.find('.multiselect-search').val('');
+                            $('li', this.$ul).show().removeClass("filter-hidden");
+                            this.updateSelectAll();
+                        }, this));
+                        this.$filter.find('.input-group').append(clearBtn);
+                    }
+                    
                     this.$ul.prepend(this.$filter);
 
                     this.$filter.val(this.query).on('click', function(event) {
                         event.stopPropagation();
                     }).on('input keydown', $.proxy(function(event) {
+                        // Cancel enter key default behaviour
+                        if (event.which === 13) {
+                          event.preventDefault();
+                        }
+                        
                         // This is useful to catch "keydown" events after the browser has updated the control.
                         clearTimeout(this.searchTimeout);
 
@@ -2315,8 +2629,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                             if (this.query !== event.target.value) {
                                 this.query = event.target.value;
 
+                                var currentGroup, currentGroupVisible;
                                 $.each($('li', this.$ul), $.proxy(function(index, element) {
-                                    var value = $('input', element).val();
+                                    var value = $('input', element).length > 0 ? $('input', element).val() : "";
                                     var text = $('label', element).text();
 
                                     var filterCandidate = '';
@@ -2342,11 +2657,25 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                                             showElement = true;
                                         }
 
-                                        if (showElement) {
-                                            $(element).show().removeClass("filter-hidden");
+                                        // Toggle current element (group or group item) according to showElement boolean.
+                                        $(element).toggle(showElement).toggleClass('filter-hidden', !showElement);
+                                        
+                                        // Differentiate groups and group items.
+                                        if ($(element).hasClass('multiselect-group')) {
+                                            // Remember group status.
+                                            currentGroup = element;
+                                            currentGroupVisible = showElement;
                                         }
                                         else {
-                                            $(element).hide().addClass("filter-hidden");
+                                            // Show group name when at least one of its items is visible.
+                                            if (showElement) {
+                                                $(currentGroup).show().removeClass('filter-hidden');
+                                            }
+                                            
+                                            // Show all group items when group name satisfies filter.
+                                            if (!showElement && currentGroupVisible) {
+                                                $(element).show().removeClass('filter-hidden');
+                                            }
                                         }
                                     }
                                 }, this));
@@ -2381,7 +2710,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                     $input.prop('checked', true);
 
                     if (this.options.selectedClass) {
-                        $input.parents('li')
+                        $input.closest('li')
                             .addClass(this.options.selectedClass);
                     }
                 }
@@ -2389,7 +2718,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                     $input.prop('checked', false);
 
                     if (this.options.selectedClass) {
-                        $input.parents('li')
+                        $input.closest('li')
                             .removeClass(this.options.selectedClass);
                     }
                 }
@@ -2397,12 +2726,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 if ($(element).is(":disabled")) {
                     $input.attr('disabled', 'disabled')
                         .prop('disabled', true)
-                        .parents('li')
+                        .closest('li')
                         .addClass('disabled');
                 }
                 else {
                     $input.prop('disabled', false)
-                        .parents('li')
+                        .closest('li')
                         .removeClass('disabled');
                 }
             }, this));
@@ -2428,6 +2757,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             for (var i = 0; i < selectValues.length; i++) {
                 var value = selectValues[i];
 
+                if (value === null || value === undefined) {
+                    continue;
+                }
+
                 var $option = this.getOptionByValue(value);
                 var $checkbox = this.getInputByValue(value);
 
@@ -2440,19 +2773,20 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 }
                 
                 if (this.options.selectedClass) {
-                    $checkbox.parents('li')
+                    $checkbox.closest('li')
                         .addClass(this.options.selectedClass);
                 }
 
                 $checkbox.prop('checked', true);
                 $option.prop('selected', true);
+                
+                if (triggerOnChange) {
+                    this.options.onChange($option, true);
+                }
             }
 
             this.updateButtonText();
-
-            if (triggerOnChange && selectValues.length === 1) {
-                this.options.onChange($option, true);
-            }
+            this.updateSelectAll();
         },
 
         /**
@@ -2479,8 +2813,11 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             }
 
             for (var i = 0; i < deselectValues.length; i++) {
-
                 var value = deselectValues[i];
+
+                if (value === null || value === undefined) {
+                    continue;
+                }
 
                 var $option = this.getOptionByValue(value);
                 var $checkbox = this.getInputByValue(value);
@@ -2490,34 +2827,47 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 }
 
                 if (this.options.selectedClass) {
-                    $checkbox.parents('li')
+                    $checkbox.closest('li')
                         .removeClass(this.options.selectedClass);
                 }
 
                 $checkbox.prop('checked', false);
                 $option.prop('selected', false);
+                
+                if (triggerOnChange) {
+                    this.options.onChange($option, false);
+                }
             }
 
             this.updateButtonText();
-
-            if (triggerOnChange && deselectValues.length === 1) {
-                this.options.onChange($option, false);
-            }
+            this.updateSelectAll();
         },
         
         /**
          * Selects all enabled & visible options.
+         *
+         * If justVisible is true or not specified, only visible options are selected.
+         *
+         * @param {Boolean} justVisible
+         * @param {Boolean} triggerOnSelectAll
          */
-        selectAll: function () {
+        selectAll: function (justVisible, triggerOnSelectAll) {
+            var justVisible = typeof justVisible === 'undefined' ? true : justVisible;
             var allCheckboxes = $("li input[type='checkbox']:enabled", this.$ul);
             var visibleCheckboxes = allCheckboxes.filter(":visible");
             var allCheckboxesCount = allCheckboxes.length;
             var visibleCheckboxesCount = visibleCheckboxes.length;
-                
-            visibleCheckboxes.prop('checked', true);
-            $("li:not(.divider):not(.disabled)", this.$ul).filter(":visible").addClass(this.options.selectedClass);
             
-            if (allCheckboxesCount === visibleCheckboxesCount) {
+            if(justVisible) {
+                visibleCheckboxes.prop('checked', true);
+                $("li:not(.divider):not(.disabled)", this.$ul).filter(":visible").addClass(this.options.selectedClass);
+            }
+            else {
+                allCheckboxes.prop('checked', true);
+                $("li:not(.divider):not(.disabled)", this.$ul).addClass(this.options.selectedClass);
+            }
+                
+            if (allCheckboxesCount === visibleCheckboxesCount || justVisible === false) {
                 $("option:enabled", this.$select).prop('selected', true);
             }
             else {
@@ -2528,6 +2878,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 $("option:enabled", this.$select).filter(function(index) {
                     return $.inArray($(this).val(), values) !== -1;
                 }).prop('selected', true);
+            }
+            
+            if (triggerOnSelectAll) {
+                this.options.onSelectAll();
             }
         },
 
@@ -2542,7 +2896,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             var justVisible = typeof justVisible === 'undefined' ? true : justVisible;
             
             if(justVisible) {              
-                var visibleCheckboxes = $("li input[type='checkbox']:enabled", this.$ul).filter(":visible");
+                var visibleCheckboxes = $("li input[type='checkbox']:not(:disabled)", this.$ul).filter(":visible");
                 visibleCheckboxes.prop('checked', false);
                 
                 var values = visibleCheckboxes.map(function() {
@@ -2581,12 +2935,15 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             this.buildSelectAll();
             this.buildDropdownOptions();
             this.buildFilter();
-            
+
             this.updateButtonText();
             this.updateSelectAll();
             
-            if (this.options.disableIfEmpty) {
-                this.disableIfEmpty();
+            if (this.options.disableIfEmpty && $('option', this.$select).length <= 0) {
+                this.disable();
+            }
+            else {
+                this.enable();
             }
             
             if (this.options.dropRight) {
@@ -2596,30 +2953,46 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         /**
          * The provided data will be used to build the dropdown.
-         * 
-         * @param {Array} dataprovider
          */
         dataprovider: function(dataprovider) {
-            var optionDOM = "";
+            
             var groupCounter = 0;
-
+            var $select = this.$select.empty();
+            
             $.each(dataprovider, function (index, option) {
-                if ($.isArray(option.children)) {
+                var $tag;
+                
+                if ($.isArray(option.children)) { // create optiongroup tag
                     groupCounter++;
-                    optionDOM += '<optgroup label="' + (option.title || 'Group ' + groupCounter) + '">';
-
-                    forEach(option.children, function(subOption) {
-                        optionDOM += '<option value="' + subOption.value + '">' + (subOption.label || subOption.value) + '</option>';
+                    
+                    $tag = $('<optgroup/>').attr({
+                        label: option.label || 'Group ' + groupCounter,
+                        disabled: !!option.disabled
                     });
-
-                    optionDOM += '</optgroup>';
+                    
+                    forEach(option.children, function(subOption) { // add children option tags
+                        $tag.append($('<option/>').attr({
+                            value: subOption.value,
+                            label: subOption.label || subOption.value,
+                            title: subOption.title,
+                            selected: !!subOption.selected,
+                            disabled: !!subOption.disabled
+                        }));
+                    });
                 }
                 else {
-                    optionDOM += '<option value="' + option.value + '">' + (option.label || option.value) + '</option>';
+                    $tag = $('<option/>').attr({
+                        value: option.value,
+                        label: option.label || option.value,
+                        title: option.title,
+                        selected: !!option.selected,
+                        disabled: !!option.disabled
+                    });
                 }
+                
+                $select.append($tag);
             });
             
-            this.$select.html(optionDOM);
             this.rebuild();
         },
 
@@ -2642,20 +3015,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         /**
-         * Disable the multiselect if there are no options in the select.
-         */
-        disableIfEmpty: function () {
-            if ($('option', this.$select).length <= 0) {
-                this.disable();
-            }
-            else {
-                this.enable();
-            }
-        },
-
-        /**
          * Set the options.
-         * 
+         *
          * @param {Array} options
          */
         setOptions: function(options) {
@@ -2664,23 +3025,23 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         /**
          * Merges the given options with the default options.
-         * 
+         *
          * @param {Array} options
          * @returns {Array}
          */
         mergeOptions: function(options) {
-            return $.extend(true, {}, this.defaults, options);
+            return $.extend(true, {}, this.defaults, this.options, options);
         },
-        
+
         /**
          * Checks whether a select all checkbox is present.
-         * 
+         *
          * @returns {Boolean}
          */
         hasSelectAll: function() {
-            return $('li.' + this.options.selectAllValue, this.$ul).length > 0;
+            return $('li.multiselect-all', this.$ul).length > 0;
         },
-        
+
         /**
          * Updates the select all checkbox based on the currently displayed and selected checkboxes.
          */
@@ -2689,12 +3050,13 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 var allBoxes = $("li:not(.multiselect-item):not(.filter-hidden) input:enabled", this.$ul);
                 var allBoxesLength = allBoxes.length;
                 var checkedBoxesLength = allBoxes.filter(":checked").length;
-                var selectAllLi  = $("li." + this.options.selectAllValue, this.$ul);
+                var selectAllLi  = $("li.multiselect-all", this.$ul);
                 var selectAllInput = selectAllLi.find("input");
                 
                 if (checkedBoxesLength > 0 && checkedBoxesLength === allBoxesLength) {
                     selectAllInput.prop("checked", true);
                     selectAllLi.addClass(this.options.selectedClass);
+                    this.options.onSelectAll();
                 }
                 else {
                     selectAllInput.prop("checked", false);
@@ -2702,7 +3064,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 }
             }
         },
-        
+
         /**
          * Update the button text and its title based on the currently selected options.
          */
@@ -2710,15 +3072,20 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             var options = this.getSelected();
             
             // First update the displayed button text.
-            $('button.multiselect', this.$container).html(this.options.buttonText(options, this.$select));
+            if (this.options.enableHTML) {
+                $('.multiselect .multiselect-selected-text', this.$container).html(this.options.buttonText(options, this.$select));
+            }
+            else {
+                $('.multiselect .multiselect-selected-text', this.$container).text(this.options.buttonText(options, this.$select));
+            }
             
             // Now update the title attribute of the button.
-            $('button.multiselect', this.$container).attr('title', this.options.buttonTitle(options, this.$select));
+            $('.multiselect', this.$container).attr('title', this.options.buttonTitle(options, this.$select));
         },
 
         /**
          * Get all selected options.
-         * 
+         *
          * @returns {jQUery}
          */
         getSelected: function() {
@@ -2727,7 +3094,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         /**
          * Gets a select option by its value.
-         * 
+         *
          * @param {String} value
          * @returns {jQuery}
          */
@@ -2746,7 +3113,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         /**
          * Get the input (radio/checkbox) by its value.
-         * 
+         *
          * @param {String} value
          * @returns {jQuery}
          */
@@ -2775,6 +3142,11 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             return setTimeout(function() {
                 callback.apply(self || window, args);
             }, timeout);
+        },
+
+        setAllSelectedText: function(allSelectedText) {
+            this.options.allSelectedText = allSelectedText;
+            this.updateButtonText();
         }
     };
 
@@ -2782,7 +3154,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         return this.each(function() {
             var data = $(this).data('multiselect');
             var options = typeof option === 'object' && option;
-            
+
             // Initialize the multiselect.
             if (!data) {
                 data = new Multiselect(this, options);
@@ -2810,10 +3182,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
 /* FileSaver.js
  * A saveAs() FileSaver implementation.
- * 2014-07-25
+ * 1.1.20151003
  *
  * By Eli Grey, http://eligrey.com
- * License: X11/MIT
+ * License: MIT
  *   See https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md
  */
 
@@ -2822,16 +3194,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
 /*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
 
-var saveAs = saveAs
-  // IE 10+ (native saveAs)
-  || (typeof navigator !== "undefined" &&
-      navigator.msSaveOrOpenBlob && navigator.msSaveOrOpenBlob.bind(navigator))
-  // Everyone else
-  || (function(view) {
+var saveAs = saveAs || (function(view) {
 	"use strict";
 	// IE <10 is explicitly unsupported
-	if (typeof navigator !== "undefined" &&
-	    /MSIE [1-9]\./.test(navigator.userAgent)) {
+	if (typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
 		return;
 	}
 	var
@@ -2841,15 +3207,12 @@ var saveAs = saveAs
 			return view.URL || view.webkitURL || view;
 		}
 		, save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
-		, can_use_save_link = !view.externalHost && "download" in save_link
+		, can_use_save_link = "download" in save_link
 		, click = function(node) {
-			var event = doc.createEvent("MouseEvents");
-			event.initMouseEvent(
-				"click", true, false, view, 0, 0, 0, 0, 0
-				, false, false, false, false, 0, null
-			);
+			var event = new MouseEvent("click");
 			node.dispatchEvent(event);
 		}
+		, is_safari = /Version\/[\d\.]+.*Safari/.test(navigator.userAgent)
 		, webkit_req_fs = view.webkitRequestFileSystem
 		, req_fs = view.requestFileSystem || webkit_req_fs || view.mozRequestFileSystem
 		, throw_outside = function(ex) {
@@ -2859,9 +3222,10 @@ var saveAs = saveAs
 		}
 		, force_saveable_type = "application/octet-stream"
 		, fs_min_size = 0
-		// See https://code.google.com/p/chromium/issues/detail?id=375297#c7 for
-		// the reasoning behind the timeout and revocation flow
-		, arbitrary_revoke_timeout = 10
+		// See https://code.google.com/p/chromium/issues/detail?id=375297#c7 and
+		// https://github.com/eligrey/FileSaver.js/commit/485930a#commitcomment-8768047
+		// for the reasoning behind the timeout and revocation flow
+		, arbitrary_revoke_timeout = 500 // in ms
 		, revoke = function(file) {
 			var revoker = function() {
 				if (typeof file === "string") { // file is an object URL
@@ -2890,7 +3254,17 @@ var saveAs = saveAs
 				}
 			}
 		}
-		, FileSaver = function(blob, name) {
+		, auto_bom = function(blob) {
+			// prepend BOM for UTF-8 XML and text/* types (including HTML)
+			if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
+				return new Blob(["\ufeff", blob], {type: blob.type});
+			}
+			return blob;
+		}
+		, FileSaver = function(blob, name, no_auto_bom) {
+			if (!no_auto_bom) {
+				blob = auto_bom(blob);
+			}
 			// First try a.download, then web filesystem, then object URLs
 			var
 				  filesaver = this
@@ -2903,6 +3277,19 @@ var saveAs = saveAs
 				}
 				// on any filesys errors revert to saving with object URLs
 				, fs_error = function() {
+					if (target_view && is_safari && typeof FileReader !== "undefined") {
+						// Safari doesn't allow downloading of blob urls
+						var reader = new FileReader();
+						reader.onloadend = function() {
+							var base64Data = reader.result;
+							target_view.location.href = "data:attachment/file" + base64Data.slice(base64Data.search(/[,;]/));
+							filesaver.readyState = filesaver.DONE;
+							dispatch_all();
+						};
+						reader.readAsDataURL(blob);
+						filesaver.readyState = filesaver.INIT;
+						return;
+					}
 					// don't create more object URLs than needed
 					if (blob_changed || !object_url) {
 						object_url = get_URL().createObjectURL(blob);
@@ -2911,7 +3298,7 @@ var saveAs = saveAs
 						target_view.location.href = object_url;
 					} else {
 						var new_tab = view.open(object_url, "_blank");
-						if (new_tab == undefined && typeof safari !== "undefined") {
+						if (new_tab == undefined && is_safari) {
 							//Apple do not allow window.open, see http://bit.ly/1kZffRI
 							view.location.href = object_url
 						}
@@ -2938,10 +3325,12 @@ var saveAs = saveAs
 				object_url = get_URL().createObjectURL(blob);
 				save_link.href = object_url;
 				save_link.download = name;
-				click(save_link);
-				filesaver.readyState = filesaver.DONE;
-				dispatch_all();
-				revoke(object_url);
+				setTimeout(function() {
+					click(save_link);
+					dispatch_all();
+					revoke(object_url);
+					filesaver.readyState = filesaver.DONE;
+				});
 				return;
 			}
 			// Object and web filesystem URLs have a problem saving in Google Chrome when
@@ -3012,10 +3401,20 @@ var saveAs = saveAs
 			}), fs_error);
 		}
 		, FS_proto = FileSaver.prototype
-		, saveAs = function(blob, name) {
-			return new FileSaver(blob, name);
+		, saveAs = function(blob, name, no_auto_bom) {
+			return new FileSaver(blob, name, no_auto_bom);
 		}
 	;
+	// IE 10+ (native saveAs)
+	if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+		return function(blob, name, no_auto_bom) {
+			if (!no_auto_bom) {
+				blob = auto_bom(blob);
+			}
+			return navigator.msSaveOrOpenBlob(blob, name || "download");
+		};
+	}
+
 	FS_proto.abort = function() {
 		var filesaver = this;
 		filesaver.readyState = filesaver.DONE;
@@ -3044,8 +3443,8 @@ var saveAs = saveAs
 // while `this` is nsIContentFrameMessageManager
 // with an attribute `content` that corresponds to the window
 
-if (typeof module !== "undefined" && module !== null) {
-  module.exports = saveAs;
+if (typeof module !== "undefined" && module.exports) {
+  module.exports.saveAs = saveAs;
 } else if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
   define([], function() {
     return saveAs;
@@ -3416,7 +3815,7 @@ window.vkbeautify = new vkbeautify();
      Begin prism-core.js
 ********************************************** */
 
-self = (typeof window !== 'undefined')
+var _self = (typeof window !== 'undefined')
 	? window   // if in browser
 	: (
 		(typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope)
@@ -3435,7 +3834,7 @@ var Prism = (function(){
 // Private helper vars
 var lang = /\blang(?:uage)?-(?!\*)(\w+)\b/i;
 
-var _ = self.Prism = {
+var _ = _self.Prism = {
 	util: {
 		encode: function (tokens) {
 			if (tokens instanceof Token) {
@@ -3468,7 +3867,8 @@ var _ = self.Prism = {
 					return clone;
 
 				case 'Array':
-					return o.slice();
+					// Check for existence for IE8
+					return o.map && o.map(function(v) { return _.util.clone(v); });
 			}
 
 			return o;
@@ -3486,10 +3886,31 @@ var _ = self.Prism = {
 			return lang;
 		},
 
-		// Insert a token before another token in a language literal
+		/**
+		 * Insert a token before another token in a language literal
+		 * As this needs to recreate the object (we cannot actually insert before keys in object literals),
+		 * we cannot just provide an object, we need anobject and a key.
+		 * @param inside The key (or language id) of the parent
+		 * @param before The key to insert before. If not provided, the function appends instead.
+		 * @param insert Object with the key/value pairs to insert
+		 * @param root The object that contains `inside`. If equal to Prism.languages, it can be omitted.
+		 */
 		insertBefore: function (inside, before, insert, root) {
 			root = root || _.languages;
 			var grammar = root[inside];
+			
+			if (arguments.length == 2) {
+				insert = arguments[1];
+				
+				for (var newToken in insert) {
+					if (insert.hasOwnProperty(newToken)) {
+						grammar[newToken] = insert[newToken];
+					}
+				}
+				
+				return grammar;
+			}
+			
 			var ret = {};
 
 			for (var token in grammar) {
@@ -3509,22 +3930,35 @@ var _ = self.Prism = {
 					ret[token] = grammar[token];
 				}
 			}
+			
+			// Update references in other language definitions
+			_.languages.DFS(_.languages, function(key, value) {
+				if (value === root[inside] && key != inside) {
+					this[key] = ret;
+				}
+			});
 
 			return root[inside] = ret;
 		},
 
 		// Traverse a language definition with Depth First Search
-		DFS: function(o, callback) {
+		DFS: function(o, callback, type) {
 			for (var i in o) {
-				callback.call(o, i, o[i]);
+				if (o.hasOwnProperty(i)) {
+					callback.call(o, i, o[i], type || i);
 
-				if (_.util.type(o) === 'Object') {
-					_.languages.DFS(o[i], callback);
+					if (_.util.type(o[i]) === 'Object') {
+						_.languages.DFS(o[i], callback);
+					}
+					else if (_.util.type(o[i]) === 'Array') {
+						_.languages.DFS(o[i], callback, i);
+					}
 				}
 			}
 		}
 	},
-
+	plugins: {},
+	
 	highlightAll: function(async, callback) {
 		var elements = document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code');
 
@@ -3546,10 +3980,6 @@ var _ = self.Prism = {
 			grammar = _.languages[language];
 		}
 
-		if (!grammar) {
-			return;
-		}
-
 		// Set language on the element, if not present
 		element.className = element.className.replace(lang, '').replace(/\s+/g, ' ') + ' language-' + language;
 
@@ -3562,10 +3992,6 @@ var _ = self.Prism = {
 
 		var code = element.textContent;
 
-		if(!code) {
-			return;
-		}
-
 		var env = {
 			element: element,
 			language: language,
@@ -3573,13 +3999,18 @@ var _ = self.Prism = {
 			code: code
 		};
 
+		if (!code || !grammar) {
+			_.hooks.run('complete', env);
+			return;
+		}
+
 		_.hooks.run('before-highlight', env);
 
-		if (async && self.Worker) {
+		if (async && _self.Worker) {
 			var worker = new Worker(_.filename);
 
 			worker.onmessage = function(evt) {
-				env.highlightedCode = Token.stringify(JSON.parse(evt.data), language);
+				env.highlightedCode = evt.data;
 
 				_.hooks.run('before-insert', env);
 
@@ -3587,15 +4018,17 @@ var _ = self.Prism = {
 
 				callback && callback.call(env.element);
 				_.hooks.run('after-highlight', env);
+				_.hooks.run('complete', env);
 			};
 
 			worker.postMessage(JSON.stringify({
 				language: env.language,
-				code: env.code
+				code: env.code,
+				immediateClose: true
 			}));
 		}
 		else {
-			env.highlightedCode = _.highlight(env.code, env.grammar, env.language)
+			env.highlightedCode = _.highlight(env.code, env.grammar, env.language);
 
 			_.hooks.run('before-insert', env);
 
@@ -3604,6 +4037,7 @@ var _ = self.Prism = {
 			callback && callback.call(element);
 
 			_.hooks.run('after-highlight', env);
+			_.hooks.run('complete', env);
 		}
 	},
 
@@ -3732,7 +4166,7 @@ Token.stringify = function(o, language, parent) {
 		return o;
 	}
 
-	if (Object.prototype.toString.call(o) == '[object Array]') {
+	if (_.util.type(o) === 'Array') {
 		return o.map(function(element) {
 			return Token.stringify(element, language, o);
 		}).join('');
@@ -3762,29 +4196,32 @@ Token.stringify = function(o, language, parent) {
 	var attributes = '';
 
 	for (var name in env.attributes) {
-		attributes += name + '="' + (env.attributes[name] || '') + '"';
+		attributes += (attributes ? ' ' : '') + name + '="' + (env.attributes[name] || '') + '"';
 	}
 
 	return '<' + env.tag + ' class="' + env.classes.join(' ') + '" ' + attributes + '>' + env.content + '</' + env.tag + '>';
 
 };
 
-if (!self.document) {
-	if (!self.addEventListener) {
+if (!_self.document) {
+	if (!_self.addEventListener) {
 		// in Node.js
-		return self.Prism;
+		return _self.Prism;
 	}
  	// In worker
-	self.addEventListener('message', function(evt) {
+	_self.addEventListener('message', function(evt) {
 		var message = JSON.parse(evt.data),
 		    lang = message.language,
-		    code = message.code;
+		    code = message.code,
+		    immediateClose = message.immediateClose;
 
-		self.postMessage(JSON.stringify(_.util.encode(_.tokenize(code, _.languages[lang]))));
-		self.close();
+		_self.postMessage(_.highlight(code, _.languages[lang], lang));
+		if (immediateClose) {
+			_self.close();
+		}
 	}, false);
 
-	return self.Prism;
+	return _self.Prism;
 }
 
 // Get current script and highlight
@@ -3800,12 +4237,17 @@ if (script) {
 	}
 }
 
-return self.Prism;
+return _self.Prism;
 
 })();
 
 if (typeof module !== 'undefined' && module.exports) {
 	module.exports = Prism;
+}
+
+// hack for components to work correctly in node.js
+if (typeof global !== 'undefined') {
+	global.Prism = Prism;
 }
 
 
@@ -3814,37 +4256,37 @@ if (typeof module !== 'undefined' && module.exports) {
 ********************************************** */
 
 Prism.languages.markup = {
-	'comment': /<!--[\w\W]*?-->/g,
-	'prolog': /<\?.+?\?>/,
-	'doctype': /<!DOCTYPE.+?>/,
+	'comment': /<!--[\w\W]*?-->/,
+	'prolog': /<\?[\w\W]+?\?>/,
+	'doctype': /<!DOCTYPE[\w\W]+?>/,
 	'cdata': /<!\[CDATA\[[\w\W]*?]]>/i,
 	'tag': {
-		pattern: /<\/?[\w:-]+\s*(?:\s+[\w:-]+(?:=(?:("|')(\\?[\w\W])*?\1|[^\s'">=]+))?\s*)*\/?>/gi,
+		pattern: /<\/?(?!\d)[^\s>\/=.$<]+(?:\s+[^\s>\/=]+(?:=(?:("|')(?:\\\1|\\?(?!\1)[\w\W])*\1|[^\s'">=]+))?)*\s*\/?>/i,
 		inside: {
 			'tag': {
-				pattern: /^<\/?[\w:-]+/i,
+				pattern: /^<\/?[^\s>\/]+/i,
 				inside: {
 					'punctuation': /^<\/?/,
-					'namespace': /^[\w-]+?:/
+					'namespace': /^[^\s>\/:]+:/
 				}
 			},
 			'attr-value': {
-				pattern: /=(?:('|")[\w\W]*?(\1)|[^\s>]+)/gi,
+				pattern: /=(?:('|")[\w\W]*?(\1)|[^\s>]+)/i,
 				inside: {
-					'punctuation': /=|>|"/g
+					'punctuation': /[=>"']/
 				}
 			},
-			'punctuation': /\/?>/g,
+			'punctuation': /\/?>/,
 			'attr-name': {
-				pattern: /[\w:-]+/g,
+				pattern: /[^\s>\/]+/,
 				inside: {
-					'namespace': /^[\w-]+?:/
+					'namespace': /^[^\s>\/:]+:/
 				}
 			}
 
 		}
 	},
-	'entity': /\&#?[\da-z]{1,8};/gi
+	'entity': /&#?[\da-z]{1,8};/i
 };
 
 // Plugin to make entity title show the real entity, idea by Roman Komarov
@@ -3855,41 +4297,63 @@ Prism.hooks.add('wrap', function(env) {
 	}
 });
 
+Prism.languages.xml = Prism.languages.markup;
+Prism.languages.html = Prism.languages.markup;
+Prism.languages.mathml = Prism.languages.markup;
+Prism.languages.svg = Prism.languages.markup;
+
 
 /* **********************************************
      Begin prism-css.js
 ********************************************** */
 
 Prism.languages.css = {
-	'comment': /\/\*[\w\W]*?\*\//g,
+	'comment': /\/\*[\w\W]*?\*\//,
 	'atrule': {
-		pattern: /@[\w-]+?.*?(;|(?=\s*{))/gi,
+		pattern: /@[\w-]+?.*?(;|(?=\s*\{))/i,
 		inside: {
-			'punctuation': /[;:]/g
+			'rule': /@[\w-]+/
+			// See rest below
 		}
 	},
-	'url': /url\((["']?).*?\1\)/gi,
-	'selector': /[^\{\}\s][^\{\};]*(?=\s*\{)/g,
-	'property': /(\b|\B)[\w-]+(?=\s*:)/ig,
-	'string': /("|')(\\?.)*?\1/g,
-	'important': /\B!important\b/gi,
-	'punctuation': /[\{\};:]/g,
-	'function': /[-a-z0-9]+(?=\()/ig
+	'url': /url\((?:(["'])(\\(?:\r\n|[\w\W])|(?!\1)[^\\\r\n])*\1|.*?)\)/i,
+	'selector': /[^\{\}\s][^\{\};]*?(?=\s*\{)/,
+	'string': /("|')(\\(?:\r\n|[\w\W])|(?!\1)[^\\\r\n])*\1/,
+	'property': /(\b|\B)[\w-]+(?=\s*:)/i,
+	'important': /\B!important\b/i,
+	'function': /[-a-z0-9]+(?=\()/i,
+	'punctuation': /[(){};:]/
 };
+
+Prism.languages.css['atrule'].inside.rest = Prism.util.clone(Prism.languages.css);
 
 if (Prism.languages.markup) {
 	Prism.languages.insertBefore('markup', 'tag', {
 		'style': {
-			pattern: /<style[\w\W]*?>[\w\W]*?<\/style>/ig,
-			inside: {
-				'tag': {
-					pattern: /<style[\w\W]*?>|<\/style>/ig,
-					inside: Prism.languages.markup.tag.inside
-				},
-				rest: Prism.languages.css
-			}
+			pattern: /(<style[\w\W]*?>)[\w\W]*?(?=<\/style>)/i,
+			lookbehind: true,
+			inside: Prism.languages.css,
+			alias: 'language-css'
 		}
 	});
+	
+	Prism.languages.insertBefore('inside', 'attr-value', {
+		'style-attr': {
+			pattern: /\s*style=("|').*?\1/i,
+			inside: {
+				'attr-name': {
+					pattern: /^\s*style/i,
+					inside: Prism.languages.markup.tag.inside
+				},
+				'punctuation': /^\s*=\s*['"]|['"]\s*$/,
+				'attr-value': {
+					pattern: /.+/i,
+					inside: Prism.languages.css
+				}
+			},
+			alias: 'language-css'
+		}
+	}, Prism.languages.markup.tag);
 }
 
 /* **********************************************
@@ -3899,34 +4363,28 @@ if (Prism.languages.markup) {
 Prism.languages.clike = {
 	'comment': [
 		{
-			pattern: /(^|[^\\])\/\*[\w\W]*?\*\//g,
+			pattern: /(^|[^\\])\/\*[\w\W]*?\*\//,
 			lookbehind: true
 		},
 		{
-			pattern: /(^|[^\\:])\/\/.*?(\r?\n|$)/g,
+			pattern: /(^|[^\\:])\/\/.*/,
 			lookbehind: true
 		}
 	],
-	'string': /("|')(\\?.)*?\1/g,
+	'string': /(["'])(\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/,
 	'class-name': {
-		pattern: /((?:(?:class|interface|extends|implements|trait|instanceof|new)\s+)|(?:catch\s+\())[a-z0-9_\.\\]+/ig,
+		pattern: /((?:\b(?:class|interface|extends|implements|trait|instanceof|new)\s+)|(?:catch\s+\())[a-z0-9_\.\\]+/i,
 		lookbehind: true,
 		inside: {
 			punctuation: /(\.|\\)/
 		}
 	},
-	'keyword': /\b(if|else|while|do|for|return|in|instanceof|function|new|try|throw|catch|finally|null|break|continue)\b/g,
-	'boolean': /\b(true|false)\b/g,
-	'function': {
-		pattern: /[a-z0-9_]+\(/ig,
-		inside: {
-			punctuation: /\(/
-		}
-	},
-	'number': /\b-?(0x[\dA-Fa-f]+|\d*\.?\d+([Ee]-?\d+)?)\b/g,
-	'operator': /[-+]{1,2}|!|<=?|>=?|={1,3}|&{1,2}|\|?\||\?|\*|\/|\~|\^|\%/g,
-	'ignore': /&(lt|gt|amp);/gi,
-	'punctuation': /[{}[\];(),.:]/g
+	'keyword': /\b(if|else|while|do|for|return|in|instanceof|function|new|try|throw|catch|finally|null|break|continue)\b/,
+	'boolean': /\b(true|false)\b/,
+	'function': /[a-z0-9_]+(?=\()/i,
+	'number': /\b-?(?:0x[\da-f]+|\d*\.?\d+(?:e[+-]?\d+)?)\b/i,
+	'operator': /--?|\+\+?|!=?=?|<=?|>=?|==?=?|&&?|\|\|?|\?|\*|\/|~|\^|%/,
+	'punctuation': /[{}[\];(),.:]/
 };
 
 
@@ -3935,87 +4393,128 @@ Prism.languages.clike = {
 ********************************************** */
 
 Prism.languages.javascript = Prism.languages.extend('clike', {
-	'keyword': /\b(break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|false|finally|for|function|get|if|implements|import|in|instanceof|interface|let|new|null|package|private|protected|public|return|set|static|super|switch|this|throw|true|try|typeof|var|void|while|with|yield)\b/g,
-	'number': /\b-?(0x[\dA-Fa-f]+|\d*\.?\d+([Ee]-?\d+)?|NaN|-?Infinity)\b/g
+	'keyword': /\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/,
+	'number': /\b-?(0x[\dA-Fa-f]+|0b[01]+|0o[0-7]+|\d*\.?\d+([Ee][+-]?\d+)?|NaN|Infinity)\b/,
+	// Allow for all non-ASCII characters (See http://stackoverflow.com/a/2008444)
+	'function': /[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*(?=\()/i
 });
 
 Prism.languages.insertBefore('javascript', 'keyword', {
 	'regex': {
-		pattern: /(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\r\n])+\/[gim]{0,3}(?=\s*($|[\r\n,.;})]))/g,
+		pattern: /(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\\\r\n])+\/[gimyu]{0,5}(?=\s*($|[\r\n,.;})]))/,
 		lookbehind: true
+	}
+});
+
+Prism.languages.insertBefore('javascript', 'class-name', {
+	'template-string': {
+		pattern: /`(?:\\`|\\?[^`])*`/,
+		inside: {
+			'interpolation': {
+				pattern: /\$\{[^}]+\}/,
+				inside: {
+					'interpolation-punctuation': {
+						pattern: /^\$\{|\}$/,
+						alias: 'punctuation'
+					},
+					rest: Prism.languages.javascript
+				}
+			},
+			'string': /[\s\S]+/
+		}
 	}
 });
 
 if (Prism.languages.markup) {
 	Prism.languages.insertBefore('markup', 'tag', {
 		'script': {
-			pattern: /<script[\w\W]*?>[\w\W]*?<\/script>/ig,
-			inside: {
-				'tag': {
-					pattern: /<script[\w\W]*?>|<\/script>/ig,
-					inside: Prism.languages.markup.tag.inside
-				},
-				rest: Prism.languages.javascript
-			}
+			pattern: /(<script[\w\W]*?>)[\w\W]*?(?=<\/script>)/i,
+			lookbehind: true,
+			inside: Prism.languages.javascript,
+			alias: 'language-javascript'
 		}
 	});
 }
 
+Prism.languages.js = Prism.languages.javascript;
 
 /* **********************************************
      Begin prism-file-highlight.js
 ********************************************** */
 
-(function(){
+(function () {
+	if (typeof self === 'undefined' || !self.Prism || !self.document || !document.querySelector) {
+		return;
+	}
 
-if (!self.Prism || !self.document || !document.querySelector) {
-	return;
-}
+	self.Prism.fileHighlight = function() {
 
-var Extensions = {
-	'js': 'javascript',
-	'html': 'markup',
-	'svg': 'markup',
-	'xml': 'markup',
-	'py': 'python'
-};
+		var Extensions = {
+			'js': 'javascript',
+			'html': 'markup',
+			'svg': 'markup',
+			'xml': 'markup',
+			'py': 'python',
+			'rb': 'ruby',
+			'ps1': 'powershell',
+			'psm1': 'powershell'
+		};
 
-Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function(pre) {
-	var src = pre.getAttribute('data-src');
-	var extension = (src.match(/\.(\w+)$/) || [,''])[1];
-	var language = Extensions[extension] || extension;
-	
-	var code = document.createElement('code');
-	code.className = 'language-' + language;
-	
-	pre.textContent = '';
-	
-	code.textContent = 'Loading…';
-	
-	pre.appendChild(code);
-	
-	var xhr = new XMLHttpRequest();
-	
-	xhr.open('GET', src, true);
+		if(Array.prototype.forEach) { // Check to prevent error in IE8
+			Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+				var src = pre.getAttribute('data-src');
 
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4) {
-			
-			if (xhr.status < 400 && xhr.responseText) {
-				code.textContent = xhr.responseText;
-			
-				Prism.highlightElement(code);
-			}
-			else if (xhr.status >= 400) {
-				code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
-			}
-			else {
-				code.textContent = '✖ Error: File does not exist or is empty';
-			}
+				var language, parent = pre;
+				var lang = /\blang(?:uage)?-(?!\*)(\w+)\b/i;
+				while (parent && !lang.test(parent.className)) {
+					parent = parent.parentNode;
+				}
+
+				if (parent) {
+					language = (pre.className.match(lang) || [, ''])[1];
+				}
+
+				if (!language) {
+					var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+					language = Extensions[extension] || extension;
+				}
+
+				var code = document.createElement('code');
+				code.className = 'language-' + language;
+
+				pre.textContent = '';
+
+				code.textContent = 'Loading…';
+
+				pre.appendChild(code);
+
+				var xhr = new XMLHttpRequest();
+
+				xhr.open('GET', src, true);
+
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState == 4) {
+
+						if (xhr.status < 400 && xhr.responseText) {
+							code.textContent = xhr.responseText;
+
+							Prism.highlightElement(code);
+						}
+						else if (xhr.status >= 400) {
+							code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+						}
+						else {
+							code.textContent = '✖ Error: File does not exist or is empty';
+						}
+					}
+				};
+
+				xhr.send(null);
+			});
 		}
+
 	};
-	
-	xhr.send(null);
-});
+
+	self.Prism.fileHighlight();
 
 })();

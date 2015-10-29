@@ -7,6 +7,7 @@
         this._contentsMap = options.contentsMap;
         this._sourceMapFilename = options.sourceMapFilename;
         this._outputFilename = options.outputFilename;
+        this._sourceMapURL = options.sourceMapURL;
         this._sourceMapBasepath = options.sourceMapBasepath;
         this._sourceMapRootpath = options.sourceMapRootpath;
         this._outputSourceFiles = options.outputSourceFiles;
@@ -92,21 +93,23 @@
         this._rootNode.genCSS(env, this);
 
         if (this._css.length > 0) {
-            var sourceMapFilename,
+            var sourceMapURL,
                 sourceMapContent = JSON.stringify(this._sourceMapGenerator.toJSON());
 
-            if (this._sourceMapFilename) {
-                sourceMapFilename = this.normalizeFilename(this._sourceMapFilename);
+            if (this._sourceMapURL) {
+                sourceMapURL = this._sourceMapURL;
+            } else if (this._sourceMapFilename) {
+                sourceMapURL = this.normalizeFilename(this._sourceMapFilename);
             }
 
             if (this._writeSourceMap) {
                 this._writeSourceMap(sourceMapContent);
             } else {
-                sourceMapFilename = "data:application/json," + encodeURIComponent(sourceMapContent);
+                sourceMapURL = "data:application/json," + encodeURIComponent(sourceMapContent);
             }
 
-            if (sourceMapFilename) {
-                this._css.push("/*# sourceMappingURL=" + sourceMapFilename + " */");
+            if (sourceMapURL) {
+                this._css.push("/*# sourceMappingURL=" + sourceMapURL + " */");
             }
         }
 

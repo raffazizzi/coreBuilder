@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:/home/rviglian/Projects/tasso/schema/tassotei.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>La bella pargoletta</title>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>University of Massachusetts Amherst</publisher>
+                <availability status="free">
+                    <p>CC BY SA</p>
+                </availability>
+            </publicationStmt>
+            <sourceDesc>
+                <bibl>
+                    <title>Rime del Signor Torquato Tasso. Parte prima. Insieme con altri componimenti del medesimo</title>
+                    <publisher>Aldo <supplied>Manuzio</supplied></publisher>
+                    <pubPlace>Vinegia</pubPlace>
+                    <date when="1581">1581</date>
+                </bibl>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body xml:space="preserve">
+            <lg>
+                <l xml:id="l1">La bella pargoletta,</l>
+                <l xml:id="l2"><seg xml:id="v1">Ch'ancor non sente</seg> amore,</l>
+                <l xml:id="l3">Nè <seg xml:id="v2">pur noto ha per fama</seg> il suo valore,</l>
+                <l xml:id="l4"><seg xml:id="v3">Co' begli occhi</seg> saetta,</l>
+                <l xml:id="l5">E co'l <seg xml:id="v4">soave</seg> riso,</l>
+                <l xml:id="l6">Nè <seg xml:id="v5">s’accorge, che l’arme ha nel bel</seg> viso.</l>
+                <l xml:id="l7"><seg xml:id="v6">Qual</seg> colpa ha <seg xml:id="v7">nel</seg> morire</l>
+                <l xml:id="l8">De la trafitta mente,</l>
+                <l xml:id="l9">Se non sa di ferire?</l>
+                <l xml:id="l10">O <seg xml:id="v7">bellezza homicida</seg>, &amp; innocente.</l>
+                <l xml:id="l11">Tempo <seg xml:id="v8">è, ch'Amor ti mostri</seg></l>
+                <l xml:id="l12"><seg xml:id="v9">Homai ne le tue piaghe i dolor</seg> nostri.</l>
+            </lg>
+        </body>
+    </text>
+</TEI>

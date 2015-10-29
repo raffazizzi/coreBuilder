@@ -5955,11 +5955,47 @@ td.visible-print {
   }
 }
 /**
- * Bootstrap Multiselect v0.9.8 (https://github.com/davidstutz/bootstrap-multiselect)
- *
- * Copyright 2012 - 2014 David Stutz
- *
- * Dual licensed under the BSD-3-Clause and the Apache License, Version 2.0.
+ * Bootstrap Multiselect (https://github.com/davidstutz/bootstrap-multiselect)
+ * 
+ * Apache License, Version 2.0:
+ * Copyright (c) 2012 - 2015 David Stutz
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a
+ * copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ * 
+ * BSD 3-Clause License:
+ * Copyright (c) 2012 - 2015 David Stutz
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    - Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *    - Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *    - Neither the name of David Stutz nor the names of its contributors may be
+ *      used to endorse or promote products derived from this software without
+ *      specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 .multiselect-container {
   position: absolute;
@@ -5976,11 +6012,14 @@ td.visible-print {
 .multiselect-container > li > a.multiselect-all label {
   font-weight: bold;
 }
-.multiselect-container > li > label.multiselect-group {
+.multiselect-container > li.multiselect-group label {
   margin: 0;
   padding: 3px 20px 3px 20px;
   height: 100%;
   font-weight: bold;
+}
+.multiselect-container > li.multiselect-group-clickable label {
+  cursor: pointer;
 }
 .multiselect-container > li > a {
   padding: 0;
@@ -6021,12 +6060,13 @@ code[class*="language-"],
 pre[class*="language-"] {
   color: black;
   text-shadow: 0 1px white;
-  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   direction: ltr;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
   word-break: normal;
+  word-wrap: normal;
   line-height: 1.5;
   -moz-tab-size: 4;
   -o-tab-size: 4;
@@ -6070,6 +6110,7 @@ pre[class*="language-"] {
 :not(pre) > code[class*="language-"] {
   padding: .1em;
   border-radius: .3em;
+  white-space: normal;
 }
 .token.comment,
 .token.prolog,
@@ -6088,22 +6129,23 @@ pre[class*="language-"] {
 .token.boolean,
 .token.number,
 .token.constant,
-.token.symbol {
+.token.symbol,
+.token.deleted {
   color: #905;
 }
 .token.selector,
 .token.attr-name,
 .token.string,
 .token.char,
-.token.builtin {
+.token.builtin,
+.token.inserted {
   color: #690;
 }
 .token.operator,
 .token.entity,
 .token.url,
 .language-css .token.string,
-.style .token.string,
-.token.variable {
+.style .token.string {
   color: #a67f59;
   background: rgba(255, 255, 255, 0.5);
 }
@@ -6116,14 +6158,25 @@ pre[class*="language-"] {
   color: #DD4A68;
 }
 .token.regex,
-.token.important {
+.token.important,
+.token.variable {
   color: #e90;
 }
-.token.important {
+.token.important,
+.token.bold {
   font-weight: bold;
+}
+.token.italic {
+  font-style: italic;
 }
 .token.entity {
   cursor: help;
+}
+#logo {
+  width: 60px;
+  height: 60px;
+  margin: 5px;
+  vertical-align: bottom;
 }
 .editor {
   position: relative !important;
@@ -6162,7 +6215,7 @@ pre[class*="language-"] {
   background-color: #fff;
 }
 #main {
-  padding: 115px 0;
+  padding: 155px 0;
 }
 #corexml {
   position: fixed;
@@ -6183,4 +6236,35 @@ pre[class*="language-"] {
 }
 #sources {
   padding-right: 5em;
+}
+.panel-heading a:after {
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";
+  float: right;
+  color: grey;
+}
+.panel-heading a.collapsed:after {
+  content: "\e080";
+}
+a.plain {
+  color: Black;
+}
+a.plain:link,
+.plain:visited,
+.plain:active,
+.plain:hover {
+  color: Black;
+  text-decoration: none;
+}
+a.remove.on:after {
+  content: "\2716";
+}
+a.remove.off:after {
+  content: "\270E";
+}
+.panel-att {
+  padding-left: 3em;
+}
+.space-above {
+  margin-top: 1em;
 }
