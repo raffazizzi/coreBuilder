@@ -386,40 +386,50 @@ root.coreBuilder = {}
       @listenTo @model.collection, "change", =>
         @render()
 
+    canGroup: ->
+      grp = coreBuilder.Data.ElementSet.get("grp")
+      if !grp?
+        console.log "You must set a grouping element to be able to group."
+        false
+      else
+        true
+
     newGroup: (e) ->
       e.preventDefault()
       e.stopPropagation()
+      if @canGroup()
+        groups = []
+        @model.collection.each (sel) ->
+          g = sel.get("group")
+          groups.push(g) if g? 
+        if groups.length == 0
+          groups = [0]
+        latestGroup = Math.max.apply @, groups
 
-      groups = []
-      @model.collection.each (sel) ->
-        g = sel.get("group")
-        groups.push(g) if g? 
-      if groups.length == 0
-        groups = [0]
-      latestGroup = Math.max.apply @, groups
+        @model.set "group", latestGroup + 1
 
-      @model.set "group", latestGroup + 1
+        console.log "added to new group", latestGroup + 1
 
-      console.log "added to new group", latestGroup + 1
-
-      @model.collection.trigger "coll:change"
+        @model.collection.trigger "coll:change"
 
     removeFromGroup: (e) ->
       e.preventDefault()
       e.stopPropagation()
+      if @canGroup()
+        console.log "removed from group", @model.get("group")
 
-      console.log "removed from group", @model.get("group")
-
-      @model.set "group", undefined
+        @model.set "group", undefined
 
     addToGroup: (e) ->
       e.preventDefault()
       e.stopPropagation()
 
-      g = $(e.target).data("group")
+      if @canGroup()
 
-      @model.set "group", g
-      console.log 'added to group', g
+        g = $(e.target).data("group")
+
+        @model.set "group", g
+        console.log 'added to group', g
 
     render: ->
 
@@ -481,33 +491,61 @@ root.coreBuilder = {}
       window.setTimeout (-> $(msg).alert('close')), 500
 
     toDOM: ->
+
+      # Needs refactoring
+
       grps = {}
-      entry = $("<app>")
+      wrapper_model = coreBuilder.Data.ElementSet.get("wrapper")
+      grp_model = coreBuilder.Data.ElementSet.get("grp")
+      container_model = coreBuilder.Data.ElementSet.get("container")
+      ptr_model = coreBuilder.Data.ElementSet.get("ptr")
+
+      entry = $("<"+wrapper_model.get("name")+">")
       for r in @collection.models 
         if r.selectionGroup?.length > 0
-          sel = $("<rdg>").attr
-            "wit" : '#' + r.get("source")
-          if r.get("group")
-            grpNum = r.get("group")
-            if grpNum of grps
-              grps[grpNum].push(sel)
+
+          if container_model?
+            sel = $("<"+container_model.get("name")+">").attr
+              "wit" : '#' + r.get("source")
+            if r.get("group")
+              grpNum = r.get("group")
+              if grpNum of grps
+                grps[grpNum].push(sel)
+              else
+                grps[grpNum] = [sel]
             else
-              grps[grpNum] = [sel]
+              entry.append sel
+            for p in r.selectionGroup.models
+              # sel.text('<!-- empty -->') if p.get("empty")?
+              if p.get("xmlid")?.length > 0
+                ptr = $("<"+ptr_model.get("name")+">").attr
+                  "target" : '#' + p.get("xmlid")
+                sel.append ptr            
+
           else
-            entry.append sel
-          for p in r.selectionGroup.models
-            # sel.text('<!-- empty -->') if p.get("empty")?
-            if p.get("xmlid")?.length > 0
-              ptr = $("<ptr>").attr
-                "target" : '#' + p.get("xmlid")
-              sel.append ptr
-      
-      for k of grps
-        grp = $("<rdgGrp>")
-        grp.attr("n", k)
-        for g in grps[k] 
-          entry.append grp
-          grp.append g
+            ptrs = []
+            for p in r.selectionGroup.models
+              if p.get("xmlid")?.length > 0
+                ptr = $("<"+ptr_model.get("name")+">").attr
+                  "target" : '#' + p.get("xmlid")
+                ptrs.push ptr  
+            if r.get("group")
+              grpNum = r.get("group")
+              if grpNum of grps
+                grps[grpNum].concat(sel)
+              else
+                grps[grpNum] = ptrs
+            else
+              for p in ptrs
+                entry.append p
+
+      if grp_model?
+        for k of grps
+          grp = $("<"+grp_model.get("name")+">")
+          grp.attr("n", k)
+          for g in grps[k] 
+            entry.append grp
+            grp.append g
       entry
 
     toXMLString: (escape) ->
@@ -637,63 +675,139 @@ root.coreBuilder = {}
 
       @$el.find('.preset').each (i, preset) =>
         $preset = $(preset)
-        wrapper = $preset.data("wrapper")
-        grp = $preset.data("grp")
-        container = $preset.data("container")
-        ptr = $preset.data("ptr")
+        wrapper_name = $preset.data("wrapper")
+        grp_name = $preset.data("grp")
+        container_name = $preset.data("container")
+        ptr_name = $preset.data("ptr")
 
-        setToNone = (inp, name) =>
-          inp.val "None"
-          inp.prop('disabled', true)
-          to_remove = {}
-          to_remove[name] = null
-          @model.set to_remove
-          # @model.get("grp").destroy()
-          destroyViews[name]()
-          $x = inp.prev().find('a')
-          $x.addClass('off')
-          $x.removeClass('on')
+        # These won't work: need to restructure this using a single Element model
+        # setToNone = (inp, name) =>
+        #   inp.val "None"
+        #   inp.prop('disabled', true)
+        #   to_remove = {}
+        #   to_remove[name] = null
+        #   @model.set to_remove
+        #   # @model.get("grp").destroy()
+        #   destroyViews[name]()
+        #   $x = inp.prev().find('a')
+        #   $x.addClass('off')
+        #   $x.removeClass('on')
 
-        restore = (inp, name) =>
-          inp.prop('disabled', false)
-          $x = inp.prev().find('a')
-          $x.addClass('on')
-          $x.removeClass('off')
-          # create new element
-          to_create = {}
-          to_create[name] = new Element "name" : name
-          @model.set to_create
-          new_att_view(name)
+        # restore = (inp, name, val) =>
+        #   console.log val
+        #   inp.prop('disabled', false)
+        #   $x = inp.prev().find('a')
+        #   $x.addClass('on')
+        #   $x.removeClass('off')
+        #   # create new element
+        #   to_create = {}
+        #   to_create[name] = new Element
+        #   to_create[name].set "name" : val
+        #   console.log val, to_create[name]
+        #   @model.set to_create
+        #   new_att_view(name)
 
         $preset.click (e) =>
           e.preventDefault()
           $inp_w = $("#wrapper")
-          if wrapper?
-            $inp_w.val wrapper
-            restore($inp_w, "wrapper")
+          if wrapper_name?
+            $inp_w.val wrapper_name
+            $inp_w.prop('disabled', false)
+            $x = $inp_w.prev().find('a')
+            $x.addClass('on')
+            $x.removeClass('off')
+            # create new element
+            to_create = {}
+            to_create["wrapper"] = new Element
+            to_create["wrapper"].set "name" : wrapper_name
+            @model.set to_create
+            new_att_view("wrapper")
           else
-            setToNone($inp_w, "wrapper")
+            $inp_w.val "None"
+            $inp_w.prop('disabled', true)
+            to_remove = {}
+            to_remove["wrapper"] = null
+            @model.set to_remove
+            destroyViews["wrapper"]()
+            $x = $inp_w.prev().find('a')
+            $x.addClass('off')
+            $x.removeClass('on')
           
           $inp_g = $("#grp")
-          if grp?
-            $inp_g.val grp
-            restore($inp_g, "grp")
+          if grp_name?
+            $inp_g.val grp_name
+            $inp_g.prop('disabled', false)
+            $x = $inp_g.prev().find('a')
+            $x.addClass('on')
+            $x.removeClass('off')
+            # create new element
+            to_create = {}
+            to_create["grp"] = new Element
+            to_create["grp"].set "name" : grp_name
+            @model.set to_create
+            new_att_view("grp")
           else
-            setToNone($inp_g, "grp")
+            $inp_g.val "None"
+            $inp_g.prop('disabled', true)
+            to_remove = {}
+            to_remove["grp"] = null
+            @model.set to_remove
+            destroyViews["grp"]()
+            $x = $inp_g.prev().find('a')
+            $x.addClass('off')
+            $x.removeClass('on')
 
           $inp_c = $("#container")
-          if container?
-            $inp_c.val container
-            restore($inp_c, "container")
+          if container_name?
+            $inp_c.val container_name
+            $inp_c.prop('disabled', false)
+            $x = $inp_c.prev().find('a')
+            $x.addClass('on')
+            $x.removeClass('off')
+            # create new element
+            to_create = {}
+            to_create["container"] = new Element
+            to_create["container"].set "name" : container_name
+            @model.set to_create
+            new_att_view("container")
+
           else
-            setToNone($inp_c, "container")
+            $inp_c.val "None"
+            $inp_c.prop('disabled', true)
+            to_remove = {}
+            to_remove["container"] = null
+            @model.set to_remove
+            destroyViews["container"]()
+            $x = $inp_c.prev().find('a')
+            $x.addClass('off')
+            $x.removeClass('on')
 
           $inp_p = $("#ptr")
-          if ptr?
-            $inp_p.val ptr
-            restore($inp_p, "ptr")
+          if ptr_name?
+            $inp_p.val ptr_name
+            $inp_p.prop('disabled', false)
+            $x = $inp_p.prev().find('a')
+            $x.addClass('on')
+            $x.removeClass('off')
+            # create new element
+            to_create = {}
+            to_create["ptr"] = new Element
+            to_create["ptr"].set "name" : ptr_name
+            @model.set to_create
+            new_att_view("ptr")
           else
-            setToNone($inp_p, "ptr")
+            $inp_p.val "None"
+            $inp_p.prop('disabled', true)
+            to_remove = {}
+            to_remove["ptr"] = null
+            @model.set to_remove
+            destroyViews["ptr"]()
+            $x = $inp_p.prev().find('a')
+            $x.addClass('off')
+            $x.removeClass('on')
+
+          # and apply
+          @apply()
 
       attViews = {}
 
