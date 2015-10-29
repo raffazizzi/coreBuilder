@@ -78,15 +78,15 @@
                       <div class="form-group">
                         <label for="wrapper">Wrapper</label>
                         <div class="input-group">
-                          <!-- <div class="input-group-addon"><a class="plain remove on" href="#"></a></div> -->
+                          <div class="input-group-addon">&nbsp;</div>
                           <input type="text" class="form-control" id="wrapper"
                                  value="app">
-                          <div class="input-group-addon">
+                          <!-- <div class="input-group-addon">
                             <a data-toggle="collapse" data-target="#att-wrapper" 
                                class="plain collapsed" href="#">
                               @
                             </a>
-                          </div>
+                          </div> -->
                         </div>
                       </div>
                       <div id="att-wrapper" class="panel-collapse collapse">
@@ -98,12 +98,12 @@
                           <div class="input-group-addon"><a class="plain remove on" href="#"></a></div>
                           <input type="text" class="form-control" id="grp"
                                value="rdgGrp">
-                          <div class="input-group-addon">
+                          <!-- <div class="input-group-addon">
                             <a data-toggle="collapse" data-target="#att-grp" 
                                class="plain collapsed" href="#">
                               @
                             </a>
-                          </div>
+                          </div> -->
                         </div>
                       </div>
                       <div id="att-grp" class="panel-collapse collapse">
@@ -115,12 +115,12 @@
                           <div class="input-group-addon"><a class="plain remove on " href="#"></a></div>
                           <input type="text" class="form-control" id="container"
                                value="rdg">
-                          <div class="input-group-addon">
+                          <!-- <div class="input-group-addon">
                             <a data-toggle="collapse" data-target="#att-container" 
                                class="plain collapsed" href="#">
                               @
                             </a>
-                          </div>
+                          </div> -->
                         </div>
                       </div>
                       <div id="att-container" class="panel-collapse collapse">
@@ -129,15 +129,15 @@
                       <div class="form-group">
                         <label for="ptr">Pointer</label>
                         <div class="input-group">
-                          <!-- <div class="input-group-addon"><a class="plain remove on" href="#"></a></div> -->
+                          <div class="input-group-addon">&nbsp;</div>
                           <input type="text" class="form-control" id="ptr"
                                value="ptr">
-                          <div class="input-group-addon">
+                          <!-- <div class="input-group-addon">
                             <a data-toggle="collapse" data-target="#att-ptr" 
                                class="plain" href="#">
                               @
                             </a>
-                          </div>
+                          </div> -->
                         </div>
                       </div>
                       <div id="att-ptr" class="panel-collapse collapse in">
@@ -226,7 +226,7 @@
     <div class="panel-default panel-att">
       <div class="form-group">
         <div id="<%=name%>"></div>
-        <a href="#" class="add_att">add new attribute</a>
+        <!-- <a href="#" class="add_att">add new attribute</a> -->
       </div>
     </div>
   </script>
@@ -235,14 +235,14 @@
     <div class="input-group" id="<%=id%>">
       <% if (target) {%>
         <div class="input-group-addon">@</div>
-        <input type="text" class="form-control"
+        <input type="text" class="form-control app_name"
              value="<%=name%>">             
       <%} else {%>
         <div class="input-group-addon"><a class="plain rem_att" href="#" >&#x2716;</a></div>
         <div class="input-group-addon">@</div>
-        <input type="text" class="form-control-static"
+        <input type="text" class="form-control-static app_name"
              value="<%=name%>"> 
-        <input type="text" class="form-control-static"
+        <input type="text" class="form-control-static app_value"
              value="<%=value%>"> 
       <% } %>
     </div>
