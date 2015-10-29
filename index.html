@@ -3,7 +3,7 @@
 <head>
   <meta charset='utf-8'>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core Builder 0.3</title>
+  <title>coreBuilder 0.3</title>
   <script src="dist/bower.js"></script>
   <script src="dist/ace/ace.js"></script>
   <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -14,7 +14,7 @@
 
     <div class="row" id="header">
 
-      <h1>CoreBuilder v 0.3</h1>
+      <h1><img src="images/logo.svg" id="logo" />coreBuilder v 0.3</h1>
       
       <div id="sources" class="panel">
         <select class="sel-sources" multiple="multiple">
@@ -167,21 +167,13 @@
           <div class="col-md-5 src-title">
             <%=source%>
           </div>
-          <div class="col-md-6 text-right">
-            <button type="button" class="btn btn-default btn-md" data-toggle="button">
-              <span class="glyphicon glyphicon-pencil"></span> Edit
-            </button>
-            <button type="button" class="btn btn-default btn-md">
-              <span class="glyphicon glyphicon-cloud-upload"></span> Save to server
-            </button>
-          </div>
         </div>
       </div>
       
       <div id="ed_<%=source%>" class="editor"></div>
       <span class="label label-info">Selected Elements</span>
     </div>
-    <div><button class="btn btn-xs btn-default pull-right add-empty">Add this source to the core as "empty"</button></div>
+    <div><button class="btn btn-xs btn-default pull-right add-empty">Add an empty container</button></div>
   </div>
   </script>
 
