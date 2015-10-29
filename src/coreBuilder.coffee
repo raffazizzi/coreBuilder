@@ -516,6 +516,7 @@ root.coreBuilder = {}
             else
               entry.append sel
             for p in r.selectionGroup.models
+              console.log r.selectionGroup.models
               # sel.text('<!-- empty -->') if p.get("empty")?
               if p.get("xmlid")?.length > 0
                 ptr = $("<"+ptr_model.get("name")+">")
@@ -609,8 +610,8 @@ root.coreBuilder = {}
     remove: ->
       @collection.each (c) ->
         c.set("group", undefined)
-        c.selectionGroup.each (s) ->
-          c.selectionGroup.remove s
+        while model = c.selectionGroup.first()
+          c.selectionGroup.remove model
       @$el.empty()
       @
 
