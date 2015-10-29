@@ -304,7 +304,7 @@ root.coreBuilder = {}
         e.stopPropagation()
 
         # Remove any element selectors
-        $("#el_select").remove()
+        $("#el_sel_grp").remove()
 
         pos = @editor.getCursorPosition()
         token = @editor.session.getTokenAt(pos.row, pos.column)
@@ -896,12 +896,14 @@ root.coreBuilder = {}
         coreBuilder.Data.ElementSet.get("wrapper").set
           "name" : $("#wrapper").val()
         @attViews["wrapper"].updateCollection()
-        coreBuilder.Data.ElementSet.get("grp").set
-          "name" : $("#grp").val()
-        @attViews["grp"].updateCollection()
-        coreBuilder.Data.ElementSet.get("container").set
-          "name" : $("#container").val()
-        @attViews["container"].updateCollection()
+        if coreBuilder.Data.ElementSet.get("grp")?
+          coreBuilder.Data.ElementSet.get("grp").set
+            "name" : $("#grp").val()
+          @attViews["grp"].updateCollection()
+        if coreBuilder.Data.ElementSet.get("container")?
+          coreBuilder.Data.ElementSet.get("container").set
+            "name" : $("#container").val()
+          @attViews["container"].updateCollection()
         coreBuilder.Data.ElementSet.get("ptr").set
           "name" : $("#ptr").val()
         @attViews["ptr"].updateCollection()
