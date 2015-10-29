@@ -1,4 +1,4 @@
-sources = ["KAtx4_III_2.xml", "Ltx2_III_2.xml", "Ktx6_III_2.xml", "D_ptx2_III_2.xml"]
+sources = ["A3.xml", "Amz.xml", "C.xml", "E1-10.xml"]
 
 sel = $("#sources select")
 
