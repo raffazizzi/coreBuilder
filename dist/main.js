@@ -11,4 +11,4 @@ for (i=0; i<sources.length; i++){
 }
 
 // Start CoreBuilder UI
-new coreBuilder.App({"data_url":"data"})
+new coreBuilder.App({"data_url":"data/demo/"})
