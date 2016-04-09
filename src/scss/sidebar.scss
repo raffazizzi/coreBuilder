@@ -1,0 +1,229 @@
+// SIDEBAR
+
+/*!
+ * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+*/
+
+/* Several changes made for coreBuilder project */
+
+/* Toggle Styles */
+
+$sidebar-size: 150px;
+$sidebar-compact-size: 43px;
+
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    overflow: hidden;
+}
+
+#wrapper.toggled {
+    padding-left: $sidebar-compact-size;
+    // overflow: hidden;
+}
+
+#sidebar-wrapper, #sidebar-wrapper.compact {
+    z-index: 1000;
+    position: absolute; 
+    left: $sidebar-size;
+    width: $sidebar-compact-size;
+    height: 100%;
+    margin-left: -$sidebar-size;
+    border-right: 1px solid #e7e7e7;
+    background: #f8f8f8;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    // overflow: hidden;
+
+    ul {
+        width: $sidebar-compact-size;        
+
+        li a { 
+                white-space: nowrap;
+                overflow: hidden; 
+        }
+
+        .brand-label { display: none; }
+
+    }
+
+}
+
+#sidebar-wrapper.compact #arr_pick_size {
+    left: $sidebar-compact-size; 
+}
+// #wrapper.toggled #sidebar-wrapper {
+//     width: $sidebar-size;
+// }
+
+#workspace {
+    padding: 15px;
+    width: 100%;  
+    // overflow-x: hidden; 
+}
+
+// #wrapper.toggled #workspace {
+//     position: relative;
+//     margin-right: 0px; 
+// }
+/* Sidebar Styles */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: $sidebar-size;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    margin-top: 2px;
+}
+
+.sidebar-nav li {
+    text-indent: 0px;
+    line-height: 40px;
+    border-bottom: 1px solid #e7e7e7;
+
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#brand{
+    .brand-label{
+        position: absolute;
+        margin: 2px 0 0 -7px;
+        font-weight: bolder;
+    }
+    text-indent: 3px;
+    border-bottom: 1px solid black;
+    padding: 5px 0 10px 0;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #000;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    color: #373a3c;
+    // background: rgba(255,255,255,0.2);
+    border-right: 2px solid #428BCA;
+}
+
+#brand a:hover {    
+    color: #000;
+    border-right: 0px;
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.no-margin{
+    margin:0;
+}
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: $sidebar-size;
+    }
+
+    #sidebar-wrapper {
+        width: $sidebar-size;
+
+        ul {
+            width: $sidebar-size;        
+
+            li a { overflow: visible; }
+
+            .brand-label { display: inline; }
+
+        }
+    }
+
+    #workspace {
+        padding: 0;
+        margin: 0 0 20px 0;
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+    }
+
+}
+
+#arr_pick_size {
+    
+    display: none;
+    // margin: 0 0 0 15px;
+
+    position: absolute;
+    height: 41px;
+    margin-left: 6px;
+    width: 8.3em;
+    left: $sidebar-size;
+    bottom: 0;
+    background-color: transparent;
+
+    unicode-bidi: bidi-override;
+    direction: rtl;
+
+    span {
+        background-color: #c0c0c0;
+        margin-right: 0em;
+        margin-top: 0.6em;
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+        position: relative;
+        border-radius: 4px;
+    }    
+
+    span:hover {
+        background-color: #afcce6;
+    }
+
+    span:hover ~ span {
+        background-color: #afcce6;
+    }
+
+}
+
+/*
+#arr_pick_size {
+    
+    position: absolute;
+    height: 41px;
+    margin-left: 6px;
+    width: 8.3em;
+    left: $sidebar-size;
+    bottom: 0;
+    background-color: transparent;
+
+    span {
+        background-color: #c0c0c0;
+        margin-right: 0em;
+        margin-top: 0.6em;
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+    span:hover {
+        background-color: #afcce6;
+    }
+
+}
+*/

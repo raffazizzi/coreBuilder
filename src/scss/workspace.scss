@@ -1,0 +1,32 @@
+#workspace .row {
+    margin: 0;
+
+    .cb-XMLFile {
+        background: Grey;
+        border: 1px solid White;
+        min-height: 20em;
+        padding: 2px;
+
+        .cb-xf-title {
+            min-height: 1.5em;
+            color: white;
+            font-weight: bold;
+
+            .cb-xf-controls {
+                text-align: right;
+
+                a:link, a:hover, a:active, a:visited {
+                    color: white;
+                    text-decoration: none;
+                }
+
+            }
+        }
+
+        .cb-ace {
+            min-height: inherit;
+        }
+
+    }
+
+}

@@ -1,0 +1,47 @@
+{
+  "name": "coreBuilder",
+  "version": "2.0.0",
+  "description": "A web-based tool for creating stand-off markup",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/raffazizzi/coreBuilder.git"
+  },
+  "keywords": [
+    "XML",
+    "stand-off"
+  ],
+  "author": "Raff Viglianti",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/raffazizzi/coreBuilder/issues"
+  },
+  "dependencies": {
+    "backbone": "~1.2.3",
+    "bootstrap": "https://github.com/twbs/bootstrap/archive/v4.0.0-alpha.2.tar.gz",
+    "font-awesome": "^4.5.0",
+    "handlebars": "^4.0.5",
+    "jquery": "~2.2.0",
+    "jquery-xpath": "~0.3.1"
+  },
+  "devDependencies": {
+    "ace-builds": "^1.2.2",
+    "babel-preset-es2015": "~6.5.0",
+    "babelify": "~7.2.0",
+    "browserify": "~13.0.0",
+    "gulp": "~3.9.0",
+    "gulp-autoprefixer": "~3.1.0",
+    "gulp-connect": "~2.3.1",
+    "gulp-cssnano": "~2.1.1",
+    "gulp-rename": "~1.2.2",
+    "gulp-sass": "~2.2.0",
+    "gulp-sourcemaps": "~1.6.0",
+    "gulp-uglify": "~1.5.2",
+    "gulp-util": "~3.0.7",
+    "vinyl-buffer": "~1.0.0",
+    "vinyl-source-stream": "~1.1.0"
+  }
+}

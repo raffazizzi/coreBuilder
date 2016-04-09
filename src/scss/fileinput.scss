@@ -1,0 +1,42 @@
+#cb-lf_modal {
+    
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+
+        input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+    }   
+
+    .upload-drop-zone {
+        height: 100px;
+        border-width: 2px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        color: #ccc;
+        border-style: dashed;
+        border-color: #ccc;
+        line-height: 100px;
+        text-align: center
+    }
+
+    .cb-lf-progress {
+        margin-top: 20px;
+        > progress {
+            display: none;            
+        }
+    }
+}
