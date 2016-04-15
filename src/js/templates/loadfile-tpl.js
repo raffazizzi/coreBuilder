@@ -23,9 +23,9 @@ export default `
             <div class="upload-drop-zone" id="cb-lf-drop">
               Just drag and drop files here or click browse
             </div>
-            <button type="button" class="btn btn-primary btn-file">
+            <div type="button" class="btn btn-primary btn-file">
                 Browse <input type="file" multiple="multiple">
-            </button> <span id="cb-lf-filesselected"></span>
+            </div> <span id="cb-lf-filesselected"></span>
             <div class="cb-lf-progress">
               <progress class="progress progress-striped progress-info" value="0" max="100">0%</progress>
             </div>            
