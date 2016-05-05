@@ -8,8 +8,6 @@ require('../../../node_modules/bootstrap/dist/js/umd/modal');
 require('../../../node_modules/bootstrap/dist/js/umd/tab');
 
 class FileUploadComponent extends Backbone.View {
-
-    // Components are model-less views
     
     initialize(options){
 

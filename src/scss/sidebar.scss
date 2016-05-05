@@ -1,13 +1,5 @@
 // SIDEBAR
 
-/*!
- * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
- * Code licensed under the Apache License v2.0.
- * For details, see http://www.apache.org/licenses/LICENSE-2.0.
-*/
-
-/* Several changes made for coreBuilder project */
-
 /* Toggle Styles */
 
 $sidebar-size: 150px;
@@ -55,13 +47,6 @@ $sidebar-compact-size: 43px;
     }
 
 }
-
-#sidebar-wrapper.compact #arr_pick_size {
-    left: $sidebar-compact-size; 
-}
-// #wrapper.toggled #sidebar-wrapper {
-//     width: $sidebar-size;
-// }
 
 #workspace {
     padding: 15px;
@@ -150,6 +135,11 @@ $sidebar-compact-size: 43px;
             .brand-label { display: inline; }
 
         }
+
+        #arr_pick_size {
+            left: $sidebar-size; 
+        }
+
     }
 
     #workspace {
@@ -172,8 +162,8 @@ $sidebar-compact-size: 43px;
     height: 41px;
     margin-left: 6px;
     width: 8.3em;
-    left: $sidebar-size;
-    bottom: 0;
+    left: $sidebar-compact-size;
+    top: 105px;
     background-color: transparent;
 
     unicode-bidi: bidi-override;
@@ -200,30 +190,6 @@ $sidebar-compact-size: 43px;
 
 }
 
-/*
-#arr_pick_size {
-    
-    position: absolute;
-    height: 41px;
-    margin-left: 6px;
-    width: 8.3em;
-    left: $sidebar-size;
-    bottom: 0;
-    background-color: transparent;
-
-    span {
-        background-color: #c0c0c0;
-        margin-right: 0em;
-        margin-top: 0.6em;
-        width: 1em;
-        height: 1em;
-        display: inline-block;
-        border-radius: 4px;
-    }
-
-    span:hover {
-        background-color: #afcce6;
-    }
-
+#sidebar-wrapper.compact #arr_pick_size {
+    left: $sidebar-compact-size; 
 }
-*/

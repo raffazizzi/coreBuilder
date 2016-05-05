@@ -1,0 +1,15 @@
+#cb-se_modal {
+
+    a.cb-se-remove.cb-on:after {
+        content: "\2716";
+    }
+
+    a.cb-se-remove.cb-off:after {
+        content: "\270E";
+    }
+
+    #cb-se-form{
+        margin-top: 1em;
+    }
+
+}
