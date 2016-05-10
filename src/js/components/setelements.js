@@ -77,8 +77,13 @@ class SetElementsComponent extends Backbone.View {
                 "ptr" : $("#cb-se-ptr").val()
             }
             this.model.set(data);
-            console.log(this.model);
-            this.$el.find("#cb-se_modal").modal( 'hide' ).data( 'bs.modal', null );
+            $status.html(
+                `<div class="alert alert-success" role="alert">
+                    OK!
+                </div>`);
+            setTimeout(() => { 
+                this.$el.find("#cb-se_modal").modal( 'hide' ).data( 'bs.modal', null );
+            }, 250);            
         }
     }
 
