@@ -45,6 +45,69 @@ class XMLFileView extends Backbone.View {
         this.$el.addClass('col-xs-'+size);
     }
 
+    bindSelect(editor) {
+        $(editor.container).click((e) => {
+            e.stopPropagation();
+
+            // Remove any element selectors
+            this.$el.find("#cb-el_select").remove();
+
+            let pos = editor.getCursorPosition();
+            let token = editor.session.getTokenAt(pos.row, pos.column);
+            let tokenRow = editor.session.getTokens(pos.row);
+            let xmlid = "";
+
+            if (token){
+                if (token.type == "entity.other.attribute-name.xml" && token.value == 'xml:id') {
+                    for (let tk of tokenRow.slice(token.index)){
+                        if (tk.type == "string.attribute-value.xml") {
+                            xmlid = tk.value;
+                            xmlid = xmlid.replace(/['"]/g, "");
+                            break;
+                        }
+                    }
+                }
+                else if (token.type == "string.attribute-value.xml") {                    
+                    for (let tk of tokenRow.reverse().slice(token.index)){
+                        if (tk.type == "entity.other.attribute-name.xml" && tk.value == 'xml:id') {
+                            xmlid = token.value;
+                            xmlid = xmlid.replace(/["']/g, "");
+                            break;
+                        }
+                    }                    
+                }
+            }
+            if (xmlid){
+                let find_q = "*[xml\\:id=" +xmlid+ "]";
+                let xmlel = $(this.xmlDOM).find(find_q);
+
+                let tagName = xmlel.prop("tagName");
+                let popup = $('<button type="button" class="btn btn-default" id="cb-el_select">Add element: ' + tagName + '</button>');
+
+                let offset = this.$el.offset();
+
+                popup.css({
+                    'position' : 'absolute',
+                    'left' : e.pageX - offset.left,
+                    'top' : e.pageY + offset.top,
+                    'z-index': 999
+                }); 
+
+                this.$el.append(popup);
+
+                popup.click( (e) => {
+                    e.stopPropagation();
+                    console.log({
+                        'ident' : tagName,
+                        'xmlid' : xmlid,
+                        'pos'   : pos      
+                    });
+                    popup.remove();
+                });
+            }
+        });
+    }
+
     render() {
     	this.$el.addClass('col-xs-'+this.model.size);
 
@@ -71,62 +134,64 @@ class XMLFileView extends Backbone.View {
                 editor.moveCursorTo({column:0, row:0});
             });
 
+            this.bindSelect(editor);
+
             // This is temporary until I introduce a XPointer mode / button
             // Use a SAX parser approach to build a table of tags with ids corresponding to the shadow DOM
-            var listened = false;
-            editor.getSession().on("changeAnnotation", () => {
-                if (!listened){
-                    listened = true;
-                    var rows = editor.session.getDocument().getLength();
-                    rows = Array.from(new Array(rows), (x,i) => i);
-                    for (let row of rows) {
-                        let tokens = editor.session.getTokens(row);
-                        // console.log(tokens);
+            // var listened = false;
+            // editor.getSession().on("changeAnnotation", () => {
+            //     if (!listened){
+            //         listened = true;
+            //         var rows = editor.session.getDocument().getLength();
+            //         rows = Array.from(new Array(rows), (x,i) => i);
+            //         for (let row of rows) {
+            //             let tokens = editor.session.getTokens(row);
+            //             // console.log(tokens);
 
-                        let located_id_att = false;
-                        let in_tag = false;
+            //             let located_id_att = false;
+            //             let in_tag = false;
 
-                        for (let [i, t] of tokens.entries()) {
-                            if (t.type == "meta.tag.punctuation.tag-open.xml"){
+            //             for (let [i, t] of tokens.entries()) {
+            //                 if (t.type == "meta.tag.punctuation.tag-open.xml"){
 
-                                in_tag = true;
+            //                     in_tag = true;
                                 
-                                this.shadowTags.push({
-                                    "tag" : tokens[i+1].value,
-                                    "row" : row,
-                                    "token_no" : i
-                                });
+            //                     this.shadowTags.push({
+            //                         "tag" : tokens[i+1].value,
+            //                         "row" : row,
+            //                         "token_no" : i
+            //                     });
                                 
-                            }
-                            else if (t.type == "entity.other.attribute-name.xml"
-                                     && t.value.replace(/['"]/g, "") == "xml:id") {
-                                located_id_att = true;                                
-                            }
-                            else if (t.type == "string.attribute-value.xml" && located_id_att) {
-                                located_id_att = false;
-                                // set id to xml:id                                
-                                this.shadowTags[this.shadowTags.length-1].id = t.value.replace(/['"]/g, "");
-                            }
-                            else if (t.type == "meta.tag.punctuation.tag-close.xml"){
-                                in_tag = false;
-                                // if no id has been assigned, pick one from the generated list
-                                let last_st = this.shadowTags[this.shadowTags.length-1];
-                                if (!last_st.id){
-                                    last_st.id = this.gen_ids_clone.shift();
-                                }
-                            }
-                        }                        
-                    }
-                    // Reconsider whether this is really a component...
-                    new XPointerComponent({
-                        "el": this.el,
-                        "editor": editor,
-                        "shadowTags": this.shadowTags, 
-                        "shadowDOM": this.xmlDOM
-                    });
-                }
+            //                 }
+            //                 else if (t.type == "entity.other.attribute-name.xml"
+            //                          && t.value.replace(/['"]/g, "") == "xml:id") {
+            //                     located_id_att = true;                                
+            //                 }
+            //                 else if (t.type == "string.attribute-value.xml" && located_id_att) {
+            //                     located_id_att = false;
+            //                     // set id to xml:id                                
+            //                     this.shadowTags[this.shadowTags.length-1].id = t.value.replace(/['"]/g, "");
+            //                 }
+            //                 else if (t.type == "meta.tag.punctuation.tag-close.xml"){
+            //                     in_tag = false;
+            //                     // if no id has been assigned, pick one from the generated list
+            //                     let last_st = this.shadowTags[this.shadowTags.length-1];
+            //                     if (!last_st.id){
+            //                         last_st.id = this.gen_ids_clone.shift();
+            //                     }
+            //                 }
+            //             }                        
+            //         }
+            //         // Reconsider whether this is really a component...
+            //         new XPointerComponent({
+            //             "el": this.el,
+            //             "editor": editor,
+            //             "shadowTags": this.shadowTags, 
+            //             "shadowDOM": this.xmlDOM
+            //         });
+            //     }
                 
-            });
+            // });
 
         });
 
