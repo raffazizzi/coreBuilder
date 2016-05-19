@@ -1,0 +1,39 @@
+@import 'variables';
+
+#currententry {
+    z-index: 999 !important;
+    position: fixed;
+    bottom: 0;
+    right: 0;    
+    background-color: $ui-bg;
+    border-top: 4px solid $ui-border;
+    border-left: 4px solid $ui-border;
+    border-radius: 5px;
+    min-height: 20px;
+    min-width: 20px;
+    margin-left: $sidebar-compact-size;
+
+    #cb-ce-msg {
+        padding: 15px;
+    }
+
+    #cb-ce-entry {
+        padding: 5px;
+        font-size: 9px;
+    }
+
+}
+
+@media(min-width:500px) {
+    #currententry {
+        min-width: 300px;
+        min-height: 2em;
+        margin-left: $sidebar-size;
+
+        #cb-ce-entry {
+            font-size: 15px;
+        }
+
+    }
+}
+

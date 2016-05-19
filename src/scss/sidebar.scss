@@ -1,9 +1,6 @@
 // SIDEBAR
 
-/* Toggle Styles */
-
-$sidebar-size: 150px;
-$sidebar-compact-size: 43px;
+@import 'variables';
 
 #wrapper {
     padding-left: 0;
@@ -20,14 +17,14 @@ $sidebar-compact-size: 43px;
 }
 
 #sidebar-wrapper, #sidebar-wrapper.compact {
-    z-index: 1000;
-    position: absolute; 
+    z-index: 1000; 
+    position: fixed; 
     left: $sidebar-size;
     width: $sidebar-compact-size;
     height: 100%;
     margin-left: -$sidebar-size;
-    border-right: 1px solid #e7e7e7;
-    background: #f8f8f8;
+    border-right: 1px solid $ui-border;
+    background: $ui-bg;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -49,7 +46,8 @@ $sidebar-compact-size: 43px;
 }
 
 #workspace {
-    padding: 15px;
+    margin-left: $sidebar-compact-size;
+    padding-right: $sidebar-compact-size;
     width: 100%;  
     // overflow-x: hidden; 
 }
@@ -73,7 +71,7 @@ $sidebar-compact-size: 43px;
 .sidebar-nav li {
     text-indent: 0px;
     line-height: 40px;
-    border-bottom: 1px solid #e7e7e7;
+    border-bottom: 1px solid $ui-border;
 
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -143,8 +141,8 @@ $sidebar-compact-size: 43px;
     }
 
     #workspace {
-        padding: 0;
-        margin: 0 0 20px 0;
+        margin-left: 0;
+        padding-right: 0;
         -webkit-transition: all 0.5s ease;
         -moz-transition: all 0.5s ease;
         -o-transition: all 0.5s ease;

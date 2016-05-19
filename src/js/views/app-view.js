@@ -1,6 +1,8 @@
 import * as Backbone from 'backbone';
 import XMLFiles from '../data/coll-XMLFiles';
 import XMLFilesView from './XMLFiles-view';
+import Core from '../data/coll-Core';
+import CurrentEntryView from './CurrentEntry-view';
 import ElementSet from '../data/model-elementSet';
 import FileUploadComponent from '../components/fileupload';
 import SetElementsComponent from '../components/setelements';
@@ -34,12 +36,24 @@ class CoreBuilder extends Backbone.View {
         // Stand-off element set
         var elementSet = this.elementSet = new ElementSet;
 
+        // Core
+        this.core = new Core;
+        // Always start the core with one unsaved entry
+        this.core.add({});
+        this.listenTo(Events, "coreEntry:addPointer", function(p) {this.core.addPointer(p)});
+
+        // Current Entry
+        var currententry = new CurrentEntryView({model: this.core.last(), 
+                                                 "el" : "#currententry", 
+                                                 "elementSet" : elementSet.toJSON()});
+        this.listenTo(elementSet, "change", function(elset) {currententry.updateElementSet(elset.toJSON())});
+
     }
 
     toggleSidebar(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
-        $("#sidebar-wrapper").toggleClass("compact")
+        $("#sidebar-wrapper").toggleClass("compact");
     }
     
     openFileUploadComponent(e){

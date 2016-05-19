@@ -67,11 +67,14 @@ class XMLFileView extends Backbone.View {
                         }
                     }
                 }
-                else if (token.type == "string.attribute-value.xml") {                    
-                    for (let tk of tokenRow.reverse().slice(token.index)){
-                        if (tk.type == "entity.other.attribute-name.xml" && tk.value == 'xml:id') {
-                            xmlid = token.value;
-                            xmlid = xmlid.replace(/["']/g, "");
+                else if (token.type == "string.attribute-value.xml") {
+                    // old school reverse loop
+                    for (var i = token.index; i >= 0; i--) {
+                        if (tokenRow[i].type == "entity.other.attribute-name.xml") {
+                            if (tokenRow[i].value == 'xml:id') {
+                                xmlid = token.value;
+                                xmlid = xmlid.replace(/["']/g, "");                                
+                            }
                             break;
                         }
                     }                    
@@ -83,13 +86,14 @@ class XMLFileView extends Backbone.View {
 
                 let tagName = xmlel.prop("tagName");
                 let popup = $('<button type="button" class="btn btn-default" id="cb-el_select">Add element: ' + tagName + '</button>');
-
+                
+                let parentOffset = this.$el.parent().offset();
                 let offset = this.$el.offset();
 
                 popup.css({
                     'position' : 'absolute',
                     'left' : e.pageX - offset.left,
-                    'top' : e.pageY + offset.top,
+                    'top' : e.pageY - parentOffset.top,
                     'z-index': 999
                 }); 
 
@@ -97,11 +101,14 @@ class XMLFileView extends Backbone.View {
 
                 popup.click( (e) => {
                     e.stopPropagation();
-                    console.log({
-                        'ident' : tagName,
-                        'xmlid' : xmlid,
-                        'pos'   : pos      
-                    });
+                    Events.trigger("coreEntry:addPointer", 
+                        {
+                            'xml_file': this.model.get("filename"),
+                            'cb_xml_file_model' : this.model.cid,
+                            'ident' : tagName,
+                            'xmlid' : xmlid,
+                            'pos'   : pos      
+                        });
                     popup.remove();
                 });
             }
