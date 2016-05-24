@@ -25,6 +25,7 @@ class SetElementsComponent extends Backbone.View {
     usePreset(e) {
         let $target = $(e.target);
         let els = $target.data();
+        let ptr_bhv = $target.data("ptr_bhv");
         let $form = this.$el.find('#cb-se-form');
 
         for (let el in els) {
@@ -40,7 +41,9 @@ class SetElementsComponent extends Backbone.View {
                 $input.prop('disabled', true);
                 $edit.removeClass('cb-on').addClass('cb-off');
             }
-        }        
+        }
+
+        $form.find("#cb-se-ptr_bhv-" + ptr_bhv).prop("checked", "true"); 
 
     }
 
@@ -74,7 +77,8 @@ class SetElementsComponent extends Backbone.View {
                 "wrapper" : $("#cb-se-wrapper").val(),
                 "grp" : $("#cb-se-grp").val(),
                 "container" : $("#cb-se-container").val(),
-                "ptr" : $("#cb-se-ptr").val()
+                "ptr" : $("#cb-se-ptr").val(),
+                "ptr_bhv" : $("#cb-se-ptr_bhv").find("input:checked").val()
             }
             this.model.set(data);
             $status.html(

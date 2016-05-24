@@ -18,17 +18,21 @@ let setelement_tpl = `
               data-wrapper="linkGrp"
               data-grp=""
               data-container=""
-              data-ptr="link" href="#">Links (&lt;linkGrp>, &lt;link>)</a>
+              data-ptr="link"
+              data-ptr_bhv="attr" href="#">Links (&lt;linkGrp>, &lt;link>)</a>
             <a class="dropdown-item cb-se-preset"
               data-wrapper="app"
               data-grp="rdgGrp"
               data-container="rdg"
-              data-ptr="ptr" href="#">Apparatus entry (&lt;app>, &lt;rdg>)</a>            
+              data-ptr="ptr"
+              data-ptr_bhv="file"
+              href="#">Apparatus entry (&lt;app>, &lt;rdg>)</a>            
             <a class="dropdown-item cb-se-preset"
               data-wrapper="lg"
               data-grp=""
               data-container="l"
-              data-ptr="ptr" href="#">Stand off poetry (&lt;lg>, &lt;l>)</a>
+              data-ptr="ptr"
+              data-ptr_bhv="el" href="#">Stand off poetry (&lt;lg>, &lt;l>)</a>
           </div>
         </div>
         <form role="form" id="cb-se-form">
@@ -90,6 +94,26 @@ let setelement_tpl = `
           </div>
           <div id="cb-se-att-ptr" class="panel-collapse collapse in">
             
+          </div>
+          <div class="form-group">
+            <label for="ptr_bhv">New pointers are added to:</label>
+            <div class="c-inputs-stacked" id="cb-se-ptr_bhv">
+              <label class="c-input c-radio">
+                <input id="cb-se-ptr_bhv-attr" value="attr" name="radio-stacked" type="radio" checked>
+                <span class="c-indicator"></span>
+                Attribute <span class="cb-ex">(e.g. <code>&lt;link target="#ID1 #ID2"/></code>)</span>
+              </label>
+              <label class="c-input c-radio">
+                <input id="cb-se-ptr_bhv-el" value="el" name="radio-stacked" type="radio">
+                <span class="c-indicator"></span>
+                New element <span class="cb-ex">(e.g. <code>&lt;link target="#ID1"/> &lt;link target="#ID2"/></code>)</span>
+              </label>
+              <label class="c-input c-radio">
+                <input id="cb-se-ptr_bhv-file" value="file" name="radio-stacked" type="radio">
+                <span class="c-indicator"></span>
+                Attribute + new element for new files <span class="cb-ex">(e.g. <code>&lt;link target="F1#ID1 F1#ID2"/> &lt;link target="F2#ID1"/></code>)</span>
+              </label>
+            </div>
           </div>
         </form>
       </div>

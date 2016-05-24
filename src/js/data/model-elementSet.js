@@ -7,7 +7,8 @@ class ElementSet extends Backbone.Model {
             "grp" : "",
             "container" : "",
             "ptr" : "link",
-            "ptr_attr" : "target"
+            "ptr_attr" : "target",
+            "ptr_bhv" : "attr"
           }
     }
 }

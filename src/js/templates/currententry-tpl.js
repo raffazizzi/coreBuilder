@@ -1,17 +1,9 @@
 import * as Handlebars from 'handlebars';
 
 let currententry_tpl = `
-{{#if pointers}}
+{{#if xml}}
   <div id="cb-ce-entry">
-    <pre>
-&lt;{{es.wrapper}}>{{#if es.container}}  
-  &lt;{{es.container}}>
-{{#each pointers}}    &lt;{{../es.ptr}} target="{{xml_file}}#{{xmlid}}"/>
-{{/each}}
-  &lt;/{{es.container}}>{{else}}{{#each pointers}}
-  &lt;{{../es.ptr}} target="{{xml_file}}#{{xmlid}}"/>{{/each}}{{/if}}
-&lt;/{{es.wrapper}}>
-    </pre>
+    <code>{{xml}}</code>
   </div>
 {{else}}
   <div id="cb-ce-msg">To begin building a stand-off <strong>core</strong>, 

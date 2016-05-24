@@ -8,10 +8,16 @@
     background-color: $ui-bg;
     border-top: 4px solid $ui-border;
     border-left: 4px solid $ui-border;
-    border-radius: 5px;
+    border-right: 4px solid $ui-border;
+    border-radius: 3px;
     min-height: 20px;
     min-width: 20px;
     margin-left: $sidebar-compact-size;
+    margin-right: 20px;
+
+    -webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 
     #cb-ce-msg {
         padding: 15px;

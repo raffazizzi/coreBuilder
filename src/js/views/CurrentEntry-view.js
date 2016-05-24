@@ -24,14 +24,66 @@ class CurrentEntryView extends Backbone.View {
     }
 
     render() {
-        let data = {
-            "pointers" : []
+
+        let data = {};
+
+        if (this.model.pointers.models.length > 0){
+            let es = this.elementSet;
+            let ptr_bhv = this.elementSet["ptr_bhv"];
+
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString("<"+es.wrapper+"/>","text/xml");
+
+            let wrapper = xmlDoc.documentElement;
+            
+            let pointers = [];
+            if (ptr_bhv == "attr") {
+                let ptr = xmlDoc.createElement(es.ptr);
+                let targets = [];
+                for (let pointer of this.model.pointers.models) {
+                    targets.push(pointer.get("xmlid"));
+                }
+                ptr.setAttribute("target", "#" + targets.join(" #"));
+                pointers.push(ptr);
+            }
+            else if (ptr_bhv == "el") {
+                for (let pointer of this.model.pointers.models) {
+                    let ptr = xmlDoc.createElement(es.ptr);
+                    ptr.setAttribute("target", "#" + pointer.get("xmlid"));
+                    pointers.push(ptr);
+                }
+            }
+            else {
+                let byfile = this.model.pointers.groupBy(function(pointer){
+                    return pointer.get("xml_file")
+                });
+                for (var key of Object.keys(byfile)) {
+                    let ptr = xmlDoc.createElement(es.ptr);
+                    let targets = [];
+                    for (let pointer of byfile[key]) {
+                        targets.push(pointer.get("xmlid"));
+                    }
+                    ptr.setAttribute("target", "#" + targets.join(" #"));
+                    pointers.push(ptr);
+                }
+            }
+
+            if (es.container) {
+                let cnt = xmlDoc.createElement(es.container);
+                for (let p of pointers){
+                    cnt.appendChild(p);
+                }
+            }
+            else {
+                for (let p of pointers){
+                    wrapper.appendChild(p);
+                }
+            }
+
+            data.xml = new XMLSerializer().serializeToString(xmlDoc);
+    
         }
-        for (let pointer of this.model.pointers.models) {
-            data.pointers.push(pointer.toJSON());
-        }
-        data["es"] = this.elementSet;
-        console.log(data);
+
         this.$el.html(currententry_tpl(data));
     }
 
