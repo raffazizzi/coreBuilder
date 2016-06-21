@@ -25,7 +25,7 @@ let setelement_tpl = `
               data-grp="rdgGrp"
               data-container="rdg"
               data-ptr="ptr"
-              data-ptr_bhv="file"
+              data-ptr_bhv="cnt"
               href="#">Apparatus entry (&lt;app>, &lt;rdg>)</a>            
             <a class="dropdown-item cb-se-preset"
               data-wrapper="lg"
@@ -80,7 +80,7 @@ let setelement_tpl = `
             
           </div>
           <div class="form-group">
-            <label for="ptr">Pointer</label>
+            <label for="ptr">Pointer Element</label>
             <div class="input-group">
               <div class="input-group-addon">&nbsp;</div>
               <input type="text" class="form-control" id="cb-se-ptr"
@@ -99,7 +99,7 @@ let setelement_tpl = `
             <label for="ptr_bhv">New pointers are added to:</label>
             <div class="c-inputs-stacked" id="cb-se-ptr_bhv">
               <label class="c-input c-radio">
-                <input id="cb-se-ptr_bhv-attr" value="attr" name="radio-stacked" type="radio" checked>
+                <input id="cb-se-ptr_bhv-attr" value="attr" name="radio-stacked" type="radio">
                 <span class="c-indicator"></span>
                 Attribute <span class="cb-ex">(e.g. <code>&lt;link target="#ID1 #ID2"/></code>)</span>
               </label>
@@ -109,9 +109,9 @@ let setelement_tpl = `
                 New element <span class="cb-ex">(e.g. <code>&lt;link target="#ID1"/> &lt;link target="#ID2"/></code>)</span>
               </label>
               <label class="c-input c-radio">
-                <input id="cb-se-ptr_bhv-file" value="file" name="radio-stacked" type="radio">
+                <input id="cb-se-ptr_bhv-cnt" value="cnt" name="radio-stacked" type="radio">
                 <span class="c-indicator"></span>
-                Attribute + new element for new files <span class="cb-ex">(e.g. <code>&lt;link target="F1#ID1 F1#ID2"/> &lt;link target="F2#ID1"/></code>)</span>
+                New container for new files <span class="cb-ex">(e.g. <code>&lt;rdg> &lt;ptr target="F1#ID1"/>&lt;/rdg> &lt;rdg>&lt;ptr target="F2#ID1"/>&lt;/rdg></code>)</span>
               </label>
             </div>
           </div>

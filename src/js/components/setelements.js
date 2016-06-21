@@ -43,7 +43,7 @@ class SetElementsComponent extends Backbone.View {
             }
         }
 
-        $form.find("#cb-se-ptr_bhv-" + ptr_bhv).prop("checked", "true"); 
+        $form.find("#cb-se-ptr_bhv-" + ptr_bhv).prop("checked", "true");
 
     }
 
@@ -73,13 +73,15 @@ class SetElementsComponent extends Backbone.View {
                 </div>`);
         }
         else {
+
             let data = {
-                "wrapper" : $("#cb-se-wrapper").val(),
-                "grp" : $("#cb-se-grp").val(),
-                "container" : $("#cb-se-container").val(),
-                "ptr" : $("#cb-se-ptr").val(),
-                "ptr_bhv" : $("#cb-se-ptr_bhv").find("input:checked").val()
+                "wrapper" : this.$el.find("#cb-se-wrapper").val(),
+                "grp" : this.$el.find("#cb-se-grp").val(),
+                "container" : this.$el.find("#cb-se-container").val(),
+                "ptr" : this.$el.find("#cb-se-ptr").val(),
+                "ptr_bhv" : this.$el.find("#cb-se-ptr_bhv").find("input:checked").val()
             }
+            this.model.clear({silent: true}); // Not sure why this is necessary, but it works
             this.model.set(data);
             $status.html(
                 `<div class="alert alert-success" role="alert">
@@ -94,6 +96,7 @@ class SetElementsComponent extends Backbone.View {
     render() {
 
         let component = $(setelements_tpl(this.model.toJSON()));
+        component.find("#cb-se-ptr_bhv-" + this.model.get("ptr_bhv")).prop("checked", "true");
         this.target.append(this.$el.append(component));
 
         component.modal('show');

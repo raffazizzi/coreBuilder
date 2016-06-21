@@ -13,7 +13,7 @@ class XMLFileView extends Backbone.View {
 
     events() {
         return {
-            'click .cb-xf-controls > a' : 'remove'
+            'click #cb-xf-close' : 'remove'
         };
     }
 
@@ -125,7 +125,7 @@ class XMLFileView extends Backbone.View {
 
         // TODO: Determine here if XML?
         // TODO: need to parametrize ace URL somehow, or make generally more reliable
-        loadScript("/dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+        loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
             var editor;
             ace.require(['ace/ace'], (loadedAce) => {
                 editor = loadedAce.edit(ed_cnt);

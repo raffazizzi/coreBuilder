@@ -19,13 +19,66 @@
     -moz-box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 
+    button span {
+        display: none;
+    }
+
     #cb-ce-msg {
         padding: 15px;
     }
 
     #cb-ce-entry {
-        padding: 5px;
+
+        display: none;
+
         font-size: 9px;
+
+        #cb-ce-entry-menu {
+            background-color: $logo-primary;
+            padding: 5px;            
+
+            #cb-ce-undock, #cb-ce-minimize {
+                color: black;
+            }
+
+            .cb-ce-entry-ctrls {
+                float: right;
+            }
+
+        }
+
+        #cb-ce-entry-items {
+            padding: 0 20px 0 10px;
+            position: relative;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        #cb-ce-entry-xml {
+            display: none;
+        }
+
+        #cb-ce-entry-btns {
+            float: right;
+            padding-bottom: 5px;
+            margin-right: 5px;
+        }
+
+        .cb-ce-ctrls {
+            position: absolute;
+            left: 5px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 1em;
+        }
+
+        ul ul {
+            padding-left: 1.5em;
+        }
+
     }
 
 }
@@ -35,11 +88,22 @@
         min-width: 300px;
         min-height: 2em;
         margin-left: $sidebar-size;
+        z-index: 999 !important;
 
         #cb-ce-entry {
             font-size: 15px;
         }
 
+        button span {
+            display: inline;
+        }
+
     }
 }
 
+#currententry.cb-ce-minimized {
+
+    #cb-ce-entry-body, #cb-ce-entry-btns, .cb-ce-entry-ctrls  {
+        display: none;
+    }
+}

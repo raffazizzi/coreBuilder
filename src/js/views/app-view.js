@@ -6,22 +6,25 @@ import CurrentEntryView from './CurrentEntry-view';
 import ElementSet from '../data/model-elementSet';
 import FileUploadComponent from '../components/fileupload';
 import SetElementsComponent from '../components/setelements';
+import ViewCoreComponent from '../components/viewcore';
 import Events from '../utils/backbone-events.js';
 
 // Sadly Bootstrap js is not ES6 ready yet.
 var $ = global.jQuery = require('jquery');
 require('../../../node_modules/bootstrap/dist/js/umd/modal');
 require('../../../node_modules/bootstrap/dist/js/umd/tab');
+require('../../../node_modules/bootstrap/dist/js/umd/tab');
 
 class CoreBuilder extends Backbone.View {
 
-	events() {
+    events() {
         return {
             'click #brand > a' : 'toggleSidebar',
             'click #add_files > a' : 'openFileUploadComponent',
             'click #set_els > a' : 'openSetElementsComponent',
             'click #arrange' : 'toggle_arrange',
-            'click #arr_pick_size > span' : "arrange"
+            'click #arr_pick_size > span' : "arrange",
+            "click #view_core > a": "openViewCoreComponent"
         };
     }
 
@@ -34,7 +37,7 @@ class CoreBuilder extends Backbone.View {
         });
 
         // Stand-off element set
-        var elementSet = this.elementSet = new ElementSet;
+        this.elementSet = new ElementSet;
 
         // Core
         this.core = new Core;
@@ -43,11 +46,18 @@ class CoreBuilder extends Backbone.View {
         this.listenTo(Events, "coreEntry:addPointer", function(p) {this.core.addPointer(p)});
 
         // Current Entry
+        this.newCurrentEntryView(); 
+
+        // When a new core entry is added, render it.
+        this.listenTo(this.core, "add", this.newCurrentEntryView);
+
+    }
+
+    newCurrentEntryView(){
         var currententry = new CurrentEntryView({model: this.core.last(), 
                                                  "el" : "#currententry", 
-                                                 "elementSet" : elementSet.toJSON()});
-        this.listenTo(elementSet, "change", function(elset) {currententry.updateElementSet(elset.toJSON())});
-
+                                                 "elementSet" : this.elementSet.toJSON()});
+        this.listenTo(this.elementSet, "change", function(elset) {currententry.updateElementSet(elset.toJSON())});
     }
 
     toggleSidebar(e) {
@@ -64,6 +74,11 @@ class CoreBuilder extends Backbone.View {
     openSetElementsComponent(e){
         e.preventDefault();        
         new SetElementsComponent({"target" : this.$el, "model" : this.elementSet});
+    }
+
+    openViewCoreComponent(e){
+        e.preventDefault();
+        new ViewCoreComponent({"target" : this.$el, "collection" : this.core});
     }
 
     toggle_arrange(e){

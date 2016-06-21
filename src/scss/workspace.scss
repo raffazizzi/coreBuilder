@@ -8,16 +8,20 @@
         padding: 2px;
 
         .cb-xf-title {
-            min-height: 1.5em;
+            min-height: 2em;
             color: white;
             font-weight: bold;
 
             .cb-xf-controls {
-                text-align: right;
+                float: right;
 
                 a:link, a:hover, a:active, a:visited {
                     color: white;
                     text-decoration: none;
+                }
+
+                button span {
+                    display: none;
                 }
 
             }
@@ -29,4 +33,10 @@
 
     }
 
+}
+
+@media(min-width:500px) {
+    #workspace .row .cb-XMLFile .cb-xf-title .cb-xf-controls button span {
+        display: inline;
+    }
 }

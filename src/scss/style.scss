@@ -20,7 +20,7 @@
 // // Components
 // @import '../../node_modules/bootstrap/scss/animation';
 @import '../../node_modules/bootstrap/scss/dropdown';
-// @import '../../node_modules/bootstrap/scss/button-group';
+@import '../../node_modules/bootstrap/scss/button-group';
 @import '../../node_modules/bootstrap/scss/input-group';
 @import '../../node_modules/bootstrap/scss/custom-forms';
 @import '../../node_modules/bootstrap/scss/nav';
@@ -54,7 +54,7 @@
 $fa-font-path: "../../node_modules/font-awesome/fonts";
 @import "../../node_modules/font-awesome/scss/variables";
 @import "../../node_modules/font-awesome/scss/mixins";
-//@import "../../node_modules/font-awesome/scss/path";
+@import "../../node_modules/font-awesome/scss/path";
 @import "../../node_modules/font-awesome/scss/core";
 @import "../../node_modules/font-awesome/scss/larger";
 @import "../../node_modules/font-awesome/scss/fixed-width";
@@ -64,6 +64,9 @@ $fa-font-path: "../../node_modules/font-awesome/fonts";
 @import "../../node_modules/font-awesome/scss/rotated-flipped";
 @import "../../node_modules/font-awesome/scss/stacked";
 @import "../../node_modules/font-awesome/scss/icons";
+
+// Syntax Highlighting with Prism.js
+@import "../../node_modules/prismjs/themes/prism.css";
 
 // Sidebar
 @import 'sidebar';
@@ -79,6 +82,22 @@ $fa-font-path: "../../node_modules/font-awesome/fonts";
 
 // Set Stand Off Elements
 @import 'setelements';
+
+// View Core
+@import 'viewcore';
+
+// Override annoying focus class
+.btn.focus, .btn:focus {
+	outline: none;
+}
+
+.btn-secondary-outline.focus, .btn-secondary-outline:focus {
+	background-color: transparent;
+}
+
+.btn-secondary.focus, .btn-secondary:focus {
+	background-color: $btn-secondary-bg;
+}
 
 // Genearlly useful classes;
 a.cb-plain {
