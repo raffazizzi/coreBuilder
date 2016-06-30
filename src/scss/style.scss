@@ -88,15 +88,19 @@ $fa-font-path: "../../node_modules/font-awesome/fonts";
 
 // Override annoying focus class
 .btn.focus, .btn:focus {
-	outline: none;
+    outline: none;
 }
 
 .btn-secondary-outline.focus, .btn-secondary-outline:focus {
-	background-color: transparent;
+    background-color: transparent;
+}
+
+.btn-secondary-outline.focus.active, .btn-secondary-outline.active:focus {
+    background-color: $btn-secondary-border;
 }
 
 .btn-secondary.focus, .btn-secondary:focus {
-	background-color: $btn-secondary-bg;
+    background-color: $btn-secondary-bg;
 }
 
 // Genearlly useful classes;
