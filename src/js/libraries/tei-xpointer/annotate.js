@@ -115,7 +115,8 @@ var Annotate = {
     
   },
   generate_match: function(selection, context, contextPath) {
-    var lemma = selection.toString().replace(/\\/g, '\\');
+    // var lemma = selection.toString().replace(/\\/g, '\\');
+    var lemma = selection.toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     var preceding = [];
     var anchorOffset = selection.anchorOffset;
     var children = jQuery(context).contents();

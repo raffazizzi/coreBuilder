@@ -1,4 +1,5 @@
 import * as Backbone from 'backbone';
+import Events from '../utils/backbone-events';
 import $ from 'jquery';
 
 import Annotate from '../libraries/tei-xpointer/annotate';
@@ -13,6 +14,9 @@ class XPointerComponent extends Backbone.View {
         this.editor = options.editor;
         this.shadowTags = options.shadowTags;
         this.shadowDOM = options.shadowDOM;
+
+        this.listenTo(this, "suspend", this.suspend);
+        this.listenTo(this, "resume", this.resume);
 
         this.editor.on("focus", () => {
             for (let txt of $(this.editor.renderer.content).find(".ace_text.ace_xml")){
@@ -30,6 +34,11 @@ class XPointerComponent extends Backbone.View {
             }
         });
 
+        this.startEditorListener();
+        
+    }
+
+    startEditorListener(){
         $(this.editor.renderer.content).on("mouseup", (e)=>{
             e.preventDefault();
             
@@ -87,104 +96,127 @@ class XPointerComponent extends Backbone.View {
             }
             else {
                 // ok, selection allowed. 
-                this.getXPointer(start, end);
+                console.log(this.getXPointer(start, end));
             }
         });
     }
 
     getXPointer(start, end) {
-        // TODO: Simplify and optimize this 
-        let getShadowElement = (pos, tags_stack=[], totalOffset=0) => {
+
+        let getShadowElement = (pos) => {
+
             let shadowEl = {};
-            let tokenRow = this.editor.session.getTokens(pos.row);                
 
-            let token = pos.column ? this.editor.session.getTokenAt(pos.row, pos.column) : null;
+            let this_token = this.editor.session.getTokenAt(pos.row, pos.column);
+            let this_offset = pos.column - this_token.start;
+            let totalOffset = this_offset;
+            let text_stack = [];
+            let lookingBack = false;
 
-            var startLocated = false;
-            for (let [i, t] of tokenRow.entries()) {
-                if (t.type == "meta.tag.punctuation.tag-open.xml") {
-                    tags_stack.push({
-                        "token_no": i,
-                        "value": tokenRow[i+1].value
-                    });
-                }
-                else if (t.type == "meta.tag.punctuation.end-tag-open.xml") {
-                    if (tokenRow[i+1] && tags_stack[tags_stack.length-1]){
-                        if (tokenRow[i+1].value == tags_stack[tags_stack.length-1].value){
-                            tags_stack.pop();
+            // reverse loop through rows. 
+            for (var row_i = pos.row; row_i >= 0; row_i--) {
+                let tokenRow = this.editor.session.getTokens(row_i);
+
+                let reduced_tRow = lookingBack ? tokenRow : tokenRow.slice(0, this_token.index+1);
+
+                let tag;
+
+                // reverse loop to locate parent element of text node
+                // and stack text nodes
+                let isClosed = false;
+                for (var i = reduced_tRow.length - 1; i >= 0; i--) {
+                    let t = reduced_tRow[i];
+
+                    // stack text node lengths
+                    if (t.type == "text.xml") {
+                        if (i != reduced_tRow.length - 1) {
+                            totalOffset += t.value.length;                            
                         }
-                    }                        
-                }
-                
-                if (t.type == "text.xml") {
-                    totalOffset += t.value.length;
-                }
-
-                let tstart = token ? token.start : null;
-                if (startLocated // The cursor was on a tag and we're now at the following text node
-                    || (!token && i == tokenRow.length-1) // We're looking back, so there's not token. 
-                                                          // Make sure we're at the last token in the row
-                    || t.start === tstart // We're at the row and token where the selection ends
-                    ) {
-                    startLocated = true;
-
-                    // Skip if this is not a text node (e.g. selection cursor is on tag)
-                    // If we're at the end in means that the cursor is after a tag 
-                    // at the end of a line. In which case proceed.
-                    if (t.type != "text.xml" && i < tokenRow.length-1) {
-                        continue; //NB this jumps to the next token
+                        if (i == reduced_tRow.length-1 && text_stack.length > 0) {
+                            text_stack[0].unshift(t);
+                        }
+                        else {
+                            text_stack.unshift([t]);
+                        }
+                    }
+                    
+                    else if (t.type == "meta.tag.punctuation.tag-open.xml") {
+                        if (!isClosed) {
+                            tag = {
+                                "token_no": i+1,
+                                "value": tokenRow[i+1].value
+                            };
+                            break;    
+                        }
+                        else isClosed = false;
                     }
 
-                    // find closest token type meta.tag.punctuation.tag-open.xml
-                    if (tags_stack.length > 0) {                            
+                    else if ((t.type == "meta.tag.punctuation.tag-close.xml" && t.value == "/>") 
+                      || t.type == "meta.tag.punctuation.end-tag-open.xml"){
+                        isClosed = true;
+                    }
 
-                        if (pos.column) {
-                            let tstart = !t.start ? pos.column : t.start;
-                            let tcol = pos.column < tstart ? tstart : pos.column;
-                            shadowEl["offset"] = tcol - tstart;
-                        }  
-                        else shadowEl["offset"] = totalOffset;                          
+                }
 
-                        for (let st of this.shadowTags){
-                            let token_no = tags_stack[tags_stack.length-1].token_no
-                            if (st.row == pos.row && st.token_no == tags_stack[tags_stack.length-1].token_no) {
+                if (tag) {
 
-                                let intermediateNodes = tokenRow.slice(token_no,i+1).filter(function(subt){
-                                    return subt.type == "text.xml";
-                                });
+                    for (let st of this.shadowTags){
+                        if (st.row == row_i && st.token_no == tag.token_no) {
+                            shadowEl["$el"] = $(this.shadowDOM).find("*[xml\\:id='"+st.id+"']");
+                            shadowEl["el"] = shadowEl["$el"].get(0);
+                            
+                            // Find text node.
+                            // Get all the shadow text nodes contained by this element, 
+                            // to the index eq to the length of text.xml tokens
 
-                                shadowEl["$el"] = $(this.shadowDOM).find("*[xml\\:id='"+st.id+"']");
-                                shadowEl["el"] = shadowEl["$el"].get(0);
-
-                                // Also find text node for the pseudoSelection properties
-                                var textNodes = [];
-
-                                function _getTextNodes(node) {
-                                    if (node.nodeType == 3) {
-                                        textNodes.push(node);
-                                    } else {
-                                        for (var i = 0, len = node.childNodes.length; i < len; ++i) {
-                                            _getTextNodes(node.childNodes[i]);
-                                        }
+                            let textNodes = [];
+                            function _getTextNodes(node) {
+                                if (node.nodeType == 3) {
+                                    textNodes.push(node);
+                                } else {
+                                    for (var i = 0, len = node.childNodes.length; i < len; ++i) {
+                                        _getTextNodes(node.childNodes[i]);
                                     }
                                 }
-                                _getTextNodes(shadowEl["el"]);
-                                
-                                let intermediateIndex = Math.max(0, intermediateNodes.length-1);
-                                shadowEl["node"] = textNodes[intermediateIndex];
-                                return shadowEl;
                             }
+                            _getTextNodes(shadowEl["el"]);
+
+                            let relevant_tns = textNodes.slice(0, text_stack.length);
+                            shadowEl["node"] = relevant_tns[relevant_tns.length-1]
+
+
+                            console.log(text_stack, textNodes);
+                            let last_text_token = text_stack[text_stack.length-1]
+                            if (last_text_token.length == 1){
+                                shadowEl["offset"] = this_offset;
+                            }
+                            else {
+                                let count = 0;
+                                for (let t of last_text_token.slice(0, -1)) {
+                                    count += t.value.length +1; //for the new line
+
+                                }
+                                count += this_offset;
+                                shadowEl["offset"] = count;
+                            }
+
+                            // Store the totalOffset too just in case.
+                            shadowEl["totalOffset"] = totalOffset;
+
+                            return shadowEl;
+
                         }
                     }
-                    else {
-                        // Looking back
-                        return getShadowElement({"row": pos.row-1}, tags_stack, totalOffset);
-                    }
-                    break;                    
+
+                    break
+                }
+                else {
+                    // add new line to offset count
+                    totalOffset += 1;
+                    lookingBack = true;
                 }
             }
-            // empty row, lookback
-            return getShadowElement({"row": pos.row-1}, tags_stack, totalOffset);
+
         }
 
         let startShadowEl = getShadowElement(start);
@@ -206,13 +238,19 @@ class XPointerComponent extends Backbone.View {
             "focusNode" : endShadowEl["node"], //nodes already ordered, so focus == end
         };
 
-        pseudoSelection["commonAncestorContainer"] = startShadowEl["$el"].parents().has(endShadowEl["$el"]).first().get(0);
+        if (startShadowEl["el"].getAttribute("xml:id") == endShadowEl["el"].getAttribute("xml:id")) {
+            pseudoSelection["commonAncestorContainer"] = startShadowEl["el"];    
+        }
+        else {
+            pseudoSelection["commonAncestorContainer"] = startShadowEl["$el"].parents().has(endShadowEl["$el"]).first().get(0);
+        }
 
         pseudoSelection["getRangeAt"] = function(i) {
+            // returning this should be sufficient becuase 
+            // the xpointer library only requests getRangeAt(0)
             return this;
         }
 
-        // TODO: review this; sometimes white spaces are skipped?
         pseudoSelection["toString"] = function() {
             let textNodes = [];
             function _getTextNodes(node) {
@@ -226,31 +264,46 @@ class XPointerComponent extends Backbone.View {
             }
             _getTextNodes(this.commonAncestorContainer);
 
+            // Build the string starting at the anchor node and 
+            // stopping at the focus node
             let theString = "";
-            let adding = false;
+            let canAdd = false;
             for (let tn of textNodes){
                 if (tn === this.anchorNode && tn === this.focusNode){
-                    theString += tn.data.slice(this.anchorOffset, this.focusOffset);
+                    // start and end text nodes are the same
+                    theString = tn.textContent.slice(this.anchorOffset, this.focusOffset);
                     break;
                 }
-                else if (tn === this.anchorNode){
-                    adding = true;                        
-                    theString += tn.data.slice(this.anchorOffset);
+                else if (tn === this.anchorNode){         
+                    canAdd = true;
+                    theString = tn.textContent.slice(this.anchorOffset);
                 }
                 else if (tn === this.focusNode){
-                    adding = false;
-                    theString += tn.data.slice(0, this.focusOffset);
+                    theString += tn.textContent.slice(0, this.focusOffset);
+                    break;
                 }
-                else if (adding){
-                    theString += tn.data;
+                else if (canAdd){
+                    theString += tn.textContent;
                 }
             }
 
             return theString;
         }
 
+        console.log(pseudoSelection, pseudoSelection.toString());
+
         const xpointer = Annotate.xpointer(pseudoSelection);
         return xpointer;
+    }
+
+    suspend(){
+        console.log('suspending');
+        $(this.editor.renderer.content).off("mouseup");
+    }
+
+    resume(){
+        console.log('resuming');
+        this.startEditorListener();
     }
 
 }
