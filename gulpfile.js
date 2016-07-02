@@ -2,7 +2,7 @@
 const gulp  = require('gulp'),
     gutil = require('gulp-util'),
     connect = require('gulp-connect'),
-    uglify = require('gulp-uglify');
+    uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
     browserify = require('browserify'),
     source = require('vinyl-source-stream'),
@@ -11,7 +11,7 @@ const gulp  = require('gulp'),
     sass = require('gulp-sass') ,
     autoprefixer = require('gulp-autoprefixer'),
     nano = require('gulp-cssnano'),
-    sourcemaps = require('gulp-sourcemaps')
+    sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('build:es6', function() {
     return browserify({
