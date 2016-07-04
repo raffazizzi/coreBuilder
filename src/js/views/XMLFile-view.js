@@ -14,9 +14,10 @@ class XMLFileView extends Backbone.View {
     events() {
         return {
             'click .cb-xf-close' : 'remove',
+            'click .cb-xf-empty' : 'toggleEmpty',
             'click .cb-xf-xpointer' : 'toggleXPointer',
             'click .cb-xf-xp-cancel' : 'cancelXPointerEntry',
-            'click .cb-xf-xp-ok' : 'addXPointerEntry'
+            'click .cb-xf-xp-ok' : 'addXPointerEntry',
         };
     }
 
@@ -216,6 +217,38 @@ class XMLFileView extends Backbone.View {
         return this.$el;
     }
 
+    toggleEmpty() {
+
+        // Remove any element selectors
+        this.$el.find(".cb-el_select").remove();
+
+        let btn = this.$el.find(".cb-xf-empty");
+        let active = "cb-active";
+
+        if (!btn.data(active)){
+            btn.data(active, true);
+            this.suspendElementSelect();
+            
+            let ptr = {
+                'xml_file': this.model.get("filename"),
+                'cb_xml_file_model' : this.model.cid,
+                'empty' : true
+            }
+
+            Events.trigger("coreEntry:addPointer", ptr);
+
+            btn.data("cb-ptrdata", ptr);
+            
+        }
+        else {
+            btn.data(active, false);
+            this.bindElementSelect();
+            Events.trigger("coreEntry:removePointer", btn.data("cb-ptrdata"));
+        }
+
+        
+    }
+
     addXPointerEntry() {
 
         if (this.XPointerComponent.xpointerdata) {
@@ -279,7 +312,7 @@ class XMLFileView extends Backbone.View {
             btn.data(active, false);
             this.xpointerOn = false;
 
-            // Turn off element selection
+            // Turn on element selection
             this.bindElementSelect();
 
             // Hide selection drawer

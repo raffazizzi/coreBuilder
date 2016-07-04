@@ -44,6 +44,7 @@ class CoreBuilder extends Backbone.View {
         // Always start the core with one unsaved entry
         this.core.add({});
         this.listenTo(Events, "coreEntry:addPointer", function(p) {this.core.addPointer(p)});
+        this.listenTo(Events, "coreEntry:removePointer", function(p) {this.core.removePointer(p)});
 
         // Current Entry
         this.newCurrentEntryView(); 

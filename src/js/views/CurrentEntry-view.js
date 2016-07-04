@@ -13,6 +13,13 @@ class CurrentEntryView extends Backbone.View {
         this.elementSet = options.elementSet;
         this.listenTo(this.model, 'change', this.renderData);
         this.listenTo(this.model.pointers, 'add', this.renderData);
+        this.listenTo(this.model.pointers, 'remove', ()=>{
+            if (this.model.pointers.length > 0){
+                this.renderData();
+            }
+            else this.render();
+        });
+
         this.render();
     }
 
@@ -127,8 +134,10 @@ class CurrentEntryView extends Backbone.View {
                 let ptr = {"name": es.ptr};
                 let targets = [];
                 for (let pointer of this.model.pointers.models) {
-                    let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer"); 
-                    targets.push(pointer.get("xml_file") + "#" + xp);
+                    if (!pointer.get("empty")) {
+                        let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer"); 
+                        targets.push(pointer.get("xml_file") + "#" + xp);
+                    }
                 }
                 ptr.targets = targets;
                 if (cnt) {
@@ -142,15 +151,17 @@ class CurrentEntryView extends Backbone.View {
             }
             else if (ptr_bhv == "el") {
                 for (let pointer of this.model.pointers.models) {
-                    let ptr = {"name": es.ptr};
-                    let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
-                    ptr.targets = [pointer.get("xml_file") + "#" + xp];
-                    if (cnt) {
-                        cnt.content.push(ptr);
-                        cnt._targets = cnt._targets = cnt._targets.concat(ptr.targets);
-                    }
-                    else {
-                        wrapper.content.push(ptr);
+                    if (!pointer.get("empty")) {
+                        let ptr = {"name": es.ptr};
+                        let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
+                        ptr.targets = [pointer.get("xml_file") + "#" + xp];
+                        if (cnt) {
+                            cnt.content.push(ptr);
+                            cnt._targets = cnt._targets = cnt._targets.concat(ptr.targets);
+                        }
+                        else {
+                            wrapper.content.push(ptr);
+                        }    
                     }
                 }
                 if (cnt) {
@@ -165,11 +176,13 @@ class CurrentEntryView extends Backbone.View {
 
                     let cnt = {"name": es.container, "content": [], "_targets": []};
                     for (let pointer of byfile[key]) {
-                        let ptr = {"name": es.ptr};
-                        let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
-                        ptr.targets = [pointer.get("xml_file") + "#" + xp];
-                        cnt.content.push(ptr);
-                        cnt._targets = cnt._targets.concat(ptr.targets);
+                       if (!pointer.get("empty")) {
+                            let ptr = {"name": es.ptr};
+                            let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
+                            ptr.targets = [pointer.get("xml_file") + "#" + xp];
+                            cnt.content.push(ptr);
+                            cnt._targets = cnt._targets.concat(ptr.targets);
+                        }
                     }
                     wrapper.content.push(cnt);
                 }

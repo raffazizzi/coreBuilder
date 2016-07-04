@@ -12,6 +12,15 @@ class Core extends Backbone.Collection {
         this.last().pointers.add(pointer);
     }
 
+    removePointer(pointer) {
+        // get latest core entry and find pointer to remove
+        for (let ptr of this.last().pointers.models) {
+        	if (ptr.get("cb_xml_file_model") == pointer.cb_xml_file_model) {
+        		ptr.destroy();
+        	}
+        };
+    }
+
 }
 
 export default Core;
