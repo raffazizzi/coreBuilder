@@ -1,3 +1,5 @@
+@import 'variables';
+
 #workspace .row {
     margin: 0;
 
@@ -22,6 +24,39 @@
 
                 button span {
                     display: none;
+                }
+
+            }
+
+            .cb-xf-xp-drawer {
+
+                color: black;
+                width: 250px;  
+                background-color: $logo-secondary;
+                height: 35px;
+                margin: auto;
+                position: absolute;
+                top: 36px;
+                left: 0;
+                right: 0;
+                z-index: 999 !important;
+                text-align: center;
+                border-radius: 5px; 
+                display: none;
+
+                span {
+                    display: inline-block;
+                    margin-top: 5px;
+                }
+
+                span.cb-xf-xp-d-ctrls {
+                    display: inline-block;
+                    float: right;
+                    margin: 5px 10px 0 0;
+
+                    a.cb-xf-xp-d-b {
+
+                    }
                 }
 
             }

@@ -11,6 +11,9 @@ class XPointerComponent extends Backbone.View {
     
     initialize(options){
 
+        // XPOINTER STORED HERE
+        this.xpointerdata;
+
         this.editor = options.editor;
         this.shadowTags = options.shadowTags;
         this.shadowDOM = options.shadowDOM;
@@ -332,6 +335,14 @@ class XPointerComponent extends Backbone.View {
         }
 
         const xpointer = Annotate.xpointer(pseudoSelection);
+        // check xpointer
+        if (xpointer) {
+            this.xpointerdata = xpointer;
+            this.$el.find(".cb-xf-xp-msg").text("XPointer created, add?");            
+        }
+        else {
+            this.$el.find(".cb-xf-xp-msg").text("Could not create XPointer.");
+        }
         return xpointer;
     }
 
@@ -341,7 +352,10 @@ class XPointerComponent extends Backbone.View {
     }
 
     resume(){
-        // console.log('resuming');
+        console.log('resuming');
+        // reset exising pointer data
+        this.xpointerdata = undefined;
+        this.$el.find(".cb-xf-xp-msg").text("Make a selection");
         this.startEditorListener();
     }
 

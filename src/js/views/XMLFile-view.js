@@ -14,7 +14,9 @@ class XMLFileView extends Backbone.View {
     events() {
         return {
             'click .cb-xf-close' : 'remove',
-            'click .cb-xf-xpointer' : 'toggleXPointer'
+            'click .cb-xf-xpointer' : 'toggleXPointer',
+            'click .cb-xf-xp-cancel' : 'cancelXPointerEntry',
+            'click .cb-xf-xp-ok' : 'addXPointerEntry'
         };
     }
 
@@ -195,13 +197,16 @@ class XMLFileView extends Backbone.View {
                             }
                         }                        
                     }
-                    // Reconsider whether this is really a component...
+                    // TODO: Reconsider whether this is really a component...
                     this.XPointerComponent = new XPointerComponent({
                         "el": this.el,
                         "editor": editor,
                         "shadowTags": this.shadowTags, 
                         "shadowDOM": this.xmlDOM
                     });
+
+                    // move the cursor to position 1,1 to guarantee focus.
+                    editor.getSession().getSelection().selectionLead.setPosition(1,1);
                 }
                 
             });
@@ -211,7 +216,30 @@ class XMLFileView extends Backbone.View {
         return this.$el;
     }
 
-    toggleXPointer(){
+    addXPointerEntry() {
+
+        if (this.XPointerComponent.xpointerdata) {
+            // add a pointer to core entry
+            Events.trigger("coreEntry:addPointer", 
+                {
+                    'xml_file': this.model.get("filename"),
+                    'cb_xml_file_model' : this.model.cid,
+                    'xpointer' : this.XPointerComponent.xpointerdata   
+                });
+            this.cancelXPointerEntry();
+        }
+        else {
+            this.$el.find(".cb-xf-xp-msg").text("No XPointer!");
+        }
+        
+    }
+
+    cancelXPointerEntry() {
+        this.$el.find(".cb-xf-xpointer").removeClass('active');
+        this.toggleXPointer();
+    }
+
+    toggleXPointer() {
 
         // Remove any element selectors
         this.$el.find(".cb-el_select").remove();
@@ -227,6 +255,9 @@ class XMLFileView extends Backbone.View {
             // Turn off element selection
             this.suspendElementSelect();
 
+            // Show selection drawer
+            this.$el.find(".cb-xf-xp-drawer").show();
+
             // Hack to get ACE to respond. TODO: better solutions likely possible!
             this.editor.getSession().setAnnotations([]);
         }
@@ -236,6 +267,9 @@ class XMLFileView extends Backbone.View {
             
             // Turn off element selection
             this.suspendElementSelect();
+
+            // Show selection drawer
+            this.$el.find(".cb-xf-xp-drawer").show();
 
             // This event will do nothing if the component hasn't been initialized
             this.XPointerComponent.trigger("resume");
@@ -247,6 +281,9 @@ class XMLFileView extends Backbone.View {
 
             // Turn off element selection
             this.bindElementSelect();
+
+            // Hide selection drawer
+            this.$el.find(".cb-xf-xp-drawer").hide();
 
             this.XPointerComponent.trigger("suspend");
         }
