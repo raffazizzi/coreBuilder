@@ -82,16 +82,45 @@ class CurrentEntryView extends Backbone.View {
 
     getXML(data) {
 
+        var _writeattribute = (el, a) => {
+            let value = a.value;
+
+            let partFileName = currentXMLFile.substring(0, currentXMLFile.lastIndexOf("."));
+            value = value.replace(/%filename/g, partFileName);
+            value = value.replace(/%egg/g, "🐰");
+
+            // Deal with special attribute values
+            el.setAttribute(a.name, value);
+        }
+
         let parser = new DOMParser();
         let xmlDoc = parser.parseFromString("<"+data.wrapper.name+"/>","text/xml");
         let wrapper = xmlDoc.documentElement;
 
+        let currentXMLFile = this.model.pointers.first().get("xml_file");
+
+        // Add wrapper's attributes
+        for (let a of data.wrapper.xmlatts) {
+            if (a.name && !a.isTarget) {
+                _writeattribute(wrapper, a);
+            }
+        }
+
         let _createElementDown = (lvl, xmlel) => {
             for (let cnt of lvl.content) {
                 let el = xmlDoc.createElement(cnt.name);
+                let target_att = "target"; 
+                for (let a of cnt.xmlatts) {
+                    if (a.name && !a.isTarget) {
+                        _writeattribute(el, a);
+                    }
+                    if (a.isTarget) {
+                        target_att = a.name;
+                    }
+                }
                 if (cnt.targets) {
                     for (let target of cnt.targets) {
-                        el.setAttribute("target", cnt.targets.join(" "));
+                        el.setAttribute(target_att, cnt.targets.join(" "));
                     }
                 }                
                 if (cnt.content) {
@@ -121,17 +150,21 @@ class CurrentEntryView extends Backbone.View {
             this.showEntry();
             
             let es = this.elementSet;
-            let ptr_bhv = this.elementSet["ptr_bhv"];
+            let ptr_bhv = this.elementSet.get("ptr_bhv");
 
-            let wrapper = {"name": es.wrapper, "content": []};
+            let el_wrapper = es.get("wrapper");
+            let el_container = es.get("container");
+            let el_ptr = es.get("ptr");
+
+            let wrapper = {"name": el_wrapper.get("name"), "content": [], 'xmlatts': el_wrapper.xmlatts.toJSON()};
             var cnt = null;
-            if (es.container) {
-                cnt = {"name": es.container, "content": [], "_targets": []};
+            if (el_container.get("name")) {
+                cnt = {"name": el_container.get("name"), "content": [], "_targets": [], 'xmlatts': el_container.xmlatts.toJSON()};
             }
             
             let pointers = [];
             if (ptr_bhv == "attr") {
-                let ptr = {"name": es.ptr};
+                let ptr = {"name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON()};
                 let targets = [];
                 for (let pointer of this.model.pointers.models) {
                     if (!pointer.get("empty")) {
@@ -152,7 +185,7 @@ class CurrentEntryView extends Backbone.View {
             else if (ptr_bhv == "el") {
                 for (let pointer of this.model.pointers.models) {
                     if (!pointer.get("empty")) {
-                        let ptr = {"name": es.ptr};
+                        let ptr = {"name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON()};
                         let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
                         ptr.targets = [pointer.get("xml_file") + "#" + xp];
                         if (cnt) {
@@ -174,10 +207,10 @@ class CurrentEntryView extends Backbone.View {
                 });
                 for (var key of Object.keys(byfile)) {
 
-                    let cnt = {"name": es.container, "content": [], "_targets": []};
+                    let cnt = {"name": el_container.get("name"), "content": [], "_targets": [], 'xmlatts': el_container.xmlatts.toJSON()};
                     for (let pointer of byfile[key]) {
                        if (!pointer.get("empty")) {
-                            let ptr = {"name": es.ptr};
+                            let ptr = {"name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON()};
                             let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
                             ptr.targets = [pointer.get("xml_file") + "#" + xp];
                             cnt.content.push(ptr);
@@ -212,12 +245,10 @@ class CurrentEntryView extends Backbone.View {
 
     showEntry() {
         this.$el.find("#cb-ce-entry").show();
-        this.$el.find("#cb-ce-msg").hide();
     }
 
     hideEntry() {
         this.$el.find("#cb-ce-entry").hide();
-        this.$el.find("#cb-ce-msg").show();
     }
 
     toggleXMLView() {

@@ -1,6 +1,6 @@
 #cb-se_modal {
 
-    a.cb-se-remove.cb-on:after {
+    a.cb-se-remove.cb-on:after, a.cb-se-att-remove.cb-on:after {
         content: "\2716";
     }
 
@@ -15,6 +15,20 @@
     .cb-ex {
     	float: right;
     	font-size: smaller;
+    }
+
+    .cb-se-atts {
+        padding-left: 28px;
+    }
+
+    .cb-se-addatt {
+        cursor: pointer;
+        color: black;
+    }
+
+    .cb-se-addatt.cb-disabled {
+        cursor: not-allowed;
+        color: darkgrey;
     }
 
 }

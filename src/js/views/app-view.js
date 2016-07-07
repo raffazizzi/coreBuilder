@@ -3,7 +3,7 @@ import XMLFiles from '../data/coll-XMLFiles';
 import XMLFilesView from './XMLFiles-view';
 import Core from '../data/coll-Core';
 import CurrentEntryView from './CurrentEntry-view';
-import ElementSet from '../data/model-elementSet';
+import ElementSet from '../data/model-ElementSet';
 import FileUploadComponent from '../components/fileupload';
 import SetElementsComponent from '../components/setelements';
 import ViewCoreComponent from '../components/viewcore';
@@ -57,8 +57,8 @@ class CoreBuilder extends Backbone.View {
     newCurrentEntryView(){
         var currententry = new CurrentEntryView({model: this.core.last(), 
                                                  "el" : "#currententry", 
-                                                 "elementSet" : this.elementSet.toJSON()});
-        this.listenTo(this.elementSet, "change", function(elset) {currententry.updateElementSet(elset.toJSON())});
+                                                 "elementSet" : this.elementSet});
+        this.listenTo(this.elementSet, "change", () => {currententry.updateElementSet(this.elementSet)});
     }
 
     toggleSidebar(e) {

@@ -3,11 +3,13 @@ import ElementSetEl from './model-ElementSetEl.js';
 
 class ElementSet extends Backbone.Model {
     get defaults(){
+        let ptr_model = new ElementSetEl({"name": "link"});
+        ptr_model.xmlatts.add({"name": "target", "isTarget": true});
         return {
-            "wrapper" : new ElementSetEl({"name", "linkGrp"}),
+            "wrapper" : new ElementSetEl({"name": "linkGrp"}),
             "grp" : new ElementSetEl(),
             "container" : new ElementSetEl(),
-            "ptr" : new ElementSetEl({"name", "link"}).attributes.add({"name": "target"}),
+            "ptr" : ptr_model,
             "ptr_bhv" : "attr"
           }
     }

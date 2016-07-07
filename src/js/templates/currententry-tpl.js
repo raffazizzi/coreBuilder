@@ -1,15 +1,5 @@
 import * as Handlebars from 'handlebars';
 
-// let currententry_tpl = `
-// {{#if xml}}
-//   <div id="cb-ce-entry">
-//     <code>{{xml}}</code>
-//   </div>
-// {{else}}
-//   <div id="cb-ce-msg">To begin building a stand-off <strong>core</strong>, 
-//   open an XML file and click on elements with IDs.</div>
-// {{/if}}
-
 let currententry_tpl = `
 <div id="cb-ce-entry">
   <div id="cb-ce-entry-menu">
@@ -37,8 +27,6 @@ let currententry_tpl = `
     </span>
   </div>
 </div>
-<div id="cb-ce-msg">To begin building a stand-off <strong>core</strong>, 
-open an XML file and click on elements with IDs.</div>
 `
 
 export default Handlebars.compile(currententry_tpl);

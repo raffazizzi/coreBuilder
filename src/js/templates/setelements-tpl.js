@@ -26,13 +26,15 @@ let setelement_tpl = `
               data-container="rdg"
               data-ptr="ptr"
               data-ptr_bhv="cnt"
+              data-atts='{"container": {"wit":"#%filename"} }'
               href="#">Apparatus entry (&lt;app>, &lt;rdg>)</a>            
             <a class="dropdown-item cb-se-preset"
               data-wrapper="lg"
               data-grp=""
               data-container="l"
               data-ptr="ptr"
-              data-ptr_bhv="el" href="#">Stand off poetry (&lt;lg>, &lt;l>)</a>
+              data-ptr_bhv="el"
+              href="#">Stand off poetry (&lt;lg>, &lt;l>)</a>
           </div>
         </div>
         <form role="form" id="cb-se-form">
@@ -41,42 +43,39 @@ let setelement_tpl = `
             <div class="input-group">
               <div class="input-group-addon">&nbsp;</div>
               <input type="text" class="form-control" id="cb-se-wrapper"
-                     value="{{wrapper}}">
+                     value="{{wrapper.attributes.name}}">
+              <div class="input-group-addon cb-se-addatt" data-el="wrapper">@</div>
             </div>
           </div>
-          <div id="cb-se-att-wrapper" class="panel-collapse collapse">
+          <div id="cb-se-att-wrapper" class="cb-se-atts">
 
           </div>
           <div class="form-group">
             <label for="grp">Grouping element</label>
             <div class="input-group">
-              <div class="input-group-addon"><a class="cb-plain cb-se-remove cb-off" href="#"></a></div>
-              <input type="text" class="form-control" id="cb-se-grp" value="{{grp}}" disabled>
-              <!-- <div class="input-group-addon">
-                <a data-toggle="collapse" data-target="#att-grp" 
-                   class="collapsed" href="#">
-                  @
-                </a>
-              </div> -->
+              <div class="input-group-addon"><a class="cb-plain cb-se-remove
+              {{#if this.grp.attributes.name}}cb-on{{else}}cb-off{{/if}}" href="#"></a></div>
+              <input type="text" class="form-control" id="cb-se-grp" value="{{grp.attributes.name}}"
+              {{#if this.grp.attributes.name}}{{else}}disabled{{/if}}>              
+              <div class="input-group-addon cb-se-addatt
+              {{#if this.grp.attributes.name}}{{else}}cb-disabled{{/if}}" data-el="grp">@</div>
             </div>
           </div>
-          <div id="cb-se-att-grp" class="panel-collapse collapse">
-          
+          <div id="cb-se-att-grp" class="cb-se-atts">
+            
           </div>
           <div class="form-group">
             <label for="container">Container</label>
             <div class="input-group">
-              <div class="input-group-addon"><a class="cb-plain cb-se-remove cb-off " href="#"></a></div>
-              <input type="text" class="form-control" id="cb-se-container" value="{{container}}" disabled>
-              <!-- <div class="input-group-addon">
-                <a data-toggle="collapse" data-target="#att-container" 
-                   class="collapsed" href="#">
-                  @
-                </a>
-              </div> -->
+              <div class="input-group-addon"><a class="cb-plain cb-se-remove 
+              {{#if this.container.attributes.name}}cb-on{{else}}cb-off{{/if}}" href="#"></a></div>
+              <input type="text" class="form-control" id="cb-se-container" value="{{container.attributes.name}}"
+              {{#if this.container.attributes.name}}{{else}}disabled{{/if}}>
+              <div class="input-group-addon cb-se-addatt
+              {{#if this.container.attributes.name}}{{else}}cb-disabled{{/if}}" data-el="container">@</div>
             </div>
           </div>
-          <div id="cb-se-att-container" class="panel-collapse collapse">
+          <div id="cb-se-att-container" class="cb-se-atts">
             
           </div>
           <div class="form-group">
@@ -84,15 +83,11 @@ let setelement_tpl = `
             <div class="input-group">
               <div class="input-group-addon">&nbsp;</div>
               <input type="text" class="form-control" id="cb-se-ptr"
-                   value="link">
-              <!-- <div class="input-group-addon">
-                <a data-toggle="collapse" data-target="#att-ptr" href="#">
-                  @
-                </a>
-              </div> -->
+                   value="{{ptr.attributes.name}}">
+              <div class="input-group-addon cb-se-addatt" data-el="ptr">@</div>
             </div>
           </div>
-          <div id="cb-se-att-ptr" class="panel-collapse collapse in">
+          <div id="cb-se-att-ptr" class="cb-se-atts">
             
           </div>
           <div class="form-group">
