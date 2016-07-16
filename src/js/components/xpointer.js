@@ -334,16 +334,33 @@ class XPointerComponent extends Backbone.View {
             return theString;
         }
 
-        const xpointer = Annotate.xpointer(pseudoSelection);
-        // check xpointer
-        if (xpointer) {
-            this.xpointerdata = xpointer;
-            this.$el.find(".cb-xf-xp-msg").text("XPointer created, add?");            
+        try {
+            const xpointer = Annotate.xpointer(pseudoSelection);
+            // check xpointer
+            if (xpointer) {
+                this.xpointerdata = xpointer;
+                this.$el.find(".cb-xf-xp-msg")
+                    .text("XPointer created, add?")
+                    .parent().removeClass("cb-xp-fail")
+                    .addClass("cb-xp-ok");            
+            }
+            else {
+                this.$el.find(".cb-xf-xp-msg")
+                    .text("Could not create XPointer.")
+                    .parent().removeClass("cb-xp-ok")
+                    .addClass("cb-xp-fail");
+            }
+            return xpointer;
         }
-        else {
-            this.$el.find(".cb-xf-xp-msg").text("Could not create XPointer.");
+        catch (msg) {
+            this.$el.find(".cb-xf-xp-msg")
+                .text("Could not create XPointer.")
+                .parent().removeClass("cb-xp-ok")
+                .addClass("cb-xp-fail");
+
+            console.log(msg);
         }
-        return xpointer;
+
     }
 
     suspend(){
@@ -355,7 +372,7 @@ class XPointerComponent extends Backbone.View {
         console.log('resuming');
         // reset exising pointer data
         this.xpointerdata = undefined;
-        this.$el.find(".cb-xf-xp-msg").text("Make a selection");
+        this.$el.find(".cb-xf-xp-msg").text("Make a selection").parent().removeClass("cb-xp-fail").removeClass("cb-xp-ok");
         this.startEditorListener();
     }
 

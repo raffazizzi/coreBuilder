@@ -262,7 +262,7 @@ class XMLFileView extends Backbone.View {
             this.cancelXPointerEntry();
         }
         else {
-            this.$el.find(".cb-xf-xp-msg").text("No XPointer!");
+            // this.$el.find(".cb-xf-xp-msg").text("Error.");
         }
         
     }
