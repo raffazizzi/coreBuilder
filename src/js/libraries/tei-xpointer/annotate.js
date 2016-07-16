@@ -225,7 +225,7 @@ var Annotate = {
     if (selection.getRangeAt(0).startContainer == selection.getRangeAt(0).endContainer) {
       path = Annotate.findXPath(selection.getRangeAt(0).startContainer);
     } else {
-      var lb = document.evaluate("preceding::lb[1]",selection.getRangeAt(0).startContainer,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
+      var lb = document.evaluate("preceding-sibling::lb[1]",selection.getRangeAt(0).startContainer,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
       if (lb = lb.singleNodeValue) {
         path = Annotate.findXPath(lb);
       } else {
