@@ -364,7 +364,7 @@ class XPointerComponent extends Backbone.View {
     }
 
     suspend(){
-        // console.log('suspending');
+        console.log('suspending');
         $(this.editor.renderer.content).off("mouseup");
     }
 

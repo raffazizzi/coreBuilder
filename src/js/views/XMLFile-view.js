@@ -207,7 +207,9 @@ class XMLFileView extends Backbone.View {
                     });
 
                     // move the cursor to position 1,1 to guarantee focus.
-                    editor.getSession().getSelection().selectionLead.setPosition(1,1);
+                    let sel = editor.getSession().getSelection()
+                    sel.selectionLead.setPosition(1,1);
+                    sel.selectionAnchor.setPosition(1,1);
                 }
                 
             });

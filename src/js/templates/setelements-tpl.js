@@ -50,7 +50,7 @@ let setelement_tpl = `
           <div id="cb-se-att-wrapper" class="cb-se-atts">
 
           </div>
-          <div class="form-group">
+          <div class="form-group" id="cb-se-grp-all">
             <label for="grp">Grouping element</label>
             <div class="input-group">
               <div class="input-group-addon"><a class="cb-plain cb-se-remove
@@ -90,7 +90,7 @@ let setelement_tpl = `
           <div id="cb-se-att-ptr" class="cb-se-atts">
             
           </div>
-          <div class="form-group">
+          <div class="form-group"id="cb-se-bhvrs">
             <label for="ptr_bhv">New pointers are added to:</label>
             <div class="c-inputs-stacked" id="cb-se-ptr_bhv">
               <label class="c-input c-radio">

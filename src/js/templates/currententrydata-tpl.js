@@ -4,56 +4,84 @@ let currententrydata_tpl = `
 <div id="cb-ce-entry-items">
   <ul>
     <li>
-      <span class="cb-ce-ctrls">
-        <i class="cb-ce-ctrls-del fa fa-times" data-targets="all"></i>
+      <span class="cb-ce-ctrls" data-targets="all">
+        <i class="cb-ce-ctrls-del fa fa-times"></i>
       </span>
       <span>{{wrapper.name}}</span>
       <!-- there is always at least one level of content -->
       <ul>
       {{#each wrapper.content}}
         <li>
-          <!-- possible group (TODO) -->
-          <!-- container or pointer -->
+          <!-- group or container or pointer -->
           {{#if this.content}}
-            <span class="cb-ce-ctrls">
-              <i class="cb-ce-ctrls-del fa fa-times" data-targets="{{this._targets}}"></i>
-              <!--<i class="cb-ce-ctrls-grp fa fa-link"></i>-->
+            <span class="cb-ce-ctrls" data-targets='{{this._targets}}''>
+              <i class="cb-ce-ctrls-del fa fa-times"></i>
+              <i class="cb-ce-ctrls-grp fa fa-link cb-ce-g-el" style="display:none;"></i>
+              <i class="cb-ce-ctrls-grp fa fa-chain-broken cb-ce-g-el-un" style="display:none;"></i>
             </span>
             <span>{{this.name}}</span>
             <ul>
             {{#each this.content}}
-              <!-- pointers -->
-              <li>
-                <span class="cb-ce-ctrls">
-                  <i class="cb-ce-ctrls-del fa fa-times" data-targets="{{this.targets}}"></i>
+              {{#if this.content}}
+                <!-- part of group -->
+                <span class="cb-ce-ctrls" data-targets='{{this._targets}}''>
+                  <i class="cb-ce-ctrls-del fa fa-times"></i>
                 </span>
-                <span>{{this.name}}</span>
-                <ul>
-                {{#each this.targets}}
+                <span>HM{{this.name}}</span>
+                {{#each this.content}}
+                  <!-- pointers -->
                   <li>
-                    <span class="cb-ce-ctrls">
-                      <i class="cb-ce-ctrls-del fa fa-times" data-targets="{{this}}"></i>
+                    <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>
+                      <i class="cb-ce-ctrls-del fa fa-times"></i>                      
                     </span>
-                    <span>{{this}}</span>
+                    <span>{{this.name}}</span>
+                    <ul>
+                    {{#each this.targets}}
+                      <li>
+                        <span class="cb-ce-ctrls" data-targets='{{this.cid}}'>
+                          <i class="cb-ce-ctrls-del fa fa-times"></i> 
+                        </span>
+                        <span>{{this.xmlid}}</span>
+                      </li>
+                    {{/each}}
+                    </ul>
                   </li>
                 {{/each}}
-                </ul>
-              </li>
+                {{else}}
+                <!-- pointers -->
+                <li>
+                  <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>
+                    <i class="cb-ce-ctrls-del fa fa-times"></i>
+                  </span>
+                  <span>{{this.name}}</span>
+                  <ul>
+                  {{#each this.targets}}
+                    <li>
+                      <span class="cb-ce-ctrls" data-targets='{{this.cid}}'>
+                        <i class="cb-ce-ctrls-del fa fa-times"></i> 
+                      </span>
+                      <span>{{this.xmlid}}</span>
+                    </li>
+                  {{/each}}
+                  </ul>
+                </li>
+              {{/if}}
             {{/each}}                            
             </ul>
           {{else}}
-            <span class="cb-ce-ctrls">
-              <i class="cb-ce-ctrls-del fa fa-times" data-targets="{{this.targets}}"></i>
-              <!--<i class="cb-ce-ctrls-grp fa fa-link"></i>-->
+            <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>
+              <i class="cb-ce-ctrls-del fa fa-times"></i>
+              <i class="cb-ce-ctrls-grp fa fa-link cb-ce-g-el" style="display:none;"></i>
+              <i class="cb-ce-ctrls-grp fa fa-chain-broken cb-ce-g-el-un" style="display:none;"></i>
             </span>
             <span>{{this.name}}</span>
             <ul>
               {{#each this.targets}}
                 <li>
-                  <span class="cb-ce-ctrls">
-                    <i class="cb-ce-ctrls-del fa fa-times" data-targets="{{this}}"></i>
+                  <span class="cb-ce-ctrls" data-targets='{{this.cid}}'>
+                    <i class="cb-ce-ctrls-del fa fa-times"></i>
                   </span>
-                  <span>{{this}}</span>
+                  <span>{{this.xmlid}}</span>
                 </li>
               {{/each}}
             </ul>

@@ -34,8 +34,7 @@ class ViewCoreComponent extends Backbone.View {
         let xml_string = "";
 
         this.collection.each((entry, i)=>{
-            // skip last entry (considere "not saved");
-            if (i+1 < this.collection.length){
+            if (entry.get("saved")){
                 xml_string += entry.get("xml");
             }
         });
@@ -52,8 +51,9 @@ class ViewCoreComponent extends Backbone.View {
         let coreData = []
 
         this.collection.each((entry, i)=>{
-            // skip last entry (considered "not saved");
-            if (i+1 < this.collection.length){
+            // skip last entry (considered "not saved") 
+            // and any other leaked unsaved entries... TODO (fix this)
+            if (entry.get("saved")){
                 coreData.push({
                     "id": entry.cid,
                     "xml": entry.get("xml")

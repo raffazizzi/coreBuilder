@@ -80,6 +80,12 @@
             padding-left: 1.5em;
         }
 
+        #cb-ce-g-dd {
+            .cb-selected {
+                background-color: $logo-secondary;
+            }
+        }
+
     }
 
 }

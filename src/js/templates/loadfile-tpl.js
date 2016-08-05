@@ -32,6 +32,7 @@ export default `
           </div>
           <div role="tabpanel" class="tab-pane" id="cb-lf-web">
             <p>Load from the web -- if allowed by the web site.</p>
+            <p>Coming soon!</p>
           </div>
         </div>
       </div>

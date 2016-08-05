@@ -32,7 +32,20 @@ class SetElementsComponent extends Backbone.View {
             "click .cb-se-remove" : "toggleInputs",
             "click #cb-se-confirm" : "setElements",
             "click .cb-se-addatt" : "addAttribute",
-            "click .cb-se-att-remove" : "removeAttribute"
+            "click .cb-se-att-remove" : "removeAttribute",
+            "change #cb-se-bhvrs input" : "changeBehavior"
+        }
+    }
+
+    changeBehavior(e) {
+        let ptr_bhv = $(e.target).val();
+
+        // Activate grouping if behavior is not "attr"
+        if (ptr_bhv != "attr") {
+            this.$el.find("#cb-se-grp-all").show();
+        }
+        else {
+            this.$el.find("#cb-se-grp-all").hide().find("input").val("");
         }
     }
 
@@ -88,20 +101,32 @@ class SetElementsComponent extends Backbone.View {
             }
         }
 
-        $form.find("#cb-se-ptr_bhv-" + ptr_bhv).prop("checked", "true");
+        $form.find("#cb-se-ptr_bhv-" + ptr_bhv).prop("checked", "true").change();
 
     }
 
     toggleInputs(e) {
         let $edit = $(e.target);
         let $input = $edit.parent().next("input");
+        let $addatt = $input.next(".cb-se-addatt");
         if ($edit.hasClass('cb-on')){
             $input.val("");
+            // Clear attributes
+            let $atts = $edit.closest(".form-group").next();
+            for (let att_to_x of $atts.find(".cb-se-att-remove")) {
+                let attid = $(att_to_x).data("attid");
+                let target_el = $(att_to_x).data("el");
+
+                delete this.temp_attributes[target_el][attid];
+                this.$el.find("#cb-se-att-"+target_el).find("#cb-se-att-"+attid).remove();
+            }
             $input.prop('disabled', true);
+            $addatt.addClass("cb-disabled");
             $edit.removeClass('cb-on').addClass('cb-off');
         }
         else {
             $input.prop('disabled', false);
+            $addatt.removeClass("cb-disabled");
             $edit.removeClass('cb-off').addClass('cb-on');   
         }
     }
@@ -158,8 +183,11 @@ class SetElementsComponent extends Backbone.View {
                     let name = attdata.find(".cb-se-att-name").val();
                     let value = attdata.find(".cb-se-att-value").val();
                     let new_att = m.xmlatts.add({"name": name});
-                    if (!temp_a.isTarget) {
+                    if (!temp_a[att].isTarget) {
                         new_att.set("value", value);
+                    }
+                    else {
+                        new_att.set("isTarget", true);   
                     }
                 }
 
@@ -195,6 +223,12 @@ class SetElementsComponent extends Backbone.View {
 
         let component = $(setelements_tpl(this.model.toJSON()));
         component.find("#cb-se-ptr_bhv-" + this.model.get("ptr_bhv")).prop("checked", "true");
+
+        // hide grouping element options if behavior is "attr"
+        if (this.model.get("ptr_bhv") == "attr") {
+            component.find("#cb-se-grp-all").hide().find("input").val("");
+        }
+
         this.target.append(this.$el.append(component));
 
         this.renderAttributes();
