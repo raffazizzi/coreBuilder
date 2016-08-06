@@ -31,14 +31,19 @@ export default `
             </div>            
           </div>
           <div role="tabpanel" class="tab-pane" id="cb-lf-web">
-            <p>Load from the web -- if allowed by the web site.</p>
-            <p>Coming soon!</p>
+            <div class="form-group">
+              <input type="email" class="form-control" id="cb-fl-web-input" placeholder="Enter URL">
+              <small class="form-text text-muted"><strong>Important:</strong> remote XML documents can only be accessed if 
+              they are on the same server as <emph>coreBuilder</emph> or if the server where they are located supports 
+              <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> (such as GitHub).</small>
+            </div>
           </div>
         </div>
-      </div>
+        <div id="cb-lf-status"></div> 
+      </div>      
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary disabled" id="cb-lf-open">Open</button>
+        <button type="button" class="btn btn-primary" id="cb-lf-open">Open</button>
       </div>
     </div>
   </div>

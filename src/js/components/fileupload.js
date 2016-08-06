@@ -15,8 +15,11 @@ class FileUploadComponent extends Backbone.View {
         this.files = null;
         this.$el = $(loadfile_tpl);
 
+        let $status = this.$el.find('#cb-lf-status');
+
         // Events
         this.$el.on('change', '.btn-file :file', (e) => {
+            $status.empty();
             let input = $(e.target)
             this.files = input.get(0).files;
             this.showFilesNumber();
@@ -29,46 +32,72 @@ class FileUploadComponent extends Backbone.View {
         });
 
         this.$el.on('drop', '#cb-lf-drop', (e) => {
+            $status.empty();
             e.stopPropagation();
             e.preventDefault();            
             this.files = e.originalEvent.dataTransfer.files;
             this.showFilesNumber();            
         });
 
-        this.$el.on('cb-fl-chosen', function () {
-            $(this).find("#cb-lf-open").removeClass("disabled");
+        // Resets on tab change.
+        this.$el.find("a[data-toggle='tab']").on('show.bs.tab', function () {
+            $status.empty();
         });
 
         this.$el.on('click', '#cb-lf-open', (e) => {
             e.preventDefault();
-            if (this.files){
-                let progress = this.$el.find('.cb-lf-progress > progress'),
-                    status = this.$el.find('.modal-body');
-                // FileList is a strange object...
-                for (var i = 0, f; f = this.files[i]; i++) {
-                    // Only process text files.
-                    if (!f.type.match('text.*')) {
-                        status.text("Wrong file type - try with an XML file");
-                        continue;
+
+            // Determine which tab is open
+            if (this.$el.find("#cb-lf-upload").hasClass("active")) {            
+
+                if (this.files){
+                    let progress = this.$el.find('.cb-lf-progress > progress')
+                    // FileList is a strange object...
+                    for (var i = 0, f; f = this.files[i]; i++) {
+                        // Only process text files.
+                        if (!f.type.match('text.*')) {
+                            $status.text("Wrong file type - try with an XML file");
+                            continue;
+                        }
+
+                        let filePromise = (new _FileReader(f, progress, $status)).select();
+
+                        filePromise.then(
+                            (textdata) => {                            
+                                Events.trigger('addFile', textdata);
+                                // Last file?
+                                if (i == Object.keys(this.files).length) {
+                                    this.$el.modal( 'hide' ).data( 'bs.modal', null );
+                                }
+                        })
+                        .catch(
+                            function(reason) {
+                                console.log(reason);
+                                $status.text("Error reading file :(");
+                        });
+
                     }
-
-                    let filePromise = (new _FileReader(f, progress, status)).select();
-
-                    filePromise.then(
-                        (textdata) => {                            
-                            Events.trigger('addFile', textdata);
-                            // Last file?
-                            if (i == Object.keys(this.files).length) {
-                                this.$el.modal( 'hide' ).data( 'bs.modal', null );
-                            }
-                    })
-                    .catch(
-                        function(reason) {
-                            console.log(reason);
-                            status.text("Error reading file :(");
-                    });
-
                 }
+                else {
+                    $status.text("Please select one or more files.")
+                }
+            } else if (this.$el.find("#cb-lf-web").hasClass("active")) {
+                let url = this.$el.find('#cb-fl-web-input').val();
+                if (url != "") {
+                    // Try to get file
+                    $.ajax({
+                      url: url,
+                      success: (data, status, xhr) => {
+                        let filename = url.split("/").slice(-1);
+                        let textdata = {"filename": filename[0], "url": url, "content" : xhr.responseText};
+                        Events.trigger('addFile', textdata);
+                        this.$el.modal( 'hide' ).data( 'bs.modal', null );
+                      },
+                      error: function(err) {$status.text("Could not load file!")},
+                      dataType: 'xml'
+                    });
+                }
+                else $status.text("Please enter an address");
             }
         });
 

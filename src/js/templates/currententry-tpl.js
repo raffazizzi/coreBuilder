@@ -4,7 +4,7 @@ let currententry_tpl = `
 <div id="cb-ce-entry">
   <div id="cb-ce-entry-menu">
     <div class="btn-group btn-group-sm" role="group">
-      <button type="button" class="btn btn-sm btn-secondary-outline disabled" id="cb-ce-undock"><i class="fa fa-expand fa-flip-horizontal"></i></button> 
+      <!--<button type="button" class="btn btn-sm btn-secondary-outline disabled" id="cb-ce-undock"><i class="fa fa-expand fa-flip-horizontal"></i></button> -->
       <button type="button" class="btn btn-sm btn-secondary-outline" id="cb-ce-minimize"><strong>_</strong></button> 
     </div>
     <div class="btn-group btn-group-sm cb-ce-entry-ctrls" role="group">
