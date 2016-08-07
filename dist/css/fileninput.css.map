@@ -1,0 +1,1 @@
+{"version":3,"sources":["fileninput.css"],"names":[],"mappings":"AAAA,SACE,gBAAiB,AACjB,sBAAwB,AACxB,eAAiB,CAAE,AAErB,gBACE,QAAU,CAAE","file":"fileninput.css","sourcesContent":[".XMLFile {\n  background: Grey;\n  border: 1px solid White;\n  min-height: 20em; }\n\n#workspace .row {\n  margin: 0; }\n"],"sourceRoot":"/source/"}

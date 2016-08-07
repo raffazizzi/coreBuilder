@@ -1,0 +1,1 @@
+{"version":3,"sources":["viewcore.css"],"names":[],"mappings":"AAAA,6BACE,WAAa,CAAE","file":"viewcore.css","sourcesContent":["#cb-vc_modal #cb-vc-download {\n  float: right; }\n"],"sourceRoot":"/source/"}
