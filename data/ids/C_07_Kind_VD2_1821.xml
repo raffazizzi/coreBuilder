@@ -1,83 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-model href="../../schema/freidi_libretto.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-stylesheet type="text/css" href="../../../../Freischu%CC%88tzsubversion/trunk/textData/css/Kind_Druck_1821.css"?><TEI xmlns="http://www.tei-c.org/ns/1.0">
-    <teiHeader>
-        <fileDesc>
-            <titleStmt>
-                <title>Der Freischütz</title>
-                <respStmt>
-                    <resp>Encoders</resp>
-                    <name xml:id="JV">Joachim Veit</name>
-                    <name xml:id="RV">Raffale Viglianti</name>
-                    <name xml:id="SS">Solveig Schreiter</name>
-                </respStmt>
-            </titleStmt>
-            <publicationStmt>
-                <p/>
-            </publicationStmt>
-            <sourceDesc>
-                <biblStruct>
-                    <monogr>
-                        <author/>
-                        <title>W.G.Becker’s Taschenbuch zum geselligen Vergnügen.</title>
-                        <imprint>
-                            <pubPlace>Leipzig</pubPlace>
-                            <publisher>Georg Joachim Göschen</publisher>
-                            <pubPlace>Wien</pubPlace>
-                            <publisher>Carl Geroldsche Buchhandlung</publisher>
-                            <date when="1821">1821</date>
-                        </imprint>
-                    </monogr>
-                </biblStruct>
-            </sourceDesc>
-        </fileDesc>
-        <revisionDesc>
-            <change who="SS" when="2014-02-06">Korrektur gelesen</change>
-            <change who="SS" when="2013-08-08">Datei eingerichtet</change>
-        </revisionDesc>
-    </teiHeader>
-    <text>
-        <pb n="396"/>
-        <body><!-- Beginn AKT I         xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
-            <div>
-                <head rend="center">
-                    <hi rend="spaced_out">Volkslied.
-                <lb/>aus der Oper: Der Freischütz.</hi> </head>
-                <head rend="center" type="sub">Musik von Carl Maria von Weber.</head>
-                <sp>
-                    <lg>
-                        <l>Wir winden dir den Jungfernkranz </l>
-                        <l>Mit veilchenblauer Seide; </l>
-                        <l>Wir führen dich zu Spiel und Tanz’, </l>
-                        <l>Zu Glück und Liebesfreude. </l>
-                        <l>Schöner, grüner Jungfernkranz, </l>
-                        <l>Veilchenblaue Seide! </l>
-                    </lg>
-                    <lg>
-                        <l>Lavendel, Myrt’ und Thymian, </l>
-                        <l>Das wächst in meinem Garten; </l>
-                        <l>Wie lang bleibt doch der Freiersmann? </l>
-                        <l>Ich kann es kaum erwarten. </l>
-                        <l>Schöner, grüner u. s. w. </l>
-                    </lg>
-                    <lg>
-                        <l>Sie hat gesponnen sieben Jahr </l>
-                        <l>Den goldnen Flachs am Rocken, </l>
-                        <l>
-                            <seg>Das Hemdlein ist</seg> wie Spinnweb’ klar, </l>
-                        <l>Und grün der Kranz der Locken. </l>
-                        <l>Schöner, grüner u. s. w. </l>
-                    </lg>
-                    <pb n="397"/>
-                    <lg>
-                        <l>Und als der schmucke Freier kam, </l>
-                        <l>War’n sieben Jahr verronnen; </l>
-                        <l>Und weil sie der Herzliebste nahm, </l>
-                        <l>Hat sie den Kranz gewonnen. </l>
-                        <l>Schöner, grüner u. s. w. </l>
-                    </lg>
-                </sp>
-                <signed rend="right">
-                    <hi rend="spaced_out">Kind</hi>.</signed>
-            </div>
-        </body>
-    </text>
-</TEI>

@@ -1,37 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<div type="scene" n="2" xml:id="D_ptx2_III_2">
-    <head rend="h2"><hi rend="spaced_out">Zweiter Auftritt</hi>. </head>
-
-    <stage type="setting">
-        <lb/><name>Agathens</name> Stübchen, alterthümlich, doch niedlich verziert. An einer Seite ein kleiner Hausaltar, worauf <seg xml:id="D_ptx2_III_2_2_1">der Blumentopf mit dem weißen Rosenstrauße von dem, durchs Fenster hereinfallenden Sonnenstrahl beleuchtet</seg>. <!-- Abweichung der Kind-Ausgaben untereinander -->  
-    </stage>
-
-    <sp>
-        <lb/><speaker rend="spaced_out">Agathe,  </speaker><stage rend="inline" type="entrance">allein.</stage>
-        
-        <stage>
-            <lb/>Bräutlich und blendend weiß, mit grünem Bande, gekleidet, <seg xml:id="D_ptx2_III_2_4_1">kniet an dem Altar, steht auf</seg> und wendet sich dann vorwärts. Mit wehmüthiger Andacht: 
-        </stage>
-
-        <lg>
-            <l>Und ob die Wolke <w xml:id="D_ptx2_III_2_5_1">sie</w> verhülle, </l>
-            <l>Die Sonne bleibt am Himmelszelt! </l>
-            <l>Es waltet dort ein heil’ger Wille; </l>
-            <l>Nicht blindem Zufall dient die Welt! </l>
-            <l>Das Auge, <seg xml:id="D_ptx2_III_2_9_1">rein und ewig</seg> klar, </l>
-            <l>Nimmt aller Wesen liebend wahr! </l>
-        </lg>
-
-        <lg>
-            <l>Für mich auch wird der Höchste sorgen, </l>
-            <l>Dem kindlich Herz und Sinn vertraut! </l>
-            <l>Und wär’ dieß auch mein letzter Morgen, </l>
-            <l>Rief mich sein Vaterwort als Braut; </l>
-            <l><hi rend="spaced_out">Sein</hi> Auge, <seg xml:id="D_ptx2_III_2_15_1">rein und ewig</seg> klar, </l>
-            <l><seg xml:id="D_ptx2_III_2_16_1">Nimmt aller seiner Kinder</seg> wahr!</l>
-        </lg>
-
-
-    </sp>
-
-</div>

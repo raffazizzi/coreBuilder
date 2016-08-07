@@ -1,1531 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-model href="../../schema/freidi_libretto.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-stylesheet type="text/css" href="../../../../Freischu%CC%88tzsubversion/trunk/textData/css/Kind_Druck_1821.css"?><TEI xmlns="http://www.tei-c.org/ns/1.0" xml:id="EDtx">
-    <teiHeader>
-        <fileDesc>
-            <titleStmt>
-                <title>Der Freischütz</title>
-                <respStmt>
-                    <resp>Encoders</resp>
-                    <name xml:id="JV">Joachim Veit</name>
-                    <name xml:id="RV">Raffale Viglianti</name>
-                    <name xml:id="SS">Solveig Schreiter</name>
-                </respStmt>
-            </titleStmt>
-            <publicationStmt>
-                <p/>
-            </publicationStmt>
-            <sourceDesc>
-                <biblStruct>
-                    <monogr>
-                        <title>Arien und Gesänge der romantischen Oper: Der Freischütz</title>
-                        <imprint>
-                            <pubPlace>Berlin</pubPlace>
-                            <date when="1821">1821</date>
-                            <!-- Weberiana Cl. VI Kasten 2, Nr. 9 -->
-                            <!-- grüner Einband mit Titel von Jähns' Hand: Der Freischütz. Erstes aller Textbücher dieser Oper. -->
-                        </imprint>
-                    </monogr>
-                </biblStruct>
-            </sourceDesc>
-        </fileDesc>
-        <revisionDesc>
-            <change who="SS" when="2014-01-30">Korrektur gelesen</change>
-            <change who="SS" when="2013-03-12">Datei eingerichtet</change>
-        </revisionDesc>
-    </teiHeader>
-    <text>
-        <pb n="1"/>
-        <front>
-            <titlePage>
-                <titlePart>Arien und Gesänge</titlePart>
-                <titlePart>der</titlePart>
-                <titlePart>romantischen Oper:</titlePart>
-                <titlePart>
-                    <hi rend="spaced_out">Der Freischütz</hi>.</titlePart>
-                <titlePart>In drei Abtheilungen.</titlePart>
-                <titlePart>Dichtung von <hi rend="spaced_out">F. Kind</hi>.</titlePart>
-                <titlePart>Musik von <hi rend="spaced_out">C. M. v. Weber</hi>.</titlePart>
-                <titlePart>Berlin, 1821.</titlePart>
-            </titlePage>
-            <pb n="2"/>
-            <div>
-                <castList>
-                    <head rend="spaced_out">Personen:</head>
-                    <castItem>
-                        <role>Ottokar,</role>
-                        <roleDesc>regierender Graf</roleDesc>
-                        <actor>Hr. <persName key="A001535">Rebenstein</persName>.</actor>
-                    </castItem>
-                    <castItem>
-                        <role>Cuno,</role>
-                        <roleDesc>gräflicher Erbför
-                            <lb break="no" rend="-"/>ster</roleDesc>
-                        <actor>Hr. <persName key="A002057">Wauer</persName>.</actor>
-                    </castItem>
-                    <castItem>
-                        <role>Agathe,</role>
-                        <roleDesc>seine Tochter</roleDesc>
-                        <actor>Mad. <persName key="A001805">Seidler</persName>.</actor>
-                    </castItem>
-                    <castItem>
-                        <role>Annchen,</role>
-                        <roleDesc>eine junge 
-                            <lb/>Verwandte</roleDesc>
-                        <actor>Mlle. Joh. <persName key="A000466">Eunike</persName>.</actor>
-                    </castItem>
-                    <castGroup>
-                        <castItem>
-                            <role>Caspar,</role>
-                            <roleDesc>erster <seg xml:id="roles_brace1">Jäger
-                            <lb break="no" rend="-"/>bursche</seg>
-                            </roleDesc>
-                            <actor>Hr. <persName key="A000179">Blume</persName>.</actor>
-                        </castItem>
-                        <castItem>
-                            <role>Max,</role>
-                            <roleDesc>zweiter <seg sameAs="#roles_brace1"/>
-                            </roleDesc>
-                            <actor>Hr. <persName key="A001920">Stümer</persName>.</actor>
-                        </castItem>
-                    </castGroup>
-                    <castItem>
-                        <role>Samiel,</role>
-                        <roleDesc>der schwarze Jä
-                            <lb break="no" rend="-"/>ger</roleDesc>
-                        <actor>Hr. <persName key="A000842">Hillebrand</persName>.</actor>
-                    </castItem>
-                    <castItem>
-                        <role>Ein Eremit</role>
-                        <actor>Hr. <persName key="A000618">Gern</persName>.</actor>
-                        <role/>
-                    </castItem>
-                    <castItem>
-                        <role>Kilian,</role>
-                        <roleDesc>ein reicher Bauer</roleDesc>
-                        <actor>Hr. <persName key="A002136">Wiedemann</persName>.</actor>
-                    </castItem>
-                    <castItem>
-                        <role>Eine Brautjungfer</role>
-                        <actor>Mlle. <persName key="A001557">Reinwald</persName>.</actor>
-                    </castItem>
-                    <castItem>
-                        <role>Brautjungfern.</role>
-                        <role/>
-                    </castItem>
-                    <castItem>
-                        <role>Jäger und Gefolge.</role>
-                        <role/>
-                    </castItem>
-                    <castItem>
-                        <role>Landleute und 
-                            <lb/>Musikanten.</role>
-                        <role/>
-                    </castItem>
-                    <castItem>
-                        <role>Erscheinungen.</role>
-                        <role/>
-                    </castItem>
-                </castList>
-            </div>
-            <!-- alle personennamen mittig angeordnet -->
-        </front>
-        <body><!-- Beginn AKT I         xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
-            <pb n="3"/>
-            <div type="act" n="1">
-                <head rend="act">
-                    <hi rend="spaced_out">Erster Akt</hi>. </head>
-                <div type="music_number" n="I/1">
-                    <head rend="center">No. 1.</head>
-                    <sp>
-                        <lb/>
-                        <speaker>
-                            <hi rend="spaced_out">Chor</hi> der Landleute. </speaker>
-                        <lg>
-                            <l>Victoria! Victoria! der Meister soll leben, </l>
-                            <l>Der wacker dem Sternlein den Rest hat ge
-                    <lb rend="indent"/>geben! </l>
-                            <l>Ihm gleichet kein Schütz’ von fern und von
-                    <lb rend="indent"/> nah! </l>
-                            <l>Victoria! Victoria! Victoria! </l>
-                        </lg>
-                    </sp>
-                </div>
-                <div type="music_number" n="I/2">
-                    <lb/>
-                    <head rend="center">2.
-                       <lb/>
-                        <hi rend="spaced_out">Lied</hi>.</head>
-                    <note type="commentary">Die Nummerierung der musikalischen Nummern weicht im Erstdruck auffällig von den übrigen Textbuch-Quellen ab, da im I. Akt Nr. 1 und 2 hier in den anderen Quellen zusammengefasst die Nr. 1 Introduktion ergeben. Außerdem beginnt die Zählung im Erstdruck Altweise neu, während in den anderen Quellen durchgezählt wird.</note>
-                    <sp>
-                        <lb/>
-                        <speaker>Kilian.</speaker>
-                        <lg>
-                            <l>Schau’ der Herr mich an als König! </l>
-                            <l>Dünkt Ihm meine Macht zu wenig? </l>
-                            <pb n="4"/>
-                            <l>Gleich zieh’ Er den Hut, Mosje! </l>
-                            <l>Wird Er? frag’ ich – He? he? he? </l>
-                        </lg>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker rend="spaced_out">Chor.</speaker>
-                        <stage rend="inline">(wiederholt die letzte Zeile.)</stage>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker rend="spaced_out">Kilian. </speaker>
-                        <lg>
-                            <l>Stern und Straus <w>trag</w>’ ich vorm Leibe, </l>
-                            <l>Cantors <w>
-                                    <sic>Sepherl</sic>
-                                </w> trägt die Scheibe;  </l>
-                            <l>Hat Er Augen nun, Mosje? </l>
-                            <l>Was traf Er denn? He? he? he? </l>
-                        </lg>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker rend="spaced_out">Chor. </speaker>
-                        <stage rend="inline">(wie oben.)</stage>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Kilian. </speaker>
-                        <lg>
-                            <l>Darf <seg>ich etwa</seg> Euer Gnaden </l>
-                            <l>’S nächste mal zum Schießen laden? </l>
-                            <l>Er gönnt andern was, Mosje! </l>
-                            <l>Nun Er kommt doch? He? he? he? </l>
-                        </lg>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Chor.</speaker>
-                        <stage rend="inline">(wie oben.) </stage>
-                    </sp>
-                </div>
-                <div type="music_number" n="I/3">
-                    <lb/>
-                    <head rend="center">3.
-                        <lb/>
-                        <hi rend="spaced_out">Terzett und Chor</hi>. </head>
-                    <sp>
-                        <lb/>
-                        <speaker>Max.</speaker>
-                        <l part="F">O! diese Sonne, </l>
-                        <l>Furchtbar steigt sie mir empor! </l>
-                    </sp>
-                    <pb n="5"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Cuno. </speaker>
-                        <l part="F">Leid, oder Wonne, </l>
-                        <l>Beides ruht in deinem Rohr! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Ach ich muß verzagen, </l>
-                        <l>Daß der Schuß gelingt! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Cuno. </speaker>
-                        <l>Dann mußt du entsagen,</l>
-                        <l>Leid oder Wonne,</l>
-                        <l>Beides ruht in deinem Rohr!</l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar .</speaker>
-                        <l>Nur ein keckes Wagen </l>
-                        <l>Ist’s, was Glück erringt. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Agathen entsagen, </l>
-                        <l>Wie könnt’ ich’s ertragen? </l>
-                        <l>Doch <seg>verfolgt mich</seg> Mißgeschick. – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Chor. </speaker>
-                        <l>Seht, wie düster ist sein Blick! </l>
-                        <l>Ahnung scheint ihn zu durchbeben – </l>
-                        <l>O laß Hoffnung dich beleben, </l>
-                        <l>Und vertraue dem Geschick! </l>
-                    </sp>
-                    <pb n="6"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Weh mir! mich verließ das Glück, </l>
-                        <l>Unsichtbare Mächte grollen, </l>
-                        <l>Bange Ahnung füllt die Brust! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Mag Fortuna’s Kugel rollen;</l>
-                        <l>Wer sich höh’rer Kraft bewußt, </l>
-                        <l>Trotzt dem Wechsel und Verlust! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Cuno. </speaker>
-                        <l>So’s des Himmels Mächte wollen, </l>
-                        <l>Dann – trag männlich den Verlust! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Chor. </speaker>
-                        <l>Nein! er trüg nicht den Verlust! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Cuno.</speaker>
-                        <l>Mein Sohn, nur Muth, </l>
-                        <l>Wer Gott vertraut, baut gut! </l>
-                        <l>Jetzt auf! in Bergen und Klüften </l>
-                        <l>Tobt morgen der freudige Krieg! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Chor der Jäger. </speaker>
-                        <l>Das Wild in Fluren und Triften, </l>
-                        <l>Der Aar in Wolken und Lüften </l>
-                        <l>Ist unser, und unser der Sieg! </l>
-                    </sp>
-                    <pb n="7"/>
-                    <sp>
-                        <lb/>
-                        <speaker>
-                            <hi rend="spaced_out">Chor</hi> der Landleute. </speaker>
-                        <l>Laßt lustig die Hörner erschallen – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>
-                            <hi rend="spaced_out">Chor</hi> der Jäger. </speaker>
-                        <l>Wir lassen die Hörner erschallen – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>
-                            <hi rend="spaced_out">Alle</hi>
-                        </speaker>
-                        <stage rend="inline">(außer <name>Max</name>.)</stage>
-                        <l>Wenn wiederum Abend ergraut, </l>
-                        <l>Soll Echo und Felsenwand hallen: </l>
-                        <l>Sa! hussah, dem Bräut’gam der Braut! </l>
-                    </sp>
-                </div>
-                <div type="music_number" n="I/4">
-                    <lb/>
-                    <head rend="center">4.
-                    <lb/>
-                        <hi rend="spaced_out">Recitativ und Arie</hi>. </head>
-                    <sp>
-                        <lb/>
-                        <speaker>Max.</speaker>
-                        <lb/>
-                        <caption rend="center">Recitativ.</caption>
-                        <lg>
-                            <l>Nein, länger trag’ ich nicht die Qualen, </l>
-                            <l>Die Angst, die jede Hoffnung raubt! </l>
-                            <l>Für welche Schuld muß ich bezahlen? </l>
-                            <l>Was weiht dem falschen Glück mein
-                    <lb rend="indent"/> Haupt?  –</l>
-                        </lg>
-                        <caption rend="center">Arie.</caption>
-                        <lg rend="indent">
-                            <l>Durch die Wälder, durch die Auen </l>
-                            <l>Zog ich leichten <w>Sinns</w> dahin, </l>
-                            <pb n="8"/>
-                            <l>Alles was ich konnt’ erschauen, </l>
-                            <l>War des sichern Rohrs Gewinn. </l>
-                            <l>Abends bracht’ ich reiche Beute, </l>
-                            <l>Und, <w>wie</w> über eig’nes Glück, </l>
-                            <l>Drohend wohl dem Mörder, freute </l>
-                            <l>Sich Agathe’s Liebesblick.  –</l>
-                        </lg>
-                        <l>Hat denn der Himmel mich verlassen? </l>
-                        <l>Die Vorsicht ganz ihr Aug’ gewandt? </l>
-                        <l>Soll das Verderben mich erfassen? </l>
-                        <l>Verfiel ich in des Zufalls Hand? – </l>
-                        <lg rend="indent">
-                            <l>Jetzt ist wohl ihr Fenster offen, </l>
-                            <l>Und sie horcht auf meinen <w>Schritt</w>, </l>
-                            <l>Läßt nicht ab vom treuen Hoffen: </l>
-                            <l>Max bringt gute Zeichen mit! </l>
-                            <l>Wenn sich rauschend Blätter regen, </l>
-                            <l>Wähnt sie wohl, es sey mein Fuß; </l>
-                            <l>Hüpft vor Freuden, winkt entgegen – </l>
-                            <l>Nur dem <seg>Laub’ – den Liebesgruß</seg>. – </l>
-                        </lg>
-                        <l>Doch mich umgarnen finstre Mächte;</l>
-                        <l>Mich faßt Verzweiflung, foltert Spott. </l>
-                        <l>O dringt kein Strahl durch diese Nächte? </l>
-                        <l>Herrscht blind das Schicksal? lebt kein Gott? </l>
-                    </sp>
-                </div>
-                <pb n="9"/>
-                <div type="music_number" n="I/5">
-                    <lb/>
-                    <head rend="center">5.
-                    <lb/>
-                        <hi rend="spaced_out">Lied</hi>. </head>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <lg>
-                            <l>Hier im ird’schen Jammerthal </l>
-                            <l>Wär’ doch nichts als Plack und Qual, </l>
-                            <l>Trüg der Stock nicht Trauben; </l>
-                            <l>Darum bis zum letzten Hauch </l>
-                            <l>Setz’ ich auf Gott Bachus Bauch </l>
-                            <l>Meinen festen Glauben! </l>
-                        </lg>
-                        <lg>
-                            <l>Eins ist Eins und drei sind drei! </l>
-                            <l>Drum addirt noch zweierlei </l>
-                            <l>Zu dem Saft der Reben; </l>
-                            <l>Kartenspiel und Würfellust, </l>
-                            <l>Und ein Kind mit runder Brust </l>
-                            <l>Hilft zum ew’gen Leben! </l>
-                        </lg>
-                        <lg>
-                            <l>Ohne dies Trifolium </l>
-                            <l>Giebt’s kein wahres Gaudium ,</l>
-                            <l>Seit dem ersten Uebel.</l>
-                            <l>Fläschchen, sey mein A. B. C. </l>
-                            <l>Würfel, Karte, Catherle </l>
-                            <l>Meine Bilder-Fibel. </l>
-                        </lg>
-                    </sp>
-                </div>
-                <pb n="10"/>
-                <div type="music_number" n="I/6">
-                    <lb/>
-                    <head rend="center">6.
-                    <lb/>
-                        <hi rend="spaced_out">Arie</hi>. </head>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Schweig, Schweig! – damit dich Nie
-                    <lb rend="indent"/>mand warnt! </l>
-                        <l>Der Hölle Netz hat dich umgarnt; </l>
-                        <l>Nichts kann vom tiefen Fall dich retten! </l>
-                        <l>Umgebt ihn, ihr Geister mit Dunkel <w>be
-                    <lb rend="indent"/>schwingt</w>! </l>
-                        <l>Schon trägt er knirschend eure Ketten! </l>
-                        <l>Triumph! die Rache, die Rache gelingt! </l>
-                    </sp>
-                </div>
-            </div>
-            <pb n="11"/>
-                
-                <!-- ENDE AKT I     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
-            <div type="act" n="2">
-                <head rend="act">
-                    <hi rend="spaced_out">Zweiter Akt</hi>.</head>
-                <div type="music_number" n="II/1">
-                    <lb/>
-                    <head rend="center">1. 
-                    <lb/>
-                        <hi rend="spaced_out">Duett</hi>.</head>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Schelm! halt fest! </l>
-                        <l>Ich will dich’s lehren! </l>
-                        <l>Spukerei kann man entbehren </l>
-                        <l>In solch altem Eulen-Nest. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Laß das Ahnenbild in Ehren! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Ei dem alten Herrn </l>
-                        <l>Zoll’ ich Achtung gern; </l>
-                        <l>Doch dem Knechte Sitte lehren ,</l>
-                        <l>Kann Respekt nicht wehren. – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Sprich, wen meinst du? welchen Knecht? </l>
-                    </sp>
-                    <pb n="12"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Nun, den Nagel! Kannst du fragen? </l>
-                        <l>Sollt’ er seinen Herrn nicht tragen, </l>
-                        <l>Ließ ihn fall’n, war das nicht schlecht? </l>
-                    </sp>
-                    <sp xml:id="a1">
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Ja, gewiß, das war nicht recht! </l>
-                    </sp>
-                    <sp xml:id="a2">
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Das war warlich mehr als schlecht! </l>
-                        <stage corresp="#a1 #a2">{</stage>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Alles wird dir zum Feste, </l>
-                        <l>Alles beut dir Lachen und Scherz – </l>
-                        <l>O wie anders fühlt mein Herz! </l>
-                    </sp>
-                    <sp xml:id="a3">
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Grillen sind mir böse Gäste! </l>
-                        <l>Immer mit leichtem Sinn </l>
-                        <l>Tanzen durch’s Leben hin, </l>
-                        <l>Das nur ist Hochgewinn – </l>
-                        <l>Sorg’ und Gram muß man verjagen! </l>
-                    </sp>
-                    <sp xml:id="a4">
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Wer bezwingt des Busens Schlagen? </l>
-                        <l>Wer der Liebe süßen Schmerz? </l>
-                        <l>Stets um dich Geliebter zagen ,</l>
-                        <l>Muß dies ahnungsvolle Herz! </l>
-                        <stage corresp="#a3 #a4">{</stage>
-                    </sp>
-                </div>
-                <pb n="13"/>
-                <div type="music_number" n="II/2">
-                    <lb/>
-                    <head rend="center">2.
-                        <lb/>
-                        <hi rend="spaced_out">Ariette</hi>.</head>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen.</speaker>
-                        <lg>
-                            <l>Kommt ein schlanker Bursch gegangen, </l>
-                            <l>Blond von Locken oder braun, </l>
-                            <l>Hell von Aug’ und roth von Wangen, </l>
-                            <l>Ei, nach dem kann man wohl schau’n.</l>
-                        </lg>
-                        <lg>
-                            <l>Zwar schlägt man das Aug’ auf’s Mieder, </l>
-                            <l>Nach verschämter Mädchen-Art; </l>
-                            <l>Doch verstohlen hebt man’s wieder, </l>
-                            <l>Wenn’s das <w>Herrchen</w> nicht gewahrt. </l>
-                        </lg>
-                        <lg>
-                            <l>Sollten ja sich Blicke finden,  </l>
-                            <l>Nun was hat auch das für Noth? </l>
-                            <l>Man wird drum nicht gleich erblinden, </l>
-                            <l>Wird man <seg>gleich ein wenig</seg> roth. </l>
-                        </lg>
-                        <lg>
-                            <l>Blickchen hin und Blick herüber, </l>
-                            <l>Bis der Mund sich auch was traut! </l>
-                            <l>
-                                <hi rend="spaced_out">Er</hi> seufzt: Schönste! <hi rend="spaced_out">Sie</hi> spricht! Lieber! </l>
-                            <l>Bald heißt’s Bräutigam und Braut. </l>
-                        </lg>
-                        <lg>
-                            <l>Immer näher, liebe Leutchen! </l>
-                            <l>Wollt ihr mich im Kranze seh’n? </l>
-                            <l>
-                                <w>Gelt</w>, das ist ein nettes Bräutchen, </l>
-                            <l>Und der Bursch nicht minder schön?</l>
-                        </lg>
-                    </sp>
-                </div>
-                <pb n="14"/>
-                <div type="music_number" n="II/3">
-                    <lb/>
-                    <head rend="center">3.
-                    <lb/>
-                        <hi rend="spaced_out">Scene und Arie</hi>. </head>
-                    <sp>
-                        <lb/>
-                        <speaker rend="spaced_out">Agathe. </speaker>
-                        <lg rend="indent">
-                            <l>
-                                <w>Wie</w> nahte mir der Schlummer, </l>
-                            <l>Bevor ich ihn geseh’n?  –</l>
-                            <l>Ja, Liebe pflegt mit Kummer </l>
-                            <l>Stets Hand in Hand zu geh’n! </l>
-                            <l>Ob <seg>Mond auf seinen Pfad wohl</seg> lacht? </l>
-                            <l>Welch schöne Nacht! – </l>
-                            <l>Leise, leise, </l>
-                            <l>Fromme Weise! </l>
-                            <l>Schwing dich auf zum Sternenkreise! </l>
-                            <l>Lied, erschalle! </l>
-                            <l>Feiernd walle </l>
-                            <l>Mein Gebet zur Himmelshalle! – </l>
-                        </lg>
-                        <lg>
-                            <l> O wie hell die gold’nen Sterne, </l>
-                            <l>Mit wie reinem Glanz sie glüh’n! </l>
-                            <l>Nur dort in der Berge Ferne </l>
-                            <l>Scheint ein Wetter aufzuzieh’n. </l>
-                            <l>Dort am Wald auch schwebt ein Heer </l>
-                            <l>
-                                <w>Düst’rer</w> Wolken dumpf und schwer. </l>
-                        </lg>
-                        <lg rend="indent">
-                            <l>Zu dir wende</l>
-                            <l>Ich die Hände, </l>
-                            <pb n="15"/>
-                            <l>Herr ohn’ Anfang und ohn’ Ende! </l>
-                            <l>Vor Gefahren </l>
-                            <l>Uns zu wahren,  </l>
-                            <l>Sende <w>deiner</w> Engel Schaaren! –  </l>
-                        </lg>
-                        <lg>
-                            <l>Alles pflegt schon längst der Ruh; </l>
-                            <l>Trauter Freund! was weilest du? </l>
-                            <l>Ob mein Ohr auch <w>eifrig</w> lauscht, </l>
-                            <l>Nur der Tannen Wipfel rauscht, </l>
-                            <l>Nur das Birkenlaub im Hain </l>
-                            <l>Flüstert durch die <w>hehre</w> Stille; </l>
-                            <l>Nur die Nachtigall und Grille </l>
-                            <l>Scheint der Nachtluft sich zu freu’n. </l>
-                        </lg>
-                        <lg rend="indent">
-                            <l>Doch wie? <seg>Trügt mich</seg> mein Ohr? </l>
-                            <l>Dort klingt’s wie Schritte – </l>
-                            <l>Dort aus der Tannen Mitte </l>
-                            <l>Kommt was hervor –  –</l>
-                            <l>Er ist’s! er ist’s! </l>
-                            <l>Die Flagge der Liebe mag <w>wehen</w>!</l>
-                            <l>Dein Mädchen wacht </l>
-                            <l>Noch in der Nacht – </l>
-                            <l>Er scheint mich noch nicht zu <w>sehen</w> – </l>
-                            <l>Gott! täuscht das Licht </l>
-                            <l>Des <seg>Mond’s mich</seg> nicht, </l>
-                        </lg>
-                        <pb n="16"/>
-                        <l>So schmückt ein Blumenstraus den Hut – </l>
-                        <l>Gewiß, er hat den besten Schuß gethan! </l>
-                        <l>Das kündet Glück für morgen an! </l>
-                        <l>O süße Hoffnung! Neu belebter Muth! </l>
-                        <caption rend="spaced_out">Arie.</caption>
-                        <lg>
-                            <l>
-                                <w>All’</w> meine Pulse schlagen, </l>
-                            <l>Und das Herz wallt ungestüm, </l>
-                            <l>Süß entzückt entgegen ihm! </l>
-                            <l>Konnt’ ich das zu hoffen wagen? </l>
-                            <l>Ja, es wandte sich das Glück </l>
-                            <l>Zu dem theuern Freund zurück! </l>
-                            <l>Will sich morgen treu bewähren! </l>
-                            <l>Ist’s nicht Täuschung, ist’s nicht Wahn – </l>
-                            <l>Himmel, nimm des Dankes Zähren ,</l>
-                            <l>Für dies Pfand der Hoffnung an! </l>
-                        </lg>
-                    </sp>
-                </div>
-                <div type="music_number" n="II/4">
-                    <lb/>
-                    <head rend="center">4. 
-                    <lb/>
-                        <hi rend="spaced_out">Terzett</hi>.</head>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Wie? was? Entsetzen? </l>
-                        <l>Dort in der Schreckensschlucht? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Der wilde Jäger soll dort hetzen, </l>
-                        <l>Und wer ihn hört, ergreift die Flucht. </l>
-                    </sp>
-                    <pb n="17"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Darf Furcht im Herz des Waidmanns hausen? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Doch sündigt der, <w>wer</w> Gott versucht! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Ich bin vertraut mit jenem Grausen, </l>
-                        <l>Das Mitternacht im Walde webt, </l>
-                        <l>Wenn sturmbewegt die Eichen sausen, </l>
-                        <l>Der Häher krächzt, die Eule schwebt – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Mir ist so bang! o bleibe! </l>
-                        <l>O eile, eile nicht so schnell! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Ihr ist so bang! o bleibe! </l>
-                        <l>O eile, eile nicht so schnell! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Noch <w>trübt</w> sich nicht die <w>Mondesscheibe</w>, </l>
-                        <l>Noch strahlt ihr Schimmer <seg>klar und hell</seg>; </l>
-                        <l>Doch bald wird sie den Schein verlieren. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Willst du den Himmel observiren? </l>
-                        <l>Das wär nun meine Sache nicht! </l>
-                    </sp>
-                    <pb n="18"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>
-                            <w>O</w> kann dich meine Angst nicht rühren – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Mich ruft von hinnen – Wort und Pflicht. </l>
-                    </sp>
-                    <sp xml:id="a5">
-                        <lb/>
-                        <speaker>Agathe. Annchen. </speaker>
-                        <l>Leb’ wohl! </l>
-                    </sp>
-                    <sp xml:id="a6">
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>
-                            <w>Leb’</w> wohl! </l>
-                        <stage corresp="#a5 #a6">{</stage>
-                        <l>Doch hast du auch vergeben </l>
-                        <l>Den Vorwurf? den Verdacht? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Nichts fühlt mein Herz, als Beben! </l>
-                        <l>Nimm meiner Warnung Acht! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>So ist das Jägerleben! </l>
-                        <l>
-                            <w>Nicht</w> Ruh bei Tag und Nacht! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Weh mir! Ich muß dich lassen. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Such, Beste, dich zu fassen! </l>
-                    </sp>
-                    <pb n="19"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Bald wird der Mond erblassen!  –</l>
-                    </sp>
-                    <sp xml:id="a7">
-                        <lb/>
-                        <speaker>Agathe und Annchen. </speaker>
-                        <l>Denk’ an <w>Agathe’s</w> Wort! </l>
-                    </sp>
-                    <sp xml:id="a8">
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Mein Schicksal reißt mich fort! </l>
-                        <stage corresp="#a7 #a8">{</stage>
-                    </sp>
-                </div>
-                <div type="music_number" n="II/5">
-                    <lb/>
-                    <head rend="center">5.         
-                             <lb/>
-                        <hi rend="spaced_out">Finale</hi>.</head>
-                    <sp>
-                        <lb/>
-                        <speaker>Stimmen unsichtbarer Geister. </speaker>
-                        <l>Milch des Mondes fiel aufs Kraut. </l>
-                        <l>Uhui! </l>
-                        <l>Spinnweb’ ist mit Blut bethaut. </l>
-                        <l>Uhui! </l>
-                        <l>Eh’ noch wieder Abend graut – </l>
-                        <l>Uhui! </l>
-                        <l>Ist sie todt, die zarte Braut! </l>
-                        <l>Uhui! </l>
-                        <l>Eh’ noch wieder sinkt die Nacht, </l>
-                        <l>Ist das Opfer dargebracht. </l>
-                        <l>Uhui! Uhui! Uhui! </l>
-                    </sp>
-                    <pb n="20"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar .</speaker>
-                        <l>Samiel! Samiel! erschein’! </l>
-                        <l>Bei des Zaub’rers Hirngebein! </l>
-                        <l>Samiel! Samiel erschein’! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>Was rufst du? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Du weißt, daß meine Frist, </l>
-                        <l>Schier abgelaufen ist. – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>Morgen! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Verläng’re sie noch einmal mir. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>Nein! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Ich bringe neue Opfer dir! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>Welche? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Mein Jagdgesell, er naht,  </l>
-                        <l>Er, der noch nie</l>
-                        <l>Dein dunkles Reich betrat. </l>
-                    </sp>
-                    <pb n="21"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>Was <seg>begehrt er</seg>? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Freikugeln sind’s, auf die er Hoffnung bau’t. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>Sechse treffen, Sieben äffen! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Die Siebente sey dein,  aus seinem Rohr</l>
-                        <l>Lenk’ sie nach seiner Braut! </l>
-                        <l>Dies wird ihn der Verzweiflung weih’n, </l>
-                        <l>Ihn und den Vater! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>
-                            <w>Noch</w> hab’ ich keinen Theil an ihr. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Genügt er dir allein?  –</l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>Das findet sich. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Doch schenkst du Frist,</l>
-                        <l>Und wieder auf drei Jahr !</l>
-                        <l>Bring’ ich ihn dir zur Beute dar!? </l>
-                    </sp>
-                    <pb n="22"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel. </speaker>
-                        <l>Es sei! Bei den Pforten der Hölle!</l>
-                        <l>Morgen, Er, oder Du! </l>
-                    </sp>
-                    <caption rend="center">Melodramatische Scene und
-               <lb/>Recitativ.</caption>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <p>
-                            <lb/>Trefflich bedient! – Geseegn’ es
-                    <lb/>Samiel! Er hat mir warm gemacht! Aber
-                    <lb/>wo bleibt Max? Sollt’ er wortbrüchig
-                    <lb/>werden? – Samiel, hilf! – 
-                        </p>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max .</speaker>
-                        <caption rend="center">
-                            <hi rend="spaced_out">Recitativ</hi>.</caption>
-                        <l>Ha! furchtbar gähnt </l>
-                        <l>Der düstre Abgrund! – <w>welches</w> Grau’n! </l>
-                        <l>Das Auge wähnt </l>
-                        <l>In einen Höllenpfuhl zu schau’n! </l>
-                        <l>Wie dort sich Wetterwolken ballen! </l>
-                        <l>Der Mond verliert von seinem Schein! </l>
-                        <l>Gespenst’ge Nebelbilder wallen! </l>
-                        <l>Belebt ist das Gestein! </l>
-                        <l>Und hier – husch! husch! </l>
-                        <l>Fliegt Nachtgevögel auf im Busch! </l>
-                        <pb n="23"/>
-                        <l>
-                            <w>Rothgraue</w>, narb’ge Zweige strecken </l>
-                        <l>Nach mir die Riesenfaust! – – </l>
-                        <l>Nein, ob das Herz auch graust, </l>
-                        <l>Ich muß!! Ich trotze allen Schrecken! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar .</speaker>
-                        <p>
-                            <lb/>Dank Samiel! Die Frist ist gewon
-                    <lb break="no" rend="-"/>nen. Kommst du endlich Camerad? Ist
-                    <lb/>das auch recht, mich allein zu lassen?
-                    <lb/>Siehst du nicht, wie mir’s sauer wird? –</p>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Ich schoß den Adler aus hoher Luft; </l>
-                        <l>Ich kann nicht rückwärts – mein Schicksal
-                        <lb rend="indent"/> ruft! – – </l>
-                        <l>Weh mir! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <p>
-                            <lb/>So komm doch! die Zeit eilt –  </p>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <p>
-                            <lb/>Ich kann nicht hinab! </p>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <p>
-                            <lb/>Hasenherz! klimmst ja sonst wie eine Gemse! </p>
-                    </sp>
-                    <pb n="24"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Sieh! dorthin! sieh! </l>
-                        <l>Was dort sich weißt, </l>
-                        <l>Ist meiner Mutter Geist! </l>
-                        <l>So lag sie im Sarg, so ruht sie im Grab! </l>
-                        <l>Sie fleht mit warnendem Blick, </l>
-                        <l>Sie winkt mir zurück! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <p>
-                            <lb/>Hilf Samiel! – Alberne Fratzen!
-                    <lb/>Hahaho! Sieh noch einmal hin, damit du
-                    <lb/>die Folgen deiner feigen Thorheit erkennst. –</p>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Agathe! – Sie springt in den Fluß! </l>
-                        <l>Hinab! ich muß! </l>
-                    </sp>
-                    <caption rend="center">
-                        <hi rend="spaced_out">Melodram</hi>.</caption>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <lg>
-                            <l>Schütze, der im Dunkeln wacht! </l>
-                            <l>Samiel, Samiel, hab’ Acht! </l>
-                            <l>Steh mir bei in dieser Nacht, </l>
-                            <l>Bis der Zauber ist vollbracht! </l>
-                            <pb n="25"/>
-                            <l>Salbe mir so Kraut, als Blei, </l>
-                            <l>Segn’ es sieben, neun und drei, </l>
-                            <l>Daß die Kugel tüchtig sey! </l>
-                            <l>Samiel! Samiel! herbei! </l>
-                        </lg>
-                    </sp>
-                    <caption rend="center">Furchtbarer Gesang unsichtbar.</caption>
-                    <sp>
-                        <lb/>
-                        <speaker/>
-                        <l>Durch Berg und Thal, durch Schlund und
-                            <lb rend="indent"/> Schacht, </l>
-                        <l>Durch Thau und Wolken, Sturm und
-                        <lb rend="indent"/> Nacht! </l>
-                        <l>Durch Höhle, Sumpf und Erdenkluft! </l>
-                        <l>Durch Feuer, Erde, See und Luft! </l>
-                        <l>Jaho! Jaho! Wau! Wau! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar.</speaker>
-                        <l>Wehe! das wilde Heer!</l>
-                        <l>Sechs! Wehe! –</l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Echo.</speaker>
-                        <l>Sechs! Wehe!</l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar.</speaker>
-                        <l>Samiel! Samiel!</l>
-                        <l>Samiel! hilf! – Sieben! –</l>
-                        <l>Samiel! –</l>
-                    </sp>
-                    <pb n="26"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Max.</speaker>
-                        <l>Samiel!</l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Samiel.</speaker>
-                        <l>Hier bin ich!</l>
-                    </sp>
-                </div>
-            </div>
-            <pb n="27"/>
-                <!-- ENDE AKT II   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
-            <div type="act" n="3">
-                <head rend="act">
-                    <hi rend="spaced_out">Dritter Akt</hi>.</head>
-                <div type="musical_number" n="III/1">
-                    <lb/>
-                    <head rend="center">1. 
-                    <lb/>
-                        <hi rend="spaced_out">Cavatine</hi>.</head>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <lg>
-                            <l>Und ob die Wolke <sic>sich</sic> verhülle, </l>
-                            <l>Die Sonne bleibt am Himmelszelt! </l>
-                            <l>Es waltet dort ein heil’ger Wille; </l>
-                            <l>Nicht blindem Zufall dient die Welt! </l>
-                            <l>Das Auge <seg>ewig rein und</seg> klar, </l>
-                            <l>Nimmt aller Wesen liebend wahr! </l>
-                        </lg>
-                        <lg>
-                            <l> Für mich auch wird der <w>Höchste</w> sorgen, </l>
-                            <l>Dem kindlich Herz und Sinn vertrau’t! </l>
-                            <l>Und wär’ dies auch mein letzter Morgen, </l>
-                            <l>Rief mich sein Vaterwort als Braut; </l>
-                            <l>
-                                <hi rend="spaced_out">Sein</hi> Auge <seg>ewig rein und</seg> klar, </l>
-                            <l>Nimmt aller seiner Kinder wahr!</l>
-                        </lg>
-                    </sp>
-                </div>
-                <pb n="28"/>
-                <div type="music_number" n="III/2">
-                    <lb/>
-                    <head rend="center">2. 
-                    <lb/>
-                        <hi rend="spaced_out">Romanze</hi>.</head>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen.</speaker>
-                        <l>Einst träumte meiner seel’gen Baase: </l>
-                        <l>Die Kammerthür eröffne sich </l>
-                        <l>Und – kreideweiß ward ihre Nase, </l>
-                        <l>Denn näher, furchtbar näher schlich </l>
-                        <l>Ein Ungeheuer </l>
-                        <l>Mit Augen, wie Feuer, </l>
-                        <l>Mit klirrender Kette – – </l>
-                        <l>Es nahte dem Bette </l>
-                        <l>In welchem sie schlief –  </l>
-                        <l>Ich meine die Baase </l>
-                        <l>Mit kreidiger Nase – </l>
-                        <l>Und stöhnte ach! so hohl – und  ächzte ach!
-                    <lb rend="indent"/> so tief! – </l>
-                        <l>Sie kreuzte sich, rief </l>
-                        <l>Nach manchem Angst- und Stoßgebet: </l>
-                        <l>"Susanne! Margareth!“ </l>
-                        <l>Und sie kamen mit Licht – </l>
-                        <l>Und – denke nur! und – </l>
-                        <l>Erschrick mir nur nicht! </l>
-                        <l>Und – graußt mir doch! – und </l>
-                        <l>Der Geist – war – Nero! – der Ket
-                    <lb rend="indent"/>tenhund. </l>
-                        <pb n="29"/>
-                        <l>Du zürnest mir? – </l>
-                        <l>Doch kannst du wähnen, </l>
-                        <l>Ich fühle nicht mit dir? – </l>
-                        <l>Nur ziemen einer Braut nicht Thränen? </l>
-                        <caption rend="center">
-                            <hi rend="spaced_out">Arie</hi>.</caption>
-                        <lg>
-                            <l>Trübe Augen,</l>
-                            <l>Liebchen taugen </l>
-                            <l>Einem holden Bräutchen nicht. </l>
-                            <l>Daß durch Blicke </l>
-                            <l>Sie erquicke ,</l>
-                            <l>Und  bestricke,</l>
-                            <l>Und beglücke,</l>
-                            <l>Alles um sich her entzücke, </l>
-                            <l>Das ist ihre schönste Pflicht! – </l>
-                            <l>Laß in öden Mauern </l>
-                            <l>Büßerinnen trauern, </l>
-                            <l>Dir winkt ros’ger Hoffnung Licht! </l>
-                            <l>Schon entzündet sind die Kerzen </l>
-                            <l>Zum Verein getreuer Herzen – </l>
-                            <l>Holde Freundin, zage nicht!</l>
-                        </lg>
-                    </sp>
-                </div>
-                <div type="music_number" n="III/3">
-                    <lb/>
-                    <head rend="center">3.
-                    <lb/>
-                        <hi rend="spaced_out">Volkslied</hi>. </head>
-                    <sp>
-                        <lb/>
-                        <speaker>Brautjungfer. </speaker>
-                        <l>Wir winden dir den Jungfernkranz </l>
-                        <l>Mit veilchenblauer Seide. </l>
-                        <pb n="30"/>
-                        <l>Wir führen dich zu Spiel und Tanz, </l>
-                        <l>Zu Glück und Liebesfreude! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Alle. </speaker>
-                        <l>Schöner grüner Jungfernkranz! </l>
-                        <l>Veilchenblaue Seide. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Brautjungfer. </speaker>
-                        <l>Lavendel, Mirt’ und Thymian, </l>
-                        <l>Das wächst in meinem Garten; </l>
-                        <l>Wie lang bleibt doch der Freiersmann? </l>
-                        <l>Ich kann es kaum erwarten. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Alle. </speaker>
-                        <l>Schöner grüner Jungfernkranz! u. s. w. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Brautjungfer. </speaker>
-                        <l>Sie hat gesponnen sieben Jahr </l>
-                        <l>Den gold’nen Flachs am Rocken, </l>
-                        <l>
-                            <seg>Das Tüchlein ist</seg> wie Spinnweb’ klar, </l>
-                        <l>Und grün der Kranz der Locken. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Alle.</speaker>
-                        <l>Schöner grüner Jungfernkranz! u. s. w. </l>
-                    </sp>
-                    <pb n="31"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Brautjungfer. </speaker>
-                        <l>Und als der schmucke Freier kam, </l>
-                        <l>War’n sieben Jahr verronnen. </l>
-                        <l>Und weil <seg>sie der</seg> Herzliebste nahm, </l>
-                        <l>Hat sie den Kranz gewonnen. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Alle.   </speaker>
-                        <l>Schöner grüner Jungfernkranz! u. s. w. </l>
-                    </sp>
-                </div>
-                <div type="music_number" n="III/4">
-                    <head rend="center">4. </head>
-                    <sp>
-                        <lb/>
-                        <speaker>Chor. </speaker>
-                        <lg>
-                            <l>Was gleicht wohl auf Erden dem Jäger
-                        <lb rend="indent"/>vergnügen? </l>
-                            <l>Wem sprudelt der Becher des Lebens so reich? </l>
-                            <l>Beim Klange der Hörner im Grünen zu 
-                        <lb rend="indent"/> liegen, </l>
-                            <l>Den Hirsch zu verfolgen durch Dickigt und
-                        <lb rend="indent"/> Teich, </l>
-                            <l>Ist fürstliche Freude, ist männlich Verlangen, </l>
-                            <l>Erstarket die Glieder und würzet das Mahl; </l>
-                            <l>Wenn Wälder und Felsen uns hallend um
-                        <lb rend="indent"/>fangen, </l>
-                            <l>Tönt freier und freud’ger der volle Pokal! </l>
-                            <l>Jo hoho! drallara! </l>
-                        </lg>
-                        <pb n="32"/>
-                        <lg>
-                            <l>Diana ist kundig, die Nacht zu erhellen, </l>
-                            <l>Wie labend am Tage ihr Dunkel uns kühlt. </l>
-                            <l>Den blutigen Wolf und den Eber zu fällen ,</l>
-                            <l>Der gierig die grünenden Saaten durchwühlt. </l>
-                            <l>Ist fürstliche Freude, ist u. s. w. </l>
-                        </lg>
-                    </sp>
-                </div>
-                <div type="music_number" n="III/5">
-                    <lb/>
-                    <head rend="center">5.
-                    <lb/>
-                        <hi rend="spaced_out">Finale</hi>.</head>
-                    <sp>
-                        <lb/>
-                        <speaker>Einige. </speaker>
-                        <l>Schaut! o schaut! </l>
-                        <l>Er traf die Braut! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Andere. </speaker>
-                        <l>Der Jäger stürzte vom Baum. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Noch andere. </speaker>
-                        <l>Wir wagen’s kaum, </l>
-                        <l>Nur hinzuschau’n. </l>
-                        <l>O furchtbar Schicksal, o Grau’n! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Chor. </speaker>
-                        <l>Unsre Herzen beben, zagen! </l>
-                        <l>Wär’ die Schreckensthat gescheh’n? </l>
-                        <l>Kaum will es das Auge wagen, </l>
-                        <l>Wer das Opfer sey, zu seh’n. </l>
-                    </sp>
-                    <pb n="33"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Wo bin ich? </l>
-                        <l>War’s Traum nur, daß ich sank? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>O fasse dich, </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max und Cuno. </speaker>
-                        <l part="I">Sie lebt? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Einige. </speaker>
-                        <l part="F"> Den Heil’gen Preis und Dank! – </l>
-                        <l>Sie hat die Augen offen! – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Einige. </speaker>
-                        <l>Hier, dieser ist getroffen, </l>
-                        <l>Der roth vom Blute liegt – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Ich sah den Klausner bei ihr steh’n; </l>
-                        <l>Der Himmel siegt! </l>
-                        <l>Es ist um mich gescheh’n! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Ich <w>lebe</w> noch! der Schreck nur warf mich
-                        <lb rend="indent"/> nieder. </l>
-                        <l>Ich athme noch die liebliche Luft –  –</l>
-                    </sp>
-                    <pb n="34"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Cuno. </speaker>
-                        <l part="I">Sie athmet frei! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l part="F"> Sie lächelt wieder! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l part="I">O Max!</l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l part="F">Die süße Stimme ruft!</l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Caspar. </speaker>
-                        <l>Du Samiel schon hier? </l>
-                        <l>So hieltst du dein Versprechen mir? </l>
-                        <l>Nimm deinen Raub! ich trotze dem Ver
-                        <lb rend="indent"/>derben! </l>
-                        <l>Dem Himmel Fluch! – Fluch dir! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Einige. </speaker>
-                        <l>Ha! das war sein Gebet im Sterben?  </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Cuno. </speaker>
-                        <l>Er war von je ein Bösewicht! </l>
-                        <l>Ihn traf des Himmels Strafgericht! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Andere. </speaker>
-                        <l>Er hat dem Himmel selbst geflucht! </l>
-                    </sp>
-                    <pb n="35"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Noch Andere. </speaker>
-                        <l>Vernahmt Ihr’s nicht? er rief den Bösen – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Ottokar. </speaker>
-                        <l>Fort! stürzt das Scheusal in die <w>Wolfes
-                        <lb rend="indent"/>schlucht</w>! </l>
-                        <l>Nur du kannst dieses Räthsel lösen! </l>
-                        <l>Wohl schwere Unthat ist gescheh’n! </l>
-                        <l>Weh dir, wirst du nicht alles treu gesteh’n. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Herr! unwerth bin ich Eurer Gnade; </l>
-                        <l>Des Todten Trug verlockte mich, </l>
-                        <l>Daß – <w>aus</w> Verzweiflung ich vom Pfade </l>
-                        <l>Der Frömmigkeit und Tugend wich; </l>
-                        <l>Vier Kugeln, die ich heut’ verschoß – </l>
-                        <l>Freikugeln sind’s, die ich mit Jenem goß. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Ottokar. </speaker>
-                        <l>So eile, mein Gebiet zu meiden! </l>
-                        <l>Und kehre nimmer in dies Land! </l>
-                        <l>Vom Himmel muß die Hölle scheiden – </l>
-                        <l>Nie, nie empfängst du diese reine Hand.  </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Ich darf nicht wagen, </l>
-                        <l>Mich zu beklagen; </l>
-                        <l>Denn schwach war ich, obwohl kein Bösewicht. </l>
-                    </sp>
-                    <pb n="36"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Cuno. </speaker>
-                        <l>Er war sonst stets getreu der Pflicht – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>Reißt ihn nicht aus meinen Armen. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Jäger. </speaker>
-                        <l>Er ist so brav, voll Kraft und Muth – </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Landleute. </speaker>
-                        <l>O er war immer brav und gut! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>Gnäd’ger Herr! o habt Erbarmen! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Ottokar. </speaker>
-                        <l>Nein!</l>
-                        <l>Agathe ist <seg>für ihn zu</seg> rein!</l>
-                        <l>Hinweg, hinweg aus meinem Blick! </l>
-                        <l>Dein harr’t der Kerker, kehrst du je zurück! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Eremit .</speaker>
-                        <l>Wer legt auf ihn so strengen Bann? </l>
-                        <l>Ein Fehltritt, ist er solcher Büßung werth? </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Ottokar. </speaker>
-                        <l>Bist du es, heil’ger Mann! </l>
-                        <l>Den weit und breit die Gegend ehrt? </l>
-                        <pb n="37"/>
-                        <l>Sei mir gegrüßt, Gesegneter des Herrn! </l>
-                        <l>Dir bin auch ich gehorsam gern; </l>
-                        <l>Sprich du sein Urtheil; deinen Willen </l>
-                        <l>Will freudig ich erfüllen. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker rend="spaced_out">Eremit. </speaker>
-                        <l>Leicht kann des Frommen Herz auch wanken </l>
-                        <l>Und überschreiten Recht und Pflicht, </l>
-                        <l>Wenn Lieb’ und Furcht der Tugend Schranken, </l>
-                        <l>Verzweiflung alle Dämme bricht. </l>
-                        <l>
-                            <w>Ist’s</w> recht, auf einer Kugel Lauf </l>
-                        <l>Zwei edler Herzen Glück zu setzen? </l>
-                        <l>Und unterliegen sie den Netzen, </l>
-                        <l>Womit <seg>sie Leidenschaft</seg> umflicht, </l>
-                        <l>Wer höb’ den ersten Stein wohl auf? </l>
-                        <l>Wer griff in seinen Busen nicht?</l>
-                        <l>
-                            <w>Drum</w> finde nie der Probeschuß mehr statt! </l>
-                        <l>Ihm Herr! der schwer gesündigt hat, </l>
-                        <l>Doch <seg>sonst stets rein und bieder</seg> war, </l>
-                        <l>Vergönnt dafür ein Probejahr, </l>
-                        <l>Und bleibt er dann, wie ich ihn stets erfand, </l>
-                        <l>Dann werde sein Agathe’s Hand! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Ottokar. </speaker>
-                        <l>Dein Wort genüget mir! </l>
-                        <l>Ein Höh’rer spricht aus dir! </l>
-                    </sp>
-                    <pb n="38"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Alle. </speaker>
-                        <l>Heil unserm <w>Herrn</w>! Er <w>widerstehet</w> nicht,</l>
-                        <l>Dem, was der fromme Klausner spricht! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Ottokar. </speaker>
-                        <l>Bewährst du dich wie dich der Greis erfand, </l>
-                        <l>Dann knüpf’ ich selber Euer <w>Eheband</w>. </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Max. </speaker>
-                        <l>Die Zukunft soll mein Herz bewähren! </l>
-                        <l>Stets heilig sey mir Recht und Pflicht! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Agathe. </speaker>
-                        <l>O les’t den Dank in diesen Zähren; </l>
-                        <l>Das schwache Wort genügt ihm nicht! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Ottokar und Eremit. </speaker>
-                        <l>Der über Sternen ist voll Gnade; </l>
-                        <l>Drum ehrt es Fürsten, zu verzeih’n! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Cuno. </speaker>
-                        <l>Weicht nimmer von der Tugend Pfade, </l>
-                        <l>Um Eures Glückes werth zu seyn! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Annchen. </speaker>
-                        <l>O dann, geliebte Freundin, schmücke </l>
-                        <l>Ich dich auf’s neu zum <w>Traualtar</w>!  </l>
-                    </sp>
-                    <pb n="39"/>
-                    <sp>
-                        <lb/>
-                        <speaker>Eremit. </speaker>
-                        <l>Doch jetzt erhebt noch eure Blicke </l>
-                        <l>Zu dem, der Schutz der Unschuld war! </l>
-                    </sp>
-                    <sp>
-                        <lb/>
-                        <speaker>Chor. </speaker>
-                        <l>Ja laßt uns zum Himmel die Blicke erheben ,</l>
-                        <l>Und fest auf die Lenkung des Ewigen bau’n. </l>
-                        <l>
-                            <w>Wer</w> rein ist von Herzen, und schuldlos von
-                        <lb rend="indent"/> Leben, </l>
-                        <l>Darf kindlich der Milde des Vaters ver
-                        <lb rend="indent"/>trau’n! </l>
-                    </sp>
-                </div>
-            </div>
-        </body>
-    </text>
-</TEI>
