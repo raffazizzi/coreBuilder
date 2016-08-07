@@ -4,7 +4,7 @@
 
 # coreBuilder
 
-Core Builder is a tool to create XML stand-off markup, particularly tailored to TEI documents.
+coreBuilder is a tool to create XML stand-off markup, particularly tailored to TEI documents.
 
 With this tool you can:
 
