@@ -1,6 +1,6 @@
 {
   "name": "coreBuilder",
-  "version": "2.0.0",
+  "version": "0.9.0",
   "description": "A web-based tool for creating stand-off markup",
   "main": "src/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "dependencies": {
     "backbone": "1.2.3",
     "bootstrap": "https://github.com/twbs/bootstrap/archive/v4.0.0-alpha.2.tar.gz",
-    "font-awesome": "4.5.0",
+    "font-awesome": "4.6.3",
     "handlebars": "4.0.5",
     "jquery": "2.2.0",
     "jquery-xpath": "0.3.1"

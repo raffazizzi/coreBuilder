@@ -2,6 +2,12 @@
 
 @import 'variables';
 
+#cb-ver {
+    float: left;
+    font-size: 9px;
+    margin-top: -16px;
+}
+
 #wrapper {
     padding-left: 0;
     -webkit-transition: all 0.5s ease;
