@@ -27,7 +27,7 @@ let currententrydata_tpl = `
                 <span class="cb-ce-ctrls" data-targets='{{this._targets}}''>
                   <i class="cb-ce-ctrls-del fa fa-times"></i>
                 </span>
-                <span>HM{{this.name}}</span>
+                <span>{{this.name}}</span>
                 {{#each this.content}}
                   <!-- pointers -->
                   <li>
