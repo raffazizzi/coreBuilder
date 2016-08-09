@@ -13,7 +13,7 @@ With this tool you can:
 * Click on elements with ids to build stand-off entries and add them to a downloadable "core" file
 * Create XPointer expressions by selection text directly on the XML file
 
-**Check out the [live app](http://raffazizzi.github.io/coreBuilder) and read the [wiki](wiki) for more examples.**
+**Check out the [live app](http://raffazizzi.github.io/coreBuilder) and read the [wiki](https://github.com/raffazizzi/coreBuilder/wiki) for more examples.**
 
 ## Building coreBuilder
 <a href="#" id="status-image-popup" title="build status image" name="status-images" class="open-popup" data-ember-action="1090">
