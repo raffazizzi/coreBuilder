@@ -36,13 +36,13 @@ var Annotate = {
         return Annotate.findXPath(elt[0].nextSibling);
       }
       //look next for preceding sibling line breaks in the same container with an @id or @n.
-      var lb = document.evaluate("preceding::lb[1]",elt[0],null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
+      var lb = elt[0].ownerDocument.evaluate("preceding::lb[1]",elt[0],null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
       lb = lb.singleNodeValue;
       if (lb != null) {
         var lbp,eltp;
-        lbp = document.evaluate("ancestor::*[not(starts-with(@id, 'teibp-')) or @n][1]",lb,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
+        lbp = lb.ownerDocument.evaluate("ancestor::*[not(starts-with(@id, 'teibp-')) or @n][1]",lb,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
         lbp = lbp.singleNodeValue;
-        eltp = document.evaluate("ancestor::*[not(starts-with(@id, 'teibp-')) or @n][1]",elt[0],null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
+        eltp = elt[0].ownerDocument.evaluate("ancestor::*[not(starts-with(@id, 'teibp-')) or @n][1]",elt[0],null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
         eltp = eltp.singleNodeValue;
         if (lbp == eltp) {
           return Annotate.findXPath(lb);
@@ -102,11 +102,11 @@ var Annotate = {
     // we got nothin'. Build a nasty, big, literal XPath
     path = [];
     xpath = "count(preceding-sibling::"+elt[0].localName+")";
-    var count = document.evaluate(xpath, elt[0], null, XPathResult.NUMBER, null).numberValue;
+    var count = elt[0].ownerDocument.evaluate(xpath, elt[0], null, XPathResult.NUMBER, null).numberValue;
     path.push(elt[0].localName+"["+(count+1)+"]");
     for (var i = 0; i < parents.length - 1; i++) {
       xpath = "count(preceding-sibling::"+parents[i].localName+")";
-      count = document.evaluate(xpath, parents[i], null, XPathResult.NUMBER, null).numberValue;
+      count = parents[i].ownerDocument.evaluate(xpath, parents[i], null, XPathResult.NUMBER, null).numberValue;
       path.push(parents[i].localName+"["+(count+1)+"]");
     }
     return ["//"+path.reverse().join("/"),elt[0]];
@@ -125,7 +125,7 @@ var Annotate = {
       var curr = context;
       while(curr != anchor) {
         curr = curr.nextSibling;
-        var desc = document.evaluate("descendant-or-self::node()",curr,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE,null);
+        var desc = curr.ownerDocument.evaluate("descendant-or-self::node()",curr,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE,null);
         var item;
         while (item = desc.iterateNext()) {
           if (item.nodeType == Node.TEXT_NODE && item != anchor) {
@@ -190,7 +190,7 @@ var Annotate = {
       var curr = context;
       while(curr != anchor) {
         curr = curr.nextSibling;
-        var desc = document.evaluate("descendant-or-self::node()",curr,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE,null);
+        var desc = curr.ownerDocument.evaluate("descendant-or-self::node()",curr,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE,null);
         var item;
         while (item = desc.iterateNext()) {
           if (item.nodeType == Node.TEXT_NODE && item != anchor) {
@@ -225,7 +225,7 @@ var Annotate = {
     if (selection.getRangeAt(0).startContainer == selection.getRangeAt(0).endContainer) {
       path = Annotate.findXPath(selection.getRangeAt(0).startContainer);
     } else {
-      var lb = document.evaluate("preceding-sibling::lb[1]",selection.getRangeAt(0).startContainer,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
+      var lb = selection.getRangeAt(0).startContainer.ownerDocument.evaluate("preceding-sibling::lb[1]",selection.getRangeAt(0).startContainer,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);
       if (lb = lb.singleNodeValue) {
         path = Annotate.findXPath(lb);
       } else {
