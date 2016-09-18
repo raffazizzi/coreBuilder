@@ -111,27 +111,29 @@ class CurrentEntryView extends Backbone.View {
 
         let _createElementDown = (lvl, xmlel) => {
             for (let cnt of lvl.content) {
-                let el = xmlDoc.createElement(cnt.name);
-                let target_att = "target"; 
-                for (let a of cnt.xmlatts) {
-                    if (a.name && !a.isTarget) {
-                        _writeattribute(el, a);
+                if (cnt.name) {
+                    let el = xmlDoc.createElement(cnt.name);
+                    let target_att = "target"; 
+                    for (let a of cnt.xmlatts) {
+                        if (a.name && !a.isTarget) {
+                            _writeattribute(el, a);
+                        }
+                        if (a.isTarget) {
+                            target_att = a.name;
+                        }
                     }
-                    if (a.isTarget) {
-                        target_att = a.name;
+                    if (cnt.targets) {
+                        let ids = [];
+                        for (let target of cnt.targets) {
+                           ids.push(target.xmlid);
+                        }
+                        el.setAttribute(target_att, ids.join(" "));
+                    }                
+                    if (cnt.content) {
+                        _createElementDown(cnt, el);
                     }
+                    xmlel.appendChild(el);
                 }
-                if (cnt.targets) {
-                    let ids = [];
-                    for (let target of cnt.targets) {
-                       ids.push(target.xmlid);
-                    }
-                    el.setAttribute(target_att, ids.join(" "));
-                }                
-                if (cnt.content) {
-                    _createElementDown(cnt, el);
-                }
-                xmlel.appendChild(el);
             }    
         }
 
