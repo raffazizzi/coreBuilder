@@ -21,6 +21,18 @@ let setelement_tpl = `
               data-ptr="link"
               data-ptr_bhv="attr" href="#">Links (&lt;linkGrp>, &lt;link>)</a>
             <a class="dropdown-item cb-se-preset"
+              data-wrapper="joinGrp"
+              data-grp=""
+              data-container=""
+              data-ptr="join"
+              data-ptr_bhv="attr" href="#">Aggregation (&lt;joinGrp>, &lt;join>)</a>
+            <a class="dropdown-item cb-se-preset"
+              data-wrapper="altGrp"
+              data-grp=""
+              data-container=""
+              data-ptr="alt"
+              data-ptr_bhv="attr" href="#">Alternation (&lt;altGrp>, &lt;alt>)</a>
+            <a class="dropdown-item cb-se-preset"
               data-wrapper="app"
               data-grp="rdgGrp"
               data-container="rdg"
