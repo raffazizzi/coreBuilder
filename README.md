@@ -11,7 +11,7 @@ With this tool you can:
 * Set a custom set of stand-off elements, or choose from a pre-set list
 * Load XML files into text editors (upload, or from the web)
 * Click on elements with ids to build stand-off entries and add them to a downloadable "core" file
-* Create XPointer expressions by selection text directly on the XML file
+* Create XPointer expressions by selecting text directly on the XML file
 
 **Check out the [live app](http://raffazizzi.github.io/coreBuilder) and read the [wiki](https://github.com/raffazizzi/coreBuilder/wiki) for more examples.**
 
