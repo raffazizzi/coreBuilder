@@ -220,6 +220,7 @@ class CurrentEntryView extends Backbone.View {
                 cnt = {
                     "name": el_container.get("name"), 
                     "content": [], 
+                    "targets": [],
                     "_targets": [],
                     "xmlatts": el_container.xmlatts.toJSON()
                 };
@@ -264,7 +265,8 @@ class CurrentEntryView extends Backbone.View {
 
                         if (cnt) {
                             cnt.content.push(ptr);
-                            cnt._targets = JSON.stringify(cnt._targets.push(pointer.cid));
+                            cnt.targets.push(pointer.cid);
+                            cnt._targets = JSON.stringify(cnt.targets);
                         }
 
                         // deal with grouping
