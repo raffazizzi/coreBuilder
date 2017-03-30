@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:/home/rviglian/Projects/tasso/schema/tassotei.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>Non può l'angusto loco</title>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>University of Massachusetts Amherst</publisher>
+                <availability status="free">
+                    <p>CC BY SA</p>
+                </availability>
+                <idno type="local">Trm0319a</idno>
+                <idno type="label">Trm0319a (Canto)</idno>
+            </publicationStmt>
+            <sourceDesc>
+                <bibl type="music" xml:id="Trm0319a-Canto">
+                    <title>Il primo libro de madrigali a cinque voci</title>
+                    <author role="composer">Gastoldi, Giovanni Giacomo</author>
+                    <publisher>Ricciardo Amadino</publisher>
+                    <pubPlace>Venice</pubPlace>
+                    <date when="1588">1588</date>
+                    <idno type="RISM">G0547</idno>
+                    <biblScope unit="page">22</biblScope>
+                </bibl>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body xml:space="preserve">
+            <lg>
+                <l xml:id="l1">Non <seg xml:id="v1">puo l’humil terreno</seg></l>
+                <l xml:id="l2">Tra <seg xml:id="v2">primi</seg> abeti e faggi</l>
+                <l xml:id="l3"><seg xml:id="v3">Celar</seg>'i vostri puri e lieti raggi.</l>
+                <l xml:id="l4">E ’l vivo e dolce foco</l>
+                <l xml:id="l5">E chi nasconde il Sole</l>
+                <l xml:id="l6">Perche non splenda <seg xml:id="v4">pur</seg> com’egli <seg xml:id="v5">suole</seg></l>
+                <l xml:id="l7">Occhi <seg xml:id="v6">soavi</seg> e cari</l>
+                <l xml:id="l8">Occhi sereni e chiari</l>
+                <l xml:id="l9">Voi somigliar sovente</l>
+                <l xml:id="l10">Fate <seg xml:id="v7">l’angusta</seg> villa <seg xml:id="v8">a l’Oriente</seg>.</l>
+            </lg>
+        </body>
+    </text>
+</TEI>
