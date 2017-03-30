@@ -61,6 +61,7 @@ class CurrentEntryView extends Backbone.View {
     removeEntryPart(targets) {
         if (targets == "all") {
             this.model.pointers.reset();
+            this.model.groups.reset();
         }
         else {
             targets = Array.isArray(targets) ? targets : [targets];

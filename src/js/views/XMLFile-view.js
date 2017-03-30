@@ -48,6 +48,11 @@ class XMLFileView extends Backbone.View {
             return (css.match (/(^|\s)col-\S+/g) || []).join(' ');
         });
         this.$el.addClass('col-xs-'+size);
+
+        if(this.editor) {
+         this.editor.resize()   
+        }
+
     }
 
     bindElementSelect() {

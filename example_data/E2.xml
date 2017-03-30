@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:/home/rviglian/Projects/tasso/schema/tassotei.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>Non può l'angusto loco</title>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>University of Massachusetts Amherst</publisher>
+                <availability status="free">
+                    <p>CC BY SA</p>
+                </availability>
+                <idno type="local">E2</idno>
+            </publicationStmt>
+            <sourceDesc>
+                <msDesc xml:id="E2">
+                    <msIdentifier>
+                        <region>Italy</region>
+                        <settlement>Modena</settlement>
+                        <repository>Biblioteca Estense Universitaria</repository>
+                        <idno>Ms. It. 379a</idno>
+                    </msIdentifier>
+                    <msContents>
+                        <msItem>
+                            <locus>f. 5r</locus>
+                            <p>Autograph manuscript</p>
+                        </msItem>
+                    </msContents>
+                    <history>
+                        <origin>
+                            <origDate notBefore="1585" notAfter="1587">1585-87</origDate>
+                        </origin>
+                    </history>
+                </msDesc>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body xml:space="preserve">
+            <div type="dedication">
+                <p xml:id="p1">Alla signora Laura Peperara</p>
+            </div>
+            <div>
+                <lg>
+                    <l xml:id="l1">Non <seg xml:id="v1">può l’angusto loco</seg></l>
+                    <l xml:id="l2">tra <seg xml:id="v2">pini</seg> abeti e faggi</l>
+                    <l xml:id="l3"><seg xml:id="v3">celare </seg>i vostri <del>raggi</del> puri e lieti raggi</l>
+                    <l xml:id="l4">e ’l dolce e vivo foco.</l>
+                    <l xml:id="l5">e chi nasconde il sole!</l>
+                    <l xml:id="l6">perché non splenda <seg xml:id="v4">fuor</seg> com’egli <seg xml:id="v5">sole</seg>?</l>
+                    <l xml:id="l7">occhi <seg xml:id="v6">graditi</seg> e cari,</l>
+                    <l xml:id="l8">occhi sereni e chiari,</l>
+                    <l xml:id="l9">voi somigliar sovente</l>
+                    <l xml:id="l10">fate <seg xml:id="v7">quest’umil</seg> villa <seg xml:id="v8">un l’Oriente</seg>.</l>
+                </lg>
+            </div>
+        </body>
+    </text>
+</TEI>

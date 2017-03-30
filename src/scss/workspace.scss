@@ -6,10 +6,18 @@
         margin-left: 10px;
 
         img {
+            display: block;
             width: 5%;
             margin-top: 80px;
             vertical-align: bottom;
         }
+
+        div {margin: 0 0 0 8%;}
+
+        div#instructions {margin-top: -15px; }
+
+        div#video {margin-top: 2em; }
+
     }
 
     .row {

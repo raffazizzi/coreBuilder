@@ -24,7 +24,8 @@ class CoreBuilder extends Backbone.View {
             'click #set_els > a' : 'openSetElementsComponent',
             'click #arrange' : 'toggle_arrange',
             'click #arr_pick_size > span' : "arrange",
-            "click #view_core > a": "openViewCoreComponent"
+            "click #view_core > a": "openViewCoreComponent",
+            "click #openExampleFiles" : "openExampleFiles"
         };
     }
 
@@ -80,6 +81,22 @@ class CoreBuilder extends Backbone.View {
     openViewCoreComponent(e){
         e.preventDefault();
         new ViewCoreComponent({"target" : this.$el, "collection" : this.core});
+    }
+
+    openExampleFiles(e){
+        e.preventDefault();
+        $.get("example_data/E2.xml", function(text) {
+            let textdata = {"filename": "E2.xml", "url": "example_data/E2.xml", "content" : text}
+            Events.trigger("addFile", textdata)
+        }, 'text')
+        $.get("example_data/S71.xml", function(text) {
+            let textdata = {"filename": "S71.xml", "url": "example_data/S71.xml", "content" : text}
+            Events.trigger("addFile", textdata)
+        }, 'text')        
+        $.get("example_data/Trm0319a-Canto.xml", function(text) {
+            let textdata = {"filename": "Trm0319a-Canto.xml", "url": "example_data/Trm0319a-Canto.xml", "content" : text}
+            Events.trigger("addFile", textdata)
+        }, 'text')        
     }
 
     toggle_arrange(e){
