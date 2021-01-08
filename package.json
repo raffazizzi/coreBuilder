@@ -20,8 +20,6 @@
     "url": "https://github.com/raffazizzi/coreBuilder/issues"
   },
   "dependencies": {
-    "@babel/core": "",
-    "@babel/preset-env": "",
     "backbone": "",
     "bootstrap": "https://github.com/twbs/bootstrap/archive/v4.0.0-alpha.2.tar.gz",
     "font-awesome": "",
@@ -30,6 +28,8 @@
     "jquery-xpath": ""
   },
   "devDependencies": {
+    "@babel/core": "",
+    "@babel/preset-env": "",
     "ace-builds": "",
     "babelify": "",
     "browserify": "",

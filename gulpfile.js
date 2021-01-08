@@ -51,11 +51,11 @@ gulp.task('build:css', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch('src/scss/**/*.scss', ['build:css']);
-  gulp.watch('src/js/**/*.js', ['build:es6']);
+  gulp.watch('src/scss/**/*.scss', gulp.series('build:css'));
+  gulp.watch('src/js/**/*.js', gulp.series('build:es6'));
 })
 
-gulp.task('webserver', function () {
+gulp.task('webserver', async function () {
   connect.server({ livereload: true, port: 8888 });
 });
 
