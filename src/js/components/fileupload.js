@@ -17,13 +17,6 @@ class FileUploadComponent extends Backbone.View {
         this.$el = $(loadfile_tpl);
 
         let $status = this.$el.find('#cb-lf-status');
-        let progress = this.$el.find('.cb-lf-progress > progress')
-        let lemma = false
-
-        if (this.model["attributes"]["container"]["attributes"]["name"] != "rdg") {
-            this.$el.find('#checkbox-lemma').attr("hidden", "")
-            this.$el.find('#lbl-lemma').attr("hidden", "")
-        }
 
         // Events
         this.$el.on('change', '#btn-files :file', (e) => {
@@ -38,27 +31,6 @@ class FileUploadComponent extends Backbone.View {
             let input = $(e.target)
             this.core = input.get(0).files;
             this.showCoreNumber();
-            if (this.core.length) {
-                let filePromise = (new _FileReader(this.core[0], progress, $status)).select()
-
-                this.$el.find('#checkbox-lemma').attr("hidden", "")
-                this.$el.find('#lbl-lemma').attr("hidden", "")
-
-                filePromise.then(
-                    (textdata) => {
-                        if ((new DOMParser).parseFromString(textdata.content, "application/xml").querySelectorAll("standoff")[0].innerHTML.search("<lem") < 0)
-                            lemma = false
-                        else
-                            lemma = true
-                    })
-                    .catch(
-                        function () {
-                            $status.text("Error reading file :(");
-                        });
-            } else {
-                this.$el.find('#checkbox-lemma').removeAttr("hidden")
-                this.$el.find('#lbl-lemma').removeAttr("hidden")
-            }
         });
 
         this.$el.on('dragover', '#cb-lf-drop-files', (e) => {
@@ -113,13 +85,15 @@ class FileUploadComponent extends Backbone.View {
                 if (!xmlFiles || this.core && this.core.length > 1 || this.core && this.core[0].name.split('.').pop() != "xml")
                     $status.text("Please select two or more XML files and a maximum of one core in XML format.");
                 else {
+                    let progress = this.$el.find('.cb-lf-progress > progress')
+
                     // FileList is a strange object...
                     for (var i = 0, f; f = this.files[i]; i++) {
                         let filePromise = (new _FileReader(f, progress, $status)).select();
 
                         filePromise.then(
                             (textdata) => {
-                                Events.trigger('addFile', textdata, lemma);
+                                Events.trigger('addFile', textdata);
                                 // Last file?
                                 if (i == Object.keys(this.files).length) {
                                     this.$el.modal('hide').data('bs.modal', null);
@@ -191,16 +165,6 @@ class FileUploadComponent extends Backbone.View {
 
         this.render();
 
-        this.$el.on('click', '#checkbox-lemma', () => {
-            if (this.$el.find("#checkbox-lemma").attr("checked")) {
-                lemma = false
-                this.$el.find("#checkbox-lemma").removeAttr("checked")
-            }
-            else {
-                lemma = true
-                this.$el.find("#checkbox-lemma").attr("checked", "")
-            }
-        })
     }
 
     showFilesNumber() {
@@ -211,10 +175,7 @@ class FileUploadComponent extends Backbone.View {
 
     showCoreNumber() {
         let numFiles = this.core ? this.core.length : 1;
-        if (numFiles)
-            this.$el.find("#cb-lf-coreselected").text(numFiles + " core selected");
-        else
-            this.$el.find("#cb-lf-coreselected").text("")
+        this.$el.find("#cb-lf-coreselected").text(numFiles + " core selected");
         this.$el.trigger("cb-fl-chosen");
     }
 

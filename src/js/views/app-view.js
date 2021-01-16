@@ -33,8 +33,8 @@ class CoreBuilder extends Backbone.View {
         // Files
         var xmlFiles = this.xmlFiles = new XMLFiles;
         this.xmlFilesView = new XMLFilesView({ collection: xmlFiles, el: "#workspace" });
-        this.listenTo(Events, 'addFile', (textData, lemma) => {
-            this.xmlFiles.add({ "title": "Some title", "content": textData.content, "filename": textData.filename, "lemma": lemma });
+        this.listenTo(Events, 'addFile', (textData) => {
+            this.xmlFiles.add({ "title": "Some title", "content": textData.content, "filename": textData.filename });
         });
 
         // Stand-off element set
@@ -73,7 +73,7 @@ class CoreBuilder extends Backbone.View {
 
     openFileUploadComponent(e) {
         e.preventDefault();
-        new FileUploadComponent({ "target": this.$el, "collection": this.core, "model": this.elementSet });
+        new FileUploadComponent({ "target": this.$el, "collection": this.core });
     }
 
     openSetElementsComponent(e) {

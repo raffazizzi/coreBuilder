@@ -31,11 +31,7 @@ export default `
             </div>
             <div type="button" class="btn btn-primary btn-file" id="btn-core">
                 Browse a core<input type="file">
-            </div> <span id="cb-lf-coreselected"></span><br /><br />
-            <div>
-              <input type="checkbox" id="checkbox-lemma" name="checkbox">
-              <label for="checkbox" id="lbl-lemma">Use the lemma</label>
-            </div>
+            </div> <span id="cb-lf-coreselected"></span>
             <div class="cb-lf-progress">
               <progress class="progress progress-striped progress-info" value="0" max="100">0%</progress>
             </div>            
