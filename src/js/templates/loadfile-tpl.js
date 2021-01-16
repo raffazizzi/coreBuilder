@@ -20,12 +20,22 @@ export default `
         <!-- Tab panes -->
         <div class="tab-content" id="cb-lf-addfiletabcontent">
           <div role="tabpanel" class="tab-pane active" id="cb-lf-upload">
-            <div class="upload-drop-zone" id="cb-lf-drop">
-              Just drag and drop files here or click browse
+            <div class="upload-drop-zone" id="cb-lf-drop-files">
+              Just drag and drop files here or click browse files
             </div>
-            <div type="button" class="btn btn-primary btn-file">
-                Browse <input type="file" multiple="multiple">
+            <div type="button" class="btn btn-primary btn-file" id="btn-files">
+                Browse files<input type="file" multiple="multiple">
             </div> <span id="cb-lf-filesselected"></span>
+            <div class="upload-drop-zone" id="cb-lf-drop-core">
+              Just drag and drop a core here or click browse a core
+            </div>
+            <div type="button" class="btn btn-primary btn-file" id="btn-core">
+                Browse a core<input type="file">
+            </div> <span id="cb-lf-coreselected"></span><br /><br />
+            <div>
+              <input type="checkbox" id="checkbox-lemma" name="checkbox">
+              <label for="checkbox" id="lbl-lemma">Use the lemma</label>
+            </div>
             <div class="cb-lf-progress">
               <progress class="progress progress-striped progress-info" value="0" max="100">0%</progress>
             </div>            
