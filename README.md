@@ -16,9 +16,8 @@ With this tool you can:
 **Check out the [live app](http://raffazizzi.github.io/coreBuilder) and read the [wiki](https://github.com/raffazizzi/coreBuilder/wiki) for more examples.**
 
 ## Building coreBuilder
-<a href="#" id="status-image-popup" title="build status image" name="status-images" class="open-popup" data-ember-action="1090">
-            <img src="https://travis-ci.org/TEIC/CETEIcean.svg" alt="build:passed">
-          </a>
+[![Build Status](https://travis-ci.com/dylan275/coreBuilder.svg?branch=master)](https://travis-ci.com/dylan275/coreBuilder)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dylan275_coreBuilder&metric=alert_status)](https://sonarcloud.io/dashboard?id=dylan275_coreBuilder)
 
 If you want to run your own instance of coreBuilder, you'll have to build the JavaScript code.
 
