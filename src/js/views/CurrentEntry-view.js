@@ -389,6 +389,12 @@ class CurrentEntryView extends Backbone.View {
 
             }
 
+            for (let i = this.model.pointers.models.length - 1; i >= 0; i--)
+                if (this.model.pointers.models[i]["attributes"]["lemma"]) {
+                    wrapper.content[i].name = "lem"
+                    break
+                }
+
             data.wrapper = wrapper;
             data.xml = new XMLSerializer().serializeToString(this.getXML(data));
             data.xml = vk.xml(data.xml);
