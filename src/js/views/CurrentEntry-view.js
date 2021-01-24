@@ -4,6 +4,7 @@ import currententrydata_tpl from '../templates/currententrydata-tpl';
 import currententrygrps_tpl from '../templates/currententrygrps-tpl';
 import Prism from 'prismjs';
 import vk from 'vkbeautify';
+import TextualVariationsComponent from '../components/TextualVariationsComponent';
 
 var $ = global.jQuery = require('jquery');
 require("../../../node_modules/bootstrap/dist/js/umd/button.js");
@@ -12,10 +13,10 @@ class CurrentEntryView extends Backbone.View {
 
     initialize(options) {
         this.elementSet = options.elementSet;
-        this.listenTo(this.model, 'change', this.renderData);
-        this.listenTo(this.model.pointers, 'add', this.renderData);
-        this.listenTo(this.model.pointers, 'remove', () => {
-            if (this.model.pointers.length > 0) {
+        this.listenTo(this.model.lastCore, 'change', this.renderData);
+        this.listenTo(this.model.lastCore.pointers, 'add', this.renderData);
+        this.listenTo(this.model.lastCore.pointers, 'remove', () => {
+            if (this.model.lastCore.pointers.length > 0) {
                 this.renderData();
             }
             else this.render();
@@ -40,7 +41,7 @@ class CurrentEntryView extends Backbone.View {
                 }
             },
             "click #cb-ce-add": () => {
-                this.model.saveToCore();
+                this.model.lastCore.saveToCore();
 
                 // Add new entry to core
                 if (this.collection.at(this.collection.length - 1).get("xml"))
@@ -57,7 +58,7 @@ class CurrentEntryView extends Backbone.View {
 
     updateElementSet(elset) {
         // Make sure this entry is not already saved
-        if (!this.model.get("saved")) {
+        if (!this.model.lastCore.get("saved")) {
             this.elementSet = elset;
             this.renderData();
         }
@@ -65,14 +66,14 @@ class CurrentEntryView extends Backbone.View {
 
     removeEntryPart(targets) {
         if (targets == "all") {
-            this.model.pointers.reset();
-            this.model.groups.reset();
+            this.model.lastCore.pointers.reset();
+            this.model.lastCore.groups.reset();
         }
         else {
             targets = Array.isArray(targets) ? targets : [targets];
             for (let target of targets) {
 
-                let pointers = this.model.pointers.filter(function (pointer) {
+                let pointers = this.model.lastCore.pointers.filter(function (pointer) {
                     return pointer.cid == target
                 });
 
@@ -82,7 +83,7 @@ class CurrentEntryView extends Backbone.View {
             }
         }
 
-        if (this.model.pointers.length > 0) {
+        if (this.model.lastCore.pointers.length > 0) {
             this.renderData();
         }
         else this.render();
@@ -106,7 +107,7 @@ class CurrentEntryView extends Backbone.View {
         let xmlDoc = parser.parseFromString("<" + data.wrapper.name + "/>", "text/xml");
         let wrapper = xmlDoc.documentElement;
 
-        let currentXMLFile = this.model.pointers.first().get("xml_file");
+        let currentXMLFile = this.model.lastCore.pointers.first().get("xml_file");
 
         // Add wrapper's attributes
         for (let a of data.wrapper.xmlatts) {
@@ -149,23 +150,45 @@ class CurrentEntryView extends Backbone.View {
     }
 
     newGroup() {
-        let pos = this.model.groups.length + 1;
+        let pos = this.model.lastCore.groups.length + 1;
         this.unselectGroups();
-        this.model.groups.add({ "number": pos, "selected": true });
+        this.model.lastCore.groups.add({ "number": pos, "selected": true });
         this.renderGroupDropdown();
     }
 
     selectGroup(e) {
         let pos = parseInt($(e.target).data("pos")) - 1;
         this.unselectGroups();
-        this.model.groups.models[pos].set("selected", true);
+        this.model.lastCore.groups.models[pos].set("selected", true);
         this.renderGroupDropdown();
     }
 
     unselectGroups() {
-        this.model.groups.each(function (g) {
+        this.model.lastCore.groups.each(function (g) {
             g.set("selected", false);
         });
+    }
+
+    addVariations() {
+        let variations = ["spelling", "semantic", "ponctuation", "omission", "repetition"]
+
+        for (let i = 0; i < this.collection.toJSON().length; i++)
+            if (this.collection.toJSON()[i].json)
+                for (let j = 0; j < this.collection.toJSON()[i].json.content.length; j++) {
+                    if (this.collection.toJSON()[i].json.content[j].name == this.elementSet.get("container").get("name") && this.collection.toJSON()[i].json.content[j].xmlatts[1])
+                        variations.push(this.collection.toJSON()[i].json.content[j].xmlatts[1].value)
+                    if (this.collection.toJSON()[i].json.content[j].name == this.elementSet.get("grp").get("name") && this.collection.toJSON()[i].json.content[j].xmlatts[0])
+                        variations.push(this.collection.toJSON()[i].json.content[j].xmlatts[0].value)
+                }
+
+        for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++) {
+            if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("container").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[1])
+                variations.push(this.model.lastCore.toJSON().json.content[i].xmlatts[1].value)
+            if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("grp").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[0])
+                variations.push(this.model.lastCore.toJSON().json.content[i].xmlatts[0].value)
+        }
+
+        return Array.from(new Set(variations))
     }
 
     addToGroup(e) {
@@ -175,10 +198,10 @@ class CurrentEntryView extends Backbone.View {
 
             let targetParts = target.split("#");
 
-            for (let ptr of this.model.pointers.models) {
+            for (let ptr of this.model.lastCore.pointers.models) {
                 if (targets.indexOf(ptr.cid) > -1) {
-                    let group = this.model.groups.filter(function (group) {
-                        return group.get("selected");
+                    let group = this.model.lastCore.groups.filter(function (selectedGroup) {
+                        return selectedGroup.get("selected");
                     });
                     if (group.length > 0) {
                         ptr.set("group", group[0].get("number"));
@@ -189,10 +212,12 @@ class CurrentEntryView extends Backbone.View {
 
         this.renderData();
 
+        if (!this.model.lastCore.toJSON().json.content[this.model.lastCore.toJSON().json.content.length - 1].xmlatts.length)
+            new TextualVariationsComponent({ target: this.model.target, model: this.model.lastCore, index: this.model.lastCore.toJSON().json.content.length - 1, variations: this.addVariations() })
     }
 
     renderGroupDropdown() {
-        this.$el.find("#cb-ce-g-dd").html(currententrygrps_tpl(this.model.groups.toJSON()));
+        this.$el.find("#cb-ce-g-dd").html(currententrygrps_tpl(this.model.lastCore.groups.toJSON()));
     }
 
     render() {
@@ -207,7 +232,7 @@ class CurrentEntryView extends Backbone.View {
     renderData() {
 
         let data = {};
-        if (this.model.pointers.models.length > 0) {
+        if (this.model.lastCore.pointers.models.length > 0) {
 
             this.showEntry();
 
@@ -238,7 +263,7 @@ class CurrentEntryView extends Backbone.View {
                 let ptr = { "name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON() };
                 let targets = [];
                 let _targets = [];
-                for (let pointer of this.model.pointers.models) {
+                for (let pointer of this.model.lastCore.pointers.models) {
                     if (!pointer.get("empty")) {
                         let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
                         targets.push({ "xmlid": pointer.get("xml_file") + "#" + xp, "cid": pointer.cid });
@@ -262,7 +287,7 @@ class CurrentEntryView extends Backbone.View {
                 var ptrs = [];
                 let inGroup = false;
 
-                for (let pointer of this.model.pointers.models) {
+                for (let pointer of this.model.lastCore.pointers.models) {
                     if (!pointer.get("empty")) {
                         let ptr = { "name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON() };
                         let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
@@ -330,7 +355,7 @@ class CurrentEntryView extends Backbone.View {
 
             }
             else if (ptr_bhv == "cnt") {
-                let byfile = this.model.pointers.groupBy(function (pointer) {
+                let byfile = this.model.lastCore.pointers.groupBy(function (pointer) {
                     return pointer.get("xml_file")
                 });
 
@@ -344,6 +369,12 @@ class CurrentEntryView extends Backbone.View {
                         "_targets": [],
                         'xmlatts': el_container.xmlatts.toJSON()
                     };
+
+                    if (this.model.lastCore.toJSON().json)
+                        for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
+                            if (this.model.lastCore.toJSON().json.content[i].name == el_container.get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[1] && this.model.lastCore.toJSON().json.content[i].content[0].targets[0].xmlid.split('#')[0] == key)
+                                cnt.xmlatts.push({ name: this.model.lastCore.toJSON().json.content[i].xmlatts[1].name, value: this.model.lastCore.toJSON().json.content[i].xmlatts[1].value })
+
                     let inGroup = false;
                     for (let pointer of byfile[key]) {
                         if (!pointer.get("empty")) {
@@ -370,6 +401,11 @@ class CurrentEntryView extends Backbone.View {
                                         "xmlatts": el_grp.xmlatts.toJSON()
                                     };
                                     grp.content.push(cnt);
+
+                                    for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
+                                        if (this.model.lastCore.toJSON().json.content[i].number == grp_no && this.model.lastCore.toJSON().json.content[i].xmlatts[0])
+                                            grp.xmlatts.push({ name: this.model.lastCore.toJSON().json.content[i].xmlatts[0].name, value: this.model.lastCore.toJSON().json.content[i].xmlatts[0].value })
+
                                     grps[grp_no] = grp;
                                 }
                             }
@@ -386,14 +422,20 @@ class CurrentEntryView extends Backbone.View {
                 for (let grp_no of Object.keys(grps).sort()) {
                     wrapper.content.push(grps[grp_no]);
                 }
-
             }
 
-            for (let i = this.model.pointers.models.length - 1; i >= 0; i--)
-                if (this.model.pointers.models[i]["attributes"]["lemma"]) {
+            for (let i = this.model.lastCore.pointers.models.length - 1; i >= 0; i--)
+                if (this.model.lastCore.pointers.models[i].toJSON().lemma) {
                     wrapper.content[i].name = "lem"
                     break
                 }
+
+            if (this.model.lastCore.toJSON().json)
+                for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
+                    if (this.model.lastCore.toJSON().json.content[i].name == "rdg" && !this.model.lastCore.toJSON().json.content[i].xmlatts[1]) {
+                        new TextualVariationsComponent({ target: this.model.target, model: this.model.lastCore, index: i, variations: this.addVariations() })
+                        break
+                    }
 
             data.wrapper = wrapper;
             data.xml = new XMLSerializer().serializeToString(this.getXML(data));
@@ -402,8 +444,8 @@ class CurrentEntryView extends Backbone.View {
             // custom formatting fix
             data.xml = this.fixXMLindent(data.xml);
 
-            this.model.set("xml", data.xml);
-            this.model.set("json", wrapper);
+            this.model.lastCore.set("xml", data.xml);
+            this.model.lastCore.set("json", wrapper);
 
             this.$el.find("#cb-ce-entry-body").html(currententrydata_tpl(data));
 

@@ -57,7 +57,7 @@ class CoreBuilder extends Backbone.View {
 
     newCurrentEntryView() {
         var currententry = new CurrentEntryView({
-            model: this.core.last(),
+            model: { lastCore: this.core.last(), target: this.$el },
             "el": "#currententry",
             "elementSet": this.elementSet,
             "collection": this.core
