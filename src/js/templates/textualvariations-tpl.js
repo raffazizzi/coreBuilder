@@ -21,7 +21,8 @@ let textualVariationsTpl = `
         <div id="cb-lf-status"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="cb-se-confirm">Apply</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="cb-se-dismiss">Do not add variation</button>
+        <button type="button" class="btn btn-primary" id="cb-se-confirm">Add variation</button>
       </div>
     </div>
   </div>

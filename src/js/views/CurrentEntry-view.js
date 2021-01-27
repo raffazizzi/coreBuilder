@@ -213,7 +213,7 @@ class CurrentEntryView extends Backbone.View {
         this.renderData();
 
         if (!this.model.lastCore.toJSON().json.content[this.model.lastCore.toJSON().json.content.length - 1].xmlatts.length)
-            new TextualVariationsComponent({ target: this.model.target, model: this.model.lastCore, index: this.model.lastCore.toJSON().json.content.length - 1, variations: this.addVariations() })
+            new TextualVariationsComponent({ currentEntry: this, index: this.model.lastCore.toJSON().json.content.length - 1 })
     }
 
     renderGroupDropdown() {
@@ -372,8 +372,12 @@ class CurrentEntryView extends Backbone.View {
 
                     if (this.model.lastCore.toJSON().json)
                         for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
-                            if (this.model.lastCore.toJSON().json.content[i].name == el_container.get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[1] && this.model.lastCore.toJSON().json.content[i].content[0].targets[0].xmlid.split('#')[0] == key)
-                                cnt.xmlatts.push({ name: this.model.lastCore.toJSON().json.content[i].xmlatts[1].name, value: this.model.lastCore.toJSON().json.content[i].xmlatts[1].value })
+                            if (this.model.lastCore.toJSON().json.content[i].name == el_container.get("name") && this.model.lastCore.toJSON().json.content[i].content[0].targets[0].xmlid.split('#')[0] == key) {
+                                if (this.model.lastCore.toJSON().json.content[i].xmlatts[1])
+                                    cnt.xmlatts.push({ name: this.model.lastCore.toJSON().json.content[i].xmlatts[1].name, value: this.model.lastCore.toJSON().json.content[i].xmlatts[1].value })
+                                if (this.model.lastCore.toJSON().json.content[i].done)
+                                    cnt.done = true
+                            }
 
                     let inGroup = false;
                     for (let pointer of byfile[key]) {
@@ -432,8 +436,8 @@ class CurrentEntryView extends Backbone.View {
 
             if (this.model.lastCore.toJSON().json)
                 for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
-                    if (this.model.lastCore.toJSON().json.content[i].name == "rdg" && !this.model.lastCore.toJSON().json.content[i].xmlatts[1]) {
-                        new TextualVariationsComponent({ target: this.model.target, model: this.model.lastCore, index: i, variations: this.addVariations() })
+                    if (this.model.lastCore.toJSON().json.content[i].name == el_container.get("name") && !this.model.lastCore.toJSON().json.content[i].done) {
+                        new TextualVariationsComponent({ currentEntry: this, index: this.model.lastCore.toJSON().json.content.length - 1 })
                         break
                     }
 
