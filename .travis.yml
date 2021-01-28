@@ -1,10 +1,15 @@
 language: node_js
 
 node_js:
-  - "5"
+  - "lts/*"
 
 before_script:
   - npm install -g gulp
 
-script: 
+addons:
+  sonarcloud:
+    organization: "dylan275"
+
+script:
   - gulp
+  - sonar-scanner -Dsonar.projectKey=dylan275_coreBuilder
