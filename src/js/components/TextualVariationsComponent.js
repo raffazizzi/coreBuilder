@@ -7,14 +7,12 @@ require('../../../node_modules/bootstrap/dist/js/umd/modal');
 
 class TextualVariationsComponent extends Backbone.View {
     initialize(options) {
-        this.target = options.target;
-        this.model = options.model
+        this.currentEntry = options.currentEntry
         this.index = options.index
-        this.variations = options.variations
         this.variation = ""
 
         // Events
-        for (let variation of this.variations)
+        for (let variation of this.currentEntry.addVariations())
             this.$el.on('click', '#' + variation, () => {
                 this.variation = variation
                 this.$el.find("#variation").attr("hidden", "")
@@ -32,22 +30,33 @@ class TextualVariationsComponent extends Backbone.View {
 
     events() {
         return {
-            "click #cb-se-confirm": "applyVariation"
+            "click #cb-se-dismiss": "doNotAddVariation",
+            "click #cb-se-confirm": "addVariation"
         }
     }
 
     render() {
-        let component = $(textualVariationsTpl(this.variations));
-        this.target.append(this.$el.append(component));
+        let component = $(textualVariationsTpl(this.currentEntry.addVariations()));
+        this.currentEntry.model.target.append(this.$el.append(component));
         component.modal('show');
     }
 
-    applyVariation() {
+    doNotAddVariation() {
+        this.currentEntry.model.lastCore.toJSON().json.content[this.index].done = true
+
+        this.currentEntry.renderData()
+    }
+
+    addVariation() {
         if (this.variation) {
+            this.currentEntry.model.lastCore.toJSON().json.content[this.index].done = true
+
             if (this.variation == "Other")
-                this.model.toJSON().json.content[this.index].xmlatts.push({ name: "type", value: this.$el.find("#variation").val() })
+                this.currentEntry.model.lastCore.toJSON().json.content[this.index].xmlatts.push({ name: "type", value: this.$el.find("#variation").val() })
             else
-                this.model.toJSON().json.content[this.index].xmlatts.push({ name: "type", value: this.variation })
+                this.currentEntry.model.lastCore.toJSON().json.content[this.index].xmlatts.push({ name: "type", value: this.variation })
+
+            this.currentEntry.renderData()
 
             this.$el.find('#cb-lf-status').html(
                 `<div class="alert alert-success" role="alert">
