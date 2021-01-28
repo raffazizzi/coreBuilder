@@ -13,6 +13,7 @@ class CurrentEntryView extends Backbone.View {
 
     initialize(options) {
         this.elementSet = options.elementSet;
+        this.reading = "rdg"
         this.listenTo(this.model.lastCore, 'change', this.renderData);
         this.listenTo(this.model.lastCore.pointers, 'add', this.renderData);
         this.listenTo(this.model.lastCore.pointers, 'remove', () => {
@@ -372,7 +373,7 @@ class CurrentEntryView extends Backbone.View {
 
                     if (this.model.lastCore.toJSON().json)
                         for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
-                            if (this.model.lastCore.toJSON().json.content[i].name == el_container.get("name") && this.model.lastCore.toJSON().json.content[i].content[0].targets[0].xmlid.split('#')[0] == key) {
+                            if (this.model.lastCore.toJSON().json.content[i].name == this.reading && this.model.lastCore.toJSON().json.content[i].content[0].targets[0].xmlid.split('#')[0] == key) {
                                 if (this.model.lastCore.toJSON().json.content[i].xmlatts[1])
                                     cnt.xmlatts.push({ name: this.model.lastCore.toJSON().json.content[i].xmlatts[1].name, value: this.model.lastCore.toJSON().json.content[i].xmlatts[1].value })
                                 if (this.model.lastCore.toJSON().json.content[i].done)
@@ -436,7 +437,7 @@ class CurrentEntryView extends Backbone.View {
 
             if (this.model.lastCore.toJSON().json)
                 for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
-                    if (this.model.lastCore.toJSON().json.content[i].name == el_container.get("name") && !this.model.lastCore.toJSON().json.content[i].done) {
+                    if (this.model.lastCore.toJSON().json.content[i].name == this.reading && !this.model.lastCore.toJSON().json.content[i].done) {
                         new TextualVariationsComponent({ currentEntry: this, index: this.model.lastCore.toJSON().json.content.length - 1 })
                         break
                     }
