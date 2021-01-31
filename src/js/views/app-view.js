@@ -2,11 +2,11 @@ import * as Backbone from 'backbone';
 import XMLFiles from '../data/coll-XMLFiles';
 import XMLFilesView from './XMLFiles-view';
 import Core from '../data/coll-Core';
+import CoreView from "./Core-view"
 import CurrentEntryView from './CurrentEntry-view';
 import ElementSet from '../data/model-ElementSet';
 import FileUploadComponent from '../components/fileupload';
 import SetElementsComponent from '../components/setelements';
-import ViewCoreComponent from '../components/viewcore';
 import Events from '../utils/backbone-events.js';
 
 // Sadly Bootstrap js is not ES6 ready yet.
@@ -24,7 +24,6 @@ class CoreBuilder extends Backbone.View {
             'click #set_els > a': 'openSetElementsComponent',
             'click #arrange': 'toggle_arrange',
             'click #arr_pick_size > span': "arrange",
-            "click #view_core > a": "openViewCoreComponent",
             "click #openExampleFiles": "openExampleFiles"
         };
     }
@@ -42,6 +41,7 @@ class CoreBuilder extends Backbone.View {
 
         // Core
         this.core = new Core;
+        this.coreView = new CoreView({ collection: this.core, el: "#workspace" })
         // Always start the core with one unsaved entry
         this.core.add({});
         this.listenTo(Events, "coreEntry:addPointer", function (p) { this.core.addPointer(p) });
@@ -81,11 +81,6 @@ class CoreBuilder extends Backbone.View {
         new SetElementsComponent({ "target": this.$el, "model": this.elementSet });
     }
 
-    openViewCoreComponent(e) {
-        e.preventDefault();
-        new ViewCoreComponent({ "target": this.$el, "collection": this.core });
-    }
-
     openExampleFiles(e) {
         e.preventDefault();
         $.get("example_data/E2.xml", function (text) {
@@ -111,6 +106,7 @@ class CoreBuilder extends Backbone.View {
         e.preventDefault();
         let pos = 6 - $(e.target).index();
         this.xmlFilesView.arrange(pos);
+        this.coreView.renderEntries()
     }
 
 }
