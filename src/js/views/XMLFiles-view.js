@@ -2,22 +2,23 @@ import $ from 'jquery';
 import * as Backbone from 'backbone';
 import XMLFileView from './XMLFile-view.js';
 import Events from '../utils/backbone-events.js';
+import core_tpl from "../templates/core-tpl"
 
 class XMLFilesView extends Backbone.View {
 
-    initialize(){
+    initialize() {
         this.listenTo(this.collection, 'add', this.addOne);
-        this.listenTo(this.collection, 'remove', ()=>{
+        this.listenTo(this.collection, 'remove', () => {
             //noop
         });
     }
 
-    addOne(m){
+    addOne(m) {
         // update model cell size if needed
         if (this.cell_size) {
             m.size = this.cell_size;
         }
-        this.$el.append(new XMLFileView({model:m}).render());
+        this.$el.append(new XMLFileView({ model: m }).render());
         this.arrange();
     }
 
@@ -47,13 +48,16 @@ class XMLFilesView extends Backbone.View {
         }
 
         // create needed number of rows and re-attach xfiles
+        let divFiles = $("<div>").attr("id", "files")
         for (let row of rows) {
             let div = $('<div>').addClass("row");
             for (let xfile of row) {
-                div.append(xfile); 
+                div.append(xfile);
             }
-            this.$el.append(div);
+            divFiles.append(div)
         }
+
+        this.$el.append($("<div>").attr("id", "filesCore").append(divFiles).append($("<div>").attr("id", "core").html(core_tpl())))
     }
 }
 

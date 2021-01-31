@@ -1,8 +1,7 @@
-@import 'variables';
+@import "variables";
 
 #workspace {
     #getstarted {
-
         margin-left: 10px;
 
         img {
@@ -12,94 +11,107 @@
             vertical-align: bottom;
         }
 
-        div {margin: 0 0 0 8%;}
+        div {
+            margin: 0 0 0 8%;
+        }
 
-        div#instructions {margin-top: -15px; }
+        div#instructions {
+            margin-top: -15px;
+        }
 
-        div#video {margin-top: 2em; }
+        div#video {
+            margin-top: 2em;
+        }
 
+        iframe {
+            border: none;
+        }
     }
 
-    .row {
-        margin: 0;
+    #filesCore {
+        display: flex;
 
-        .cb-XMLFile {
-            background: Grey;
-            border: 1px solid White;
-            min-height: 20em;
-            padding: 2px;
+        #files {
+            width: 100%;
 
-            .cb-xf-title {
-                min-height: 2em;
-                color: white;
-                font-weight: bold;
+            .row {
+                margin: 0;
 
-                .cb-xf-controls {
-                    float: right;
+                .cb-XMLFile {
+                    background: Grey;
+                    border: 1px solid White;
+                    min-height: 20em;
+                    padding: 2px;
 
-                    a:link, a:hover, a:active, a:visited {
+                    .cb-xf-title {
+                        min-height: 2em;
                         color: white;
-                        text-decoration: none;
-                    }
+                        font-weight: bold;
 
-                    button span {
-                        display: none;
-                    }
+                        .cb-xf-controls {
+                            float: right;
 
-                }
+                            a:link,
+                            a:hover,
+                            a:active,
+                            a:visited {
+                                color: white;
+                                text-decoration: none;
+                            }
 
-                .cb-xf-xp-drawer {
+                            button span {
+                                display: none;
+                            }
+                        }
 
-                    color: black;
-                    width: 250px;  
-                    background-color: $logo-secondary;
-                    height: 35px;
-                    margin: auto;
-                    position: absolute;
-                    top: 36px;
-                    left: 0;
-                    right: 0;
-                    z-index: 999 !important;
-                    text-align: center;
-                    border-radius: 5px; 
-                    display: none;
+                        .cb-xf-xp-drawer {
+                            color: black;
+                            width: 250px;
+                            background-color: $logo-secondary;
+                            height: 35px;
+                            margin: auto;
+                            position: absolute;
+                            top: 36px;
+                            left: 0;
+                            right: 0;
+                            z-index: 999 !important;
+                            text-align: center;
+                            border-radius: 5px;
+                            display: none;
 
-                    span {
-                        display: inline-block;
-                        margin-top: 5px;
-                    }
+                            span {
+                                display: inline-block;
+                                margin-top: 5px;
+                            }
 
-                    span.cb-xf-xp-d-ctrls {
-                        display: inline-block;
-                        float: right;
-                        margin: 5px 10px 0 0;
+                            span.cb-xf-xp-d-ctrls {
+                                display: inline-block;
+                                float: right;
+                                margin: 5px 10px 0 0;
 
-                        a.cb-xf-xp-d-b {
+                                a.cb-xf-xp-d-b {
+                                }
+                            }
+                        }
 
+                        .cb-xf-xp-drawer.cb-xp-ok {
+                            background-color: green;
+                        }
+                        .cb-xf-xp-drawer.cb-xp-fail {
+                            background-color: red;
                         }
                     }
 
+                    .cb-ace {
+                        min-height: inherit;
+                    }
                 }
-
-                .cb-xf-xp-drawer.cb-xp-ok {
-                    background-color: green;
-                }
-                .cb-xf-xp-drawer.cb-xp-fail {
-                    background-color: red;
-                }
-
             }
-
-            .cb-ace {
-                min-height: inherit;
-            }
-
         }
-
     }
 }
 
-@media(min-width:500px) {
+@media (min-width: 500px) {
     #workspace .row .cb-XMLFile .cb-xf-title .cb-xf-controls button span {
         display: inline;
     }
