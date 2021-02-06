@@ -37,76 +37,80 @@
             .row {
                 margin: 0;
 
-                .cb-XMLFile {
-                    background: Grey;
-                    border: 1px solid White;
-                    min-height: 20em;
-                    padding: 2px;
-
-                    .cb-xf-title {
-                        min-height: 2em;
-                        color: white;
-                        font-weight: bold;
-
-                        .cb-xf-controls {
-                            float: right;
-
-                            a:link,
-                            a:hover,
-                            a:active,
-                            a:visited {
-                                color: white;
-                                text-decoration: none;
-                            }
-
-                            button span {
-                                display: none;
-                            }
-                        }
-
-                        .cb-xf-xp-drawer {
-                            color: black;
-                            width: 250px;
-                            background-color: $logo-secondary;
-                            height: 35px;
-                            margin: auto;
-                            position: absolute;
-                            top: 36px;
-                            left: 0;
-                            right: 0;
-                            z-index: 999 !important;
-                            text-align: center;
-                            border-radius: 5px;
-                            display: none;
-
-                            span {
-                                display: inline-block;
-                                margin-top: 5px;
-                            }
-
-                            span.cb-xf-xp-d-ctrls {
-                                display: inline-block;
-                                float: right;
-                                margin: 5px 10px 0 0;
-
-                                a.cb-xf-xp-d-b {
-                                }
-                            }
-                        }
-
-                        .cb-xf-xp-drawer.cb-xp-ok {
-                            background-color: green;
-                        }
-                        .cb-xf-xp-drawer.cb-xp-fail {
-                            background-color: red;
-                        }
-                    }
-
-                    .cb-ace {
-                        min-height: inherit;
-                    }
+                .cb-ace {
+                    min-height: inherit;
                 }
             }
+        }
+
+        .cb-XMLFile {
+            background: Grey;
+            border: 1px solid White;
+            min-height: 20em;
+            padding: 2px;
+
+            .cb-xf-title {
+                min-height: 2em;
+                color: white;
+                font-weight: bold;
+
+                .cb-xf-controls {
+                    float: right;
+
+                    a:link,
+                    a:hover,
+                    a:active,
+                    a:visited {
+                        color: white;
+                        text-decoration: none;
+                    }
+
+                    button span {
+                        display: none;
+                    }
+                }
+
+                .cb-xf-xp-drawer {
+                    color: black;
+                    width: 250px;
+                    background-color: $logo-secondary;
+                    height: 35px;
+                    margin: auto;
+                    position: absolute;
+                    top: 36px;
+                    left: 0;
+                    right: 0;
+                    z-index: 999 !important;
+                    text-align: center;
+                    border-radius: 5px;
+                    display: none;
+
+                    span {
+                        display: inline-block;
+                        margin-top: 5px;
+                    }
+
+                    span.cb-xf-xp-d-ctrls {
+                        display: inline-block;
+                        float: right;
+                        margin: 5px 10px 0 0;
+
+                        a.cb-xf-xp-d-b {
+                        }
+                    }
+                }
+
+                .cb-xf-xp-drawer.cb-xp-ok {
+                    background-color: green;
+                }
+                .cb-xf-xp-drawer.cb-xp-fail {
+                    background-color: red;
+                }
+            }
+        }
+
+        #core {
+            width: 100%;
         }
     }
 }

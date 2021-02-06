@@ -3,6 +3,9 @@ import * as Backbone from 'backbone';
 import XMLFileView from './XMLFile-view.js';
 import Events from '../utils/backbone-events.js';
 import core_tpl from "../templates/core-tpl"
+import xmlfile_tpl from "../templates/xmlfile-tpl"
+import loadScript from "../utils/load-script"
+import coreXML_tpl from "../templates/coreXML-tpl"
 
 class XMLFilesView extends Backbone.View {
 
@@ -22,7 +25,7 @@ class XMLFilesView extends Backbone.View {
         this.arrange();
     }
 
-    arrange(cols) {
+    arrange(cols, XML) {
         if (!cols) {
             if (this.cols) {
                 cols = this.cols;
@@ -52,12 +55,38 @@ class XMLFilesView extends Backbone.View {
         for (let row of rows) {
             let div = $('<div>').addClass("row");
             for (let xfile of row) {
-                div.append(xfile);
+                if (xfile.classList[1])
+                    div.append(xfile);
             }
-            divFiles.append(div)
+            if (div[0].innerHTML)
+                divFiles.append(div)
         }
 
         this.$el.append($("<div>").attr("id", "filesCore").append(divFiles).append($("<div>").attr("id", "core").html(core_tpl())))
+        this.$el.find("#core .cb-XMLFile").html(xmlfile_tpl())
+
+        const edCnt = this.$el.find("#core .cb-ace").get(0);
+
+        loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+            var editor;
+            ace.require(['ace/ace'], (loadedAce) => {
+                editor = loadedAce.edit(edCnt);
+
+                editor.setTheme("ace/theme/chrome");
+                editor.setShowPrintMargin(false);
+                editor.getSession().setMode("ace/mode/xml");
+                editor.$blockScrolling = Infinity;
+                editor.$enableBlockSelect = false;
+                editor.$enableMultiselect = false;
+                if (XML == undefined)
+                    editor.getSession().insert({ column: 0, row: 0 }, coreXML_tpl())
+                else
+                    editor.getSession().insert({ column: 0, row: 0 }, XML)
+                editor.moveCursorTo({ column: 0, row: 0 });
+            });
+        });
+
+        this.$el.find("#core .cb-ace").height(this.$el.find("#files").height() - this.$el.find("#coreHeader").height())
     }
 }
 

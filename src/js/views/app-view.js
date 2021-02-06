@@ -8,6 +8,7 @@ import ElementSet from '../data/model-ElementSet';
 import FileUploadComponent from '../components/fileupload';
 import SetElementsComponent from '../components/setelements';
 import Events from '../utils/backbone-events.js';
+import loadScript from "../utils/load-script"
 
 // Sadly Bootstrap js is not ES6 ready yet.
 var $ = global.jQuery = require('jquery');
@@ -105,8 +106,21 @@ class CoreBuilder extends Backbone.View {
     arrange(e) {
         e.preventDefault();
         let pos = 6 - $(e.target).index();
-        this.xmlFilesView.arrange(pos);
-        this.coreView.renderEntries()
+
+        const edCnt = this.$el.find("#core .cb-ace").get(0);
+
+        loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+            var editor;
+            ace.require(['ace/ace'], (loadedAce) => {
+                editor = loadedAce.edit(edCnt);
+
+                let XML = ""
+                for (let i = 0; i < editor.getSession().getLength(); i++)
+                    XML += editor.getSession().getLine(i) + '\n'
+
+                this.xmlFilesView.arrange(pos, XML)
+            });
+        });
     }
 
 }

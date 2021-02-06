@@ -1,8 +1,6 @@
 import * as Backbone from 'backbone';
-import coreentries_tpl from '../templates/coreentries-tpl';
-import coreXML_tpl from '../templates/coreXML-tpl';
-import Prism from 'prismjs';
 import saveAs from 'save-as';
+import loadScript from "../utils/load-script"
 
 // Sadly Bootstrap js is not ES6 ready yet.
 var $ = global.jQuery = require('jquery');
@@ -16,57 +14,52 @@ class CoreView extends Backbone.View {
 
     events() {
         return {
-            "click .cb-vc-remove": "removeOne",
             "click #cb-vc-download": "download"
         }
     }
 
-    removeOne(e) {
-        let m_id = this.$(e.target).closest("div").data("entry");
-        this.collection.remove(m_id);
-        this.renderEntries();
-    }
-
     download() {
+        const edCnt = this.$el.find("#core .cb-ace").get(0);
 
-        let xml_string = "";
+        loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+            var editor;
+            ace.require(['ace/ace'], (loadedAce) => {
+                editor = loadedAce.edit(edCnt);
 
-        this.collection.each((entry, i) => {
-            if (entry.get("saved")) {
-                xml_string += entry.get("xml");
-            }
+                let XML = ""
+                for (let i = 0; i < editor.getSession().getLength(); i++)
+                    XML += editor.getSession().getLine(i) + '\n'
+
+                saveAs(new Blob([XML], { "type": "text\/xml" }), 'core.xml');
+            });
         });
-
-        xml_string = coreXML_tpl(xml_string);
-
-        let bb = new Blob([xml_string], { "type": "text\/xml" });
-        saveAs(bb, 'core.xml');
     }
 
     renderLastEntry() {
-        if (this.collection.models.length > 1)
-            this.$el.find("#coreEntries").append(coreentries_tpl([{ id: this.collection.models[this.collection.models.length - 2].cid, xml: this.collection.toJSON()[this.collection.toJSON().length - 2].xml }]))
+        if (this.collection.toJSON()[this.collection.toJSON().length - 2]) {
+            const edCnt = this.$el.find("#core .cb-ace").get(0);
 
-        Prism.highlightAll()
-    }
+            loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+                var editor;
+                ace.require(['ace/ace'], (loadedAce) => {
+                    editor = loadedAce.edit(edCnt);
 
-    renderEntries() {
-        let coreData = []
+                    for (let i = 0; i < editor.getSession().getLength(); i++)
+                        if (editor.getSession().getLine(i).includes("</standoff>")) {
+                            let splitedXML = this.collection.toJSON()[this.collection.toJSON().length - 2].xml.split('\n'), XML = ""
+                            for (let j = 0; j < splitedXML.length; j++) {
+                                XML += '\t'
+                                if (j)
+                                    XML += '\t'
+                                XML += splitedXML[j] + '\n'
+                            }
 
-        this.collection.each((entry, i) => {
-            // skip last entry (considered "not saved") 
-            // and any other leaked unsaved entries... TODO (fix this)
-            if (entry.get("saved")) {
-                coreData.push({
-                    "id": entry.cid,
-                    "xml": entry.get("xml")
+                            editor.getSession().insert({ column: editor.getSession().getLine(i).indexOf("</standoff>"), row: i }, XML + '\t');
+                            break
+                        }
                 });
-            }
-        });
-
-        this.$el.find("#coreEntries").html(coreentries_tpl(coreData));
-
-        Prism.highlightAll();
+            });
+        }
     }
 
 }
