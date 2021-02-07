@@ -111,6 +111,11 @@
 
         #core {
             width: 100%;
+
+            #coreSubHeader {
+                display: flex;
+                justify-content: space-between;
+            }
         }
     }
 }
