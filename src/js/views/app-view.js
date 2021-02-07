@@ -42,7 +42,7 @@ class CoreBuilder extends Backbone.View {
 
         // Core
         this.core = new Core;
-        this.coreView = new CoreView({ collection: this.core, el: "#workspace" })
+        this.coreView = new CoreView({ collection: [this.core, xmlFiles], el: "#workspace" })
         // Always start the core with one unsaved entry
         this.core.add({});
         this.listenTo(Events, "coreEntry:addPointer", function (p) { this.core.addPointer(p) });

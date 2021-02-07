@@ -9,7 +9,7 @@ require('bootstrap/dist/js/umd/modal');
 class CoreView extends Backbone.View {
 
     initialize() {
-        this.listenTo(this.collection, "add", this.renderLastEntry)
+        this.listenTo(this.collection[0], "add", this.renderLastEntry)
     }
 
     events() {
@@ -20,20 +20,78 @@ class CoreView extends Backbone.View {
     }
 
     download() {
-        const edCnt = this.$el.find("#core .cb-ace").get(0);
+        const edCnt = this.$el.find("#core .cb-ace").get(0)
 
-        loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
-            var editor;
-            ace.require(['ace/ace'], (loadedAce) => {
-                editor = loadedAce.edit(edCnt);
+        switch (this.$el.find("select")[0].options.selectedIndex) {
+            case 0:
+                loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+                    var editor;
+                    ace.require(['ace/ace'], (loadedAce) => {
+                        editor = loadedAce.edit(edCnt);
 
-                let XML = ""
-                for (let i = 0; i < editor.getSession().getLength(); i++)
-                    XML += editor.getSession().getLine(i) + '\n'
+                        let XML = ""
+                        for (let i = 0; i < editor.getSession().getLength(); i++)
+                            XML += editor.getSession().getLine(i) + '\n'
 
-                saveAs(new Blob([XML], { "type": "text\/xml" }), 'core.xml');
-            });
-        });
+                        saveAs(new Blob([XML], { "type": "text\/xml" }), 'core.xml');
+                    });
+                });
+
+                break
+
+            case 1:
+                loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+                    var editor;
+                    ace.require(['ace/ace'], (loadedAce) => {
+                        editor = loadedAce.edit(edCnt);
+
+                        let XML = ""
+                        for (let i = 0; i < editor.getSession().getLength(); i++)
+                            XML += editor.getSession().getLine(i)
+
+                        let childNodes = (new DOMParser).parseFromString(XML, "application/xml").querySelectorAll("standoff")[0].childNodes
+                        let elementNode = false
+
+                        childNodes.forEach(childNode => {
+                            if (childNode.nodeType == Node.ELEMENT_NODE)
+                                elementNode = true
+                        })
+
+                        if (elementNode) {
+                            for (let childNode of childNodes)
+                                if (childNode.nodeType == Node.ELEMENT_NODE) {
+                                    let filename
+
+                                    if (!childNode.children[0].attributes[0])
+                                        filename = childNode.children[0].children[0].attributes[0].value.substring(1) + ".xml"
+                                    else if (childNode.children[0].attributes[0].value[0] == '#')
+                                        filename = childNode.children[0].attributes[0].value.substring(1) + ".xml"
+                                    else
+                                        filename = childNode.children[0].attributes[0].value.substring(0, childNode.children[0].attributes[0].value.indexOf('#'))
+
+                                    for (let XMLFile of this.collection[1].toJSON())
+                                        if (XMLFile.filename == filename) {
+                                            this.$el.find("#core").append($("<div>").attr("id", "XSLT").hide())
+                                            this.$el.find("#core #XSLT").html("")
+
+                                            $.get("out-test1.xsl", function (text) {
+                                                let xsltProcessor = new XSLTProcessor()
+                                                xsltProcessor.importStylesheet((new DOMParser).parseFromString(text, "application/xml"))
+                                                document.getElementById("XSLT").appendChild(xsltProcessor.transformToFragment((new DOMParser).parseFromString(XMLFile.content, "application/xml"), document))
+
+                                                saveAs(new Blob([document.getElementById("XSLT").innerHTML], { "type": "text\/html" }), 'core.html')
+                                            }, "text")
+
+                                            break
+                                        }
+
+                                    break
+                                }
+                        } else
+                            alert("The core is not complete.")
+                    });
+                });
+        }
     }
 
     showHTML() {
@@ -138,7 +196,7 @@ class CoreView extends Backbone.View {
     }
 
     renderLastEntry() {
-        if (this.collection.toJSON()[this.collection.toJSON().length - 2]) {
+        if (this.collection[0].toJSON()[this.collection[0].toJSON().length - 2]) {
             const edCnt = this.$el.find("#core .cb-ace").get(0);
 
             loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
@@ -148,7 +206,7 @@ class CoreView extends Backbone.View {
 
                     for (let i = 0; i < editor.getSession().getLength(); i++)
                         if (editor.getSession().getLine(i).includes("</standoff>")) {
-                            let splitedXML = this.collection.toJSON()[this.collection.toJSON().length - 2].xml.split('\n'), XML = ""
+                            let splitedXML = this.collection[0].toJSON()[this.collection[0].toJSON().length - 2].xml.split('\n'), XML = ""
                             for (let j = 0; j < splitedXML.length; j++) {
                                 XML += '\t'
                                 if (j)
