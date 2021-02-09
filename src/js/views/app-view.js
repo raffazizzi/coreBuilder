@@ -16,8 +16,15 @@ require('../../../node_modules/bootstrap/dist/js/umd/modal');
 require('../../../node_modules/bootstrap/dist/js/umd/tab');
 require('../../../node_modules/bootstrap/dist/js/umd/tab');
 
+/**
+ * Class representing the main interactions with the user of the application
+ * @extends Backbone.View
+ */
 class CoreBuilder extends Backbone.View {
-
+    /**
+     * Manage events
+     * @returns Event hashing that associates events to methods in the view
+     */
     events() {
         return {
             'click #brand > a': 'toggleSidebar',
@@ -29,6 +36,10 @@ class CoreBuilder extends Backbone.View {
         };
     }
 
+    /**
+     * Initialize the view
+     * @param options - The options attached directly to the view.
+     */
     initialize(options) {
         // Files
         var xmlFiles = this.xmlFiles = new XMLFiles;
@@ -56,6 +67,9 @@ class CoreBuilder extends Backbone.View {
 
     }
 
+    /**
+     * Add a current entry view
+     */
     newCurrentEntryView() {
         var currententry = new CurrentEntryView({
             model: { lastCore: this.core.last(), target: this.$el },
@@ -66,22 +80,38 @@ class CoreBuilder extends Backbone.View {
         this.listenTo(this.elementSet, "change", () => { currententry.updateElementSet(this.elementSet) });
     }
 
+    /**
+     * Toggle the sidebar
+     * @param e - Event
+     */
     toggleSidebar(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
         $("#sidebar-wrapper").toggleClass("compact");
     }
 
+    /**
+     * Open the pop-up to manage interactions when importing files
+     * @param e - Event
+     */
     openFileUploadComponent(e) {
         e.preventDefault();
         new FileUploadComponent({ "target": this.$el, "collection": this.core, "model": this.elementSet });
     }
 
+    /**
+     * Open the pop-up window to manage interactions when defining stand-off markup elements
+     * @param e - Event
+     */
     openSetElementsComponent(e) {
         e.preventDefault();
         new SetElementsComponent({ "target": this.$el, "model": this.elementSet });
     }
 
+    /**
+     * Open example XML files
+     * @param e - Event
+     */
     openExampleFiles(e) {
         e.preventDefault();
         $.get("example_data/E2.xml", function (text) {
@@ -98,11 +128,19 @@ class CoreBuilder extends Backbone.View {
         }, 'text')
     }
 
+    /**
+     * Detect the layout of the windows containing the XML files chosen by the user
+     * @param e - Event
+     */
     toggle_arrange(e) {
         e.preventDefault();
         $("#arr_pick_size").toggle();
     }
 
+    /**
+     * Switch the layout of the windows containing the input XML files according to the choice made by the user
+     * @param e - Event
+     */
     arrange(e) {
         e.preventDefault();
         let pos = 6 - $(e.target).index();

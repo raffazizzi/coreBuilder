@@ -1,5 +1,9 @@
 import * as Backbone from 'backbone';
 
-class CoreEntryGroup extends Backbone.Model {}
+/**
+ * Class representing a core entry group
+ * @extends Backbone.Model
+ */
+class CoreEntryGroup extends Backbone.Model { }
 
 export default CoreEntryGroup;

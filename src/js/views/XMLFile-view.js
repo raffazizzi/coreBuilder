@@ -5,12 +5,23 @@ import loadScript from '../utils/load-script';
 import xmlfile_tpl from '../templates/xmlfile-tpl';
 import XPointerComponent from '../components/xpointer';
 
+/**
+ * Class representing interactions with an XML file
+ * @extends Backbone.View
+ */
 class XMLFileView extends Backbone.View {
-
+    /**
+     * Get the class name
+     * @returns The class name
+     */
     get className() {
         return "cb-XMLFile";
     }
 
+    /**
+     * Manage events
+     * @returns Event hashing that associates events to methods in the view
+     */
     events() {
         return {
             'click .cb-xf-close': 'remove',
@@ -21,6 +32,10 @@ class XMLFileView extends Backbone.View {
         };
     }
 
+    /**
+     * Initialize the view
+     * @param options - The options attached directly to the view.
+     */
     initialize(options) {
         this.listenTo(Events, "XMLFile:resize", this.resize)
         this.xpointerOn = false;
@@ -40,6 +55,10 @@ class XMLFileView extends Backbone.View {
         }
     }
 
+    /**
+     * Resize the XML file
+     * @param size - The size
+     */
     resize(size) {
 
         this.model.size = size;
@@ -55,6 +74,9 @@ class XMLFileView extends Backbone.View {
 
     }
 
+    /**
+     * Bind the element selected by the user
+     */
     bindElementSelect() {
         $(this.editor.container).click((e) => {
             e.stopPropagation();
@@ -155,10 +177,17 @@ class XMLFileView extends Backbone.View {
         });
     }
 
+    /**
+     * Suspend the selection of the element by the user
+     */
     suspendElementSelect() {
         $(this.editor.container).off('click');
     }
 
+    /**
+     * Render the XML file
+     * @returns The XML file
+     */
     render() {
         this.$el.addClass('col-xs-' + this.model.size);
 
@@ -254,6 +283,9 @@ class XMLFileView extends Backbone.View {
         return this.$el;
     }
 
+    /**
+     * Toggle the mode allowing to select elements and the mode not allowing to select elements
+     */
     toggleEmpty() {
 
         // Remove any element selectors
@@ -287,6 +319,9 @@ class XMLFileView extends Backbone.View {
 
     }
 
+    /**
+     * Add an expression in the XML file
+     */
     addXPointerEntry() {
 
         if (this.XPointerComponent.xpointerdata) {
@@ -305,11 +340,17 @@ class XMLFileView extends Backbone.View {
 
     }
 
+    /**
+     * Switch to the mode that does not allow you to create expressions in the input XML file
+     */
     cancelXPointerEntry() {
         this.$el.find(".cb-xf-xpointer").removeClass('active');
         this.toggleXPointer();
     }
 
+    /**
+     * Toggle between the mode allowing to create expressions in the XML file and the one not allowing it
+     */
     toggleXPointer() {
 
         // Remove any element selectors
@@ -362,6 +403,10 @@ class XMLFileView extends Backbone.View {
 
     }
 
+    /**
+     * Remove a XML file
+     * @param e - Event
+     */
     remove(e) {
         if (e) e.preventDefault();
         this.$el.empty();

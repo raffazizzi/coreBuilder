@@ -7,8 +7,14 @@ import xmlfile_tpl from "../templates/xmlfile-tpl"
 import loadScript from "../utils/load-script"
 import coreXML_tpl from "../templates/coreXML-tpl"
 
+/**
+ * Class representing XML files
+ * @extends Backbone.View
+ */
 class XMLFilesView extends Backbone.View {
-
+    /**
+     * Initialize the view
+     */
     initialize() {
         this.listenTo(this.collection, 'add', this.addOne);
         this.listenTo(this.collection, 'remove', () => {
@@ -16,6 +22,10 @@ class XMLFilesView extends Backbone.View {
         });
     }
 
+    /**
+     * Add a XML file
+     * @param m - The XML file
+     */
     addOne(m) {
         // update model cell size if needed
         if (this.cell_size) {
@@ -25,6 +35,11 @@ class XMLFilesView extends Backbone.View {
         this.arrange();
     }
 
+    /**
+     * Arrange the layout of XML files
+     * @param cols - The columns
+     * @param XML - The XML data
+     */
     arrange(cols, XML) {
         if (!cols) {
             if (this.cols) {
