@@ -42,6 +42,7 @@
     "gulp-sourcemaps": "",
     "gulp-uglify": "",
     "gulp-util": "",
+    "jsdoc": "",
     "prismjs": "",
     "save-as": "",
     "vinyl-buffer": "",
