@@ -6,12 +6,22 @@ import loadScript from "../utils/load-script"
 var $ = global.jQuery = require('jquery');
 require('bootstrap/dist/js/umd/modal');
 
+/**
+ * Class representing interactions with the core
+ * @extends Backbone.View
+ */
 class CoreView extends Backbone.View {
-
+    /**
+     * Initialize the view
+     */
     initialize() {
         this.listenTo(this.collection[0], "add", this.renderLastEntry)
     }
 
+    /**
+     * Manage events
+     * @returns Event hashing that associates events to methods in the view
+     */
     events() {
         return {
             "click #cb-vc-download": "download",
@@ -19,6 +29,9 @@ class CoreView extends Backbone.View {
         }
     }
 
+    /**
+     * Download the core in XML, HTML or PDF format
+     */
     download() {
         const edCnt = this.$el.find("#core .cb-ace").get(0)
 
@@ -94,6 +107,9 @@ class CoreView extends Backbone.View {
         }
     }
 
+    /**
+     * Show the file in HTML format
+     */
     showHTML() {
         this.$el.find("#core #HTML").html("")
 
@@ -167,6 +183,9 @@ class CoreView extends Backbone.View {
         });
     }
 
+    /**
+     * Toggle file viewing between XML and HTML format
+     */
     toggle() {
         if (this.$el.find("#toggling span").text() == "XML") {
             this.$el.find("#toggling span").text("HTML")
@@ -195,6 +214,9 @@ class CoreView extends Backbone.View {
         }
     }
 
+    /**
+     * Render the last entry
+     */
     renderLastEntry() {
         if (this.collection[0].toJSON()[this.collection[0].toJSON().length - 2]) {
             const edCnt = this.$el.find("#core .cb-ace").get(0);

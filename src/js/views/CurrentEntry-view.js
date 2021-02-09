@@ -9,8 +9,15 @@ import TextualVariationsComponent from '../components/TextualVariationsComponent
 var $ = global.jQuery = require('jquery');
 require("../../../node_modules/bootstrap/dist/js/umd/button.js");
 
+/**
+ * Class representing interactions with the current entry window
+ * @extends Backbone.View
+ */
 class CurrentEntryView extends Backbone.View {
-
+    /**
+     * Initialize the view
+     * @param options - The options attached directly to the view.
+     */
     initialize(options) {
         this.elementSet = options.elementSet;
         this.reading = "rdg"
@@ -26,6 +33,10 @@ class CurrentEntryView extends Backbone.View {
         this.render();
     }
 
+    /**
+     * Manage events
+     * @returns Event hashing that associates events to methods in the view
+     */
     events() {
         return {
             "click #cb-ce-xml": () => { this.toggleXMLView() },
@@ -57,6 +68,10 @@ class CurrentEntryView extends Backbone.View {
         }
     }
 
+    /**
+     * Update the current entry if stand-off markup elements are modified
+     * @param elset - Stand-off markup elements
+     */
     updateElementSet(elset) {
         // Make sure this entry is not already saved
         if (!this.model.lastCore.get("saved")) {
@@ -65,6 +80,10 @@ class CurrentEntryView extends Backbone.View {
         }
     }
 
+    /**
+     * Remove an entry part
+     * @param targets - The targets
+     */
     removeEntryPart(targets) {
         if (targets == "all") {
             this.model.lastCore.pointers.reset();
@@ -91,6 +110,11 @@ class CurrentEntryView extends Backbone.View {
 
     }
 
+    /**
+     * Transform data into XML format
+     * @param data - The data
+     * @returns Data in XML format
+     */
     getXML(data) {
 
         var _writeattribute = (el, a) => {
@@ -150,6 +174,9 @@ class CurrentEntryView extends Backbone.View {
         return xmlDoc;
     }
 
+    /**
+     * Create a group
+     */
     newGroup() {
         let pos = this.model.lastCore.groups.length + 1;
         this.unselectGroups();
@@ -157,6 +184,10 @@ class CurrentEntryView extends Backbone.View {
         this.renderGroupDropdown();
     }
 
+    /**
+     * Select a group
+     * @param e - Event
+     */
     selectGroup(e) {
         let pos = parseInt($(e.target).data("pos")) - 1;
         this.unselectGroups();
@@ -164,12 +195,19 @@ class CurrentEntryView extends Backbone.View {
         this.renderGroupDropdown();
     }
 
+    /**
+     * Unselect all groups 
+     */
     unselectGroups() {
         this.model.lastCore.groups.each(function (g) {
             g.set("selected", false);
         });
     }
 
+    /**
+     * Add textual variations
+     * @returns The textual variations
+     */
     addVariations() {
         let variations = ["spelling", "semantic", "ponctuation", "omission", "repetition"]
 
@@ -192,6 +230,10 @@ class CurrentEntryView extends Backbone.View {
         return Array.from(new Set(variations))
     }
 
+    /**
+     * Add an element to the group
+     * @param e - Event
+     */
     addToGroup(e) {
         let targets = $(e.target).parent().data("targets");
 
@@ -217,10 +259,17 @@ class CurrentEntryView extends Backbone.View {
             new TextualVariationsComponent({ currentEntry: this, index: this.model.lastCore.toJSON().json.content.length - 1 })
     }
 
+    /**
+     * Render the group
+     */
     renderGroupDropdown() {
         this.$el.find("#cb-ce-g-dd").html(currententrygrps_tpl(this.model.lastCore.groups.toJSON()));
     }
 
+    /**
+     * Render the current entry
+     * @returns The current entry
+     */
     render() {
 
         this.$el.html(currententry_tpl());
@@ -230,6 +279,9 @@ class CurrentEntryView extends Backbone.View {
         return this;
     }
 
+    /**
+     * Render the data
+     */
     renderData() {
 
         let data = {};
@@ -473,25 +525,42 @@ class CurrentEntryView extends Backbone.View {
 
     }
 
+    /**
+     * Show the entry
+     */
     showEntry() {
         this.$el.find("#cb-ce-entry").show();
     }
 
+    /**
+     * Hide the entry
+     */
     hideEntry() {
         this.$el.find("#cb-ce-entry").hide();
     }
 
+    /**
+     * Toggle between standard display and XML format display
+     */
     toggleXMLView() {
         this.$el.find("#cb-ce-entry-xml").toggle();
         this.$el.find("#cb-ce-entry-items").toggle();
         Prism.highlightAll();
     }
 
+    /**
+     * Fix the indentation of XML data
+     * @param xml - The XML data
+     * @returns The XML data fixed
+     */
     fixXMLindent(xml) {
         // TODO make better
         return xml.replace(/(#[^#]+)\s/g, "$1\n");
     }
 
+    /**
+     * Delete the current entry
+     */
     destroy() {
         this.undelegateEvents();
         this.$el.removeData().unbind();
