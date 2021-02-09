@@ -1,10 +1,17 @@
 import * as Backbone from 'backbone';
 
+/**
+ * Class representing an XML file
+ */
 class XMLFile extends Backbone.Model {
-	get defaults(){
+	/**
+	 * Get the specified default attribute
+	 * @returns The size
+	 */
+	get defaults() {
 		return {
-		    "size":  12
-		  }
+			"size": 12
+		}
 	}
 }
 

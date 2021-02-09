@@ -7,8 +7,16 @@ var $ = global.jQuery = require('jquery');
 require('../../../node_modules/bootstrap/dist/js/umd/modal');
 require('../../../node_modules/bootstrap/dist/js/umd/tab');
 
+/**
+ * Class representing interactions when importing files
+ * @extends Backbone.View
+ */
 class FileUploadComponent extends Backbone.View {
 
+    /**
+     * Initialize the view
+     * @param options - The options attached directly to the view.
+     */
     initialize(options) {
 
         this.target = options.target;
@@ -203,12 +211,18 @@ class FileUploadComponent extends Backbone.View {
         })
     }
 
+    /**
+     * Show the number of imported files
+     */
     showFilesNumber() {
         let numFiles = this.files ? this.files.length : 1;
         this.$el.find("#cb-lf-filesselected").text(numFiles + " files selected");
         this.$el.trigger("cb-fl-chosen");
     }
 
+    /**
+     * Show information indicating that the core has been imported
+     */
     showCoreNumber() {
         let numFiles = this.core ? this.core.length : 1;
         if (numFiles)
@@ -218,6 +232,9 @@ class FileUploadComponent extends Backbone.View {
         this.$el.trigger("cb-fl-chosen");
     }
 
+    /**
+     * Show the modal window
+     */
     render() {
 
         $(this.target).append(this.$el);
@@ -236,7 +253,16 @@ class FileUploadComponent extends Backbone.View {
 
 }
 
+/**
+ * Class representing the reading of a file
+ */
 class _FileReader {
+    /**
+     * Create a _FileReader object
+     * @param file - The file to read
+     * @param progress - The file loading progress bar
+     * @param status - The status of the imported file
+     */
     constructor(file, progress, status) {
         this.$progress = progress;
         this.$status = status;
@@ -245,10 +271,17 @@ class _FileReader {
         this.text = "";
     }
 
+    /**
+     * Abort the reading of the file
+     */
     abortRead() {
         this.reader.abort();
     }
 
+    /**
+     * Manage errors
+     * @param e - The event
+     */
     errorHandler(e) {
         switch (e.target.error.code) {
             case e.target.error.NOT_FOUND_ERR:
@@ -266,6 +299,10 @@ class _FileReader {
         };
     }
 
+    /**
+     * Update the progress bar
+     * @param e - The event
+     */
     updateProgress(e) {
         // e is an ProgressEvent.
         if (e.lengthComputable) {
@@ -278,6 +315,10 @@ class _FileReader {
         }
     }
 
+    /**
+     * Select a file
+     * @returns A Promise object
+     */
     select() {
         // Reset progress indicator on new file selection.
         this.$progress.attr('value', 0);
