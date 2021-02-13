@@ -19,7 +19,38 @@
                     <xsl:value-of select=".//tei:titleStmt/tei:title" />
 
                 </title>
-                <link rel="stylesheet" type="text/css" href="core.css" />
+                <style>
+                    .td-app {
+                        vertical-align: top;
+                        width: 170px;
+                        border-left: solid 1px;
+                        border-right: solid 1px;
+                        padding-left: 10px
+                    }
+                    #appbox {
+                        font-family: Verdana;
+                        font-size: 8pt;
+                        position: fixed;
+                        width: 150px;
+                    }
+                    body {
+                        padding-left: 80px;
+                        padding-right: 80px;
+                        text-align: justify;
+                        font-size: 30px;
+                        font-family: roman, 'times new roman', times, serif;
+                        display: block;
+                    }
+                    table {
+                        font-size: 12pt;
+                        text-align: justify;
+                        padding: 20px 20px 20px 20px
+                    }
+                    .td-text {
+                        padding: 20px 20px 20px 20px;
+                        width: 600px;
+                    }
+                </style>
             </head>
             <body>
 

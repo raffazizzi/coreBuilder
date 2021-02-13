@@ -1,6 +1,7 @@
 import * as Backbone from 'backbone';
 import saveAs from 'save-as';
 import loadScript from "../utils/load-script"
+import jsPDF from "jspdf"
 
 // Sadly Bootstrap js is not ES6 ready yet.
 var $ = global.jQuery = require('jquery');
@@ -30,6 +31,78 @@ class CoreView extends Backbone.View {
     }
 
     /**
+     * Save the core in HTML or PDF format
+     * @param format - The format of the core
+     */
+    saveCore(format) {
+        const edCnt = this.$el.find("#core .cb-ace").get(0)
+
+        loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+            var editor;
+            ace.require(['ace/ace'], (loadedAce) => {
+                editor = loadedAce.edit(edCnt);
+
+                let XML = ""
+                for (let i = 0; i < editor.getSession().getLength(); i++)
+                    XML += editor.getSession().getLine(i)
+
+                let childNodes = (new DOMParser).parseFromString(XML, "application/xml").querySelectorAll("standoff")[0].childNodes
+                let elementNode = false
+
+                childNodes.forEach(childNode => {
+                    if (childNode.nodeType == Node.ELEMENT_NODE)
+                        elementNode = true
+                })
+
+                if (elementNode) {
+                    for (let childNode of childNodes)
+                        if (childNode.nodeType == Node.ELEMENT_NODE) {
+                            let filename
+
+                            if (!childNode.children[0].attributes[0])
+                                filename = childNode.children[0].children[0].attributes[0].value.substring(1) + ".xml"
+                            else if (childNode.children[0].attributes[0].value[0] == '#')
+                                filename = childNode.children[0].attributes[0].value.substring(1) + ".xml"
+                            else
+                                filename = childNode.children[0].attributes[0].value.substring(0, childNode.children[0].attributes[0].value.indexOf('#'))
+
+                            for (let XMLFile of this.collection[1].toJSON())
+                                if (XMLFile.filename == filename) {
+                                    $.get("out-test1.xsl", function (text) {
+                                        let xsltProcessor = new XSLTProcessor(), HTML = ""
+
+                                        xsltProcessor.importStylesheet((new DOMParser).parseFromString(text, "application/xml"))
+
+                                        for (let child of xsltProcessor.transformToFragment((new DOMParser).parseFromString(XMLFile.content, "application/xml"), document).children)
+                                            HTML += child.outerHTML
+
+                                        if (format == "html")
+                                            saveAs(new Blob([HTML]), "core." + format)
+                                        else {
+                                            let doc = new jsPDF()
+
+                                            doc.fromHTML(HTML, null, null, null,
+                                                function () {
+                                                    doc.save("core." + format)
+                                                }
+                                            )
+                                        }
+                                    }, "text")
+
+                                    break
+                                }
+
+                            break
+                        }
+                } else if (format == "html")
+                    saveAs(new Blob, "core." + format)
+                else
+                    new jsPDF().save("core." + format)
+            });
+        });
+    }
+
+    /**
      * Download the core in XML, HTML or PDF format
      */
     download() {
@@ -53,57 +126,12 @@ class CoreView extends Backbone.View {
                 break
 
             case 1:
-                loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
-                    var editor;
-                    ace.require(['ace/ace'], (loadedAce) => {
-                        editor = loadedAce.edit(edCnt);
+                this.saveCore("html")
 
-                        let XML = ""
-                        for (let i = 0; i < editor.getSession().getLength(); i++)
-                            XML += editor.getSession().getLine(i)
+                break
 
-                        let childNodes = (new DOMParser).parseFromString(XML, "application/xml").querySelectorAll("standoff")[0].childNodes
-                        let elementNode = false
-
-                        childNodes.forEach(childNode => {
-                            if (childNode.nodeType == Node.ELEMENT_NODE)
-                                elementNode = true
-                        })
-
-                        if (elementNode) {
-                            for (let childNode of childNodes)
-                                if (childNode.nodeType == Node.ELEMENT_NODE) {
-                                    let filename
-
-                                    if (!childNode.children[0].attributes[0])
-                                        filename = childNode.children[0].children[0].attributes[0].value.substring(1) + ".xml"
-                                    else if (childNode.children[0].attributes[0].value[0] == '#')
-                                        filename = childNode.children[0].attributes[0].value.substring(1) + ".xml"
-                                    else
-                                        filename = childNode.children[0].attributes[0].value.substring(0, childNode.children[0].attributes[0].value.indexOf('#'))
-
-                                    for (let XMLFile of this.collection[1].toJSON())
-                                        if (XMLFile.filename == filename) {
-                                            this.$el.find("#core").append($("<div>").attr("id", "XSLT").hide())
-                                            this.$el.find("#core #XSLT").html("")
-
-                                            $.get("out-test1.xsl", function (text) {
-                                                let xsltProcessor = new XSLTProcessor()
-                                                xsltProcessor.importStylesheet((new DOMParser).parseFromString(text, "application/xml"))
-                                                document.getElementById("XSLT").appendChild(xsltProcessor.transformToFragment((new DOMParser).parseFromString(XMLFile.content, "application/xml"), document))
-
-                                                saveAs(new Blob([document.getElementById("XSLT").innerHTML], { "type": "text\/html" }), 'core.html')
-                                            }, "text")
-
-                                            break
-                                        }
-
-                                    break
-                                }
-                        } else
-                            alert("The core is not complete.")
-                    });
-                });
+            case 2:
+                this.saveCore("pdf")
         }
     }
 

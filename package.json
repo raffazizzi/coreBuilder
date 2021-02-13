@@ -43,6 +43,7 @@
     "gulp-uglify": "",
     "gulp-util": "",
     "jsdoc": "",
+    "jspdf": "1.5.3",
     "prismjs": "",
     "save-as": "",
     "vinyl-buffer": "",
