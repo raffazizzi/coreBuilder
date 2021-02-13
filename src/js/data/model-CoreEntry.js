@@ -10,9 +10,7 @@ class CoreEntry extends Backbone.Model {
     }
 
     saveToCore() {
-    	this.set("saved", true);
-    	// Add new entry to Core.
-    	this.collection.add({"saved":false});
+        this.set("saved", true);
     }
 }
 
