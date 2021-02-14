@@ -7,6 +7,7 @@ import CurrentEntryView from './CurrentEntry-view';
 import ElementSet from '../data/model-ElementSet';
 import FileUploadComponent from '../components/fileupload';
 import SetElementsComponent from '../components/setelements';
+import ColorsVariationsComponent from '../components/ColorsVariationsComponent';
 import Events from '../utils/backbone-events.js';
 import loadScript from "../utils/load-script"
 
@@ -30,6 +31,7 @@ class CoreBuilder extends Backbone.View {
             'click #brand > a': 'toggleSidebar',
             'click #add_files > a': 'openFileUploadComponent',
             'click #set_els > a': 'openSetElementsComponent',
+            'click #colorsVariations > a': 'openColorsVariationsComponent',
             'click #arrange': 'toggle_arrange',
             'click #arr_pick_size > span': "arrange",
             "click #openExampleFiles": "openExampleFiles"
@@ -106,6 +108,15 @@ class CoreBuilder extends Backbone.View {
     openSetElementsComponent(e) {
         e.preventDefault();
         new SetElementsComponent({ "target": this.$el, "model": this.elementSet });
+    }
+
+    /**
+     * Open the pop-up window to manage interactions when selecting colors variations
+     * @param e - Event
+     */
+    openColorsVariationsComponent(e) {
+        e.preventDefault();
+        new ColorsVariationsComponent;
     }
 
     /**
