@@ -45,11 +45,11 @@ class CurrentEntryView extends Backbone.View {
             },
             "click #cb-ce-cancel": () => { this.removeEntryPart(["all"]) },
             "click #cb-ce-minimize": () => {
-                if (this.$el.hasClass("cb-ce-minimized")) {
-                    this.$el.removeClass("cb-ce-minimized");
+                if (this.$el.find("#currententry").hasClass("cb-ce-minimized")) {
+                    this.$el.find("#currententry").removeClass("cb-ce-minimized");
                 }
                 else {
-                    this.$el.addClass("cb-ce-minimized");
+                    this.$el.find("#currententry").addClass("cb-ce-minimized");
                 }
             },
             "click #cb-ce-add": () => {
@@ -209,16 +209,22 @@ class CurrentEntryView extends Backbone.View {
      * @returns The textual variations
      */
     addVariations() {
-        let variations = ["spelling", "semantic", "ponctuation", "omission", "repetition"]
+        let standOff = false, variations = ["spelling", "semantic", "ponctuation", "omission", "repetition"]
 
-        for (let i = 0; i < this.collection.toJSON().length; i++)
-            if (this.collection.toJSON()[i].json)
-                for (let j = 0; j < this.collection.toJSON()[i].json.content.length; j++) {
-                    if (this.collection.toJSON()[i].json.content[j].name == this.elementSet.get("container").get("name") && this.collection.toJSON()[i].json.content[j].xmlatts[1])
-                        variations.push(this.collection.toJSON()[i].json.content[j].xmlatts[1].value)
-                    if (this.collection.toJSON()[i].json.content[j].name == this.elementSet.get("grp").get("name") && this.collection.toJSON()[i].json.content[j].xmlatts[0])
-                        variations.push(this.collection.toJSON()[i].json.content[j].xmlatts[0].value)
-                }
+        for (let child of this.$el.find("#core .cb-ace")[0].children[2].children[0].children[2].children)
+            for (let i = 0; i < child.children.length; i++) {
+                if (child.children[i - 2] && child.children[i - 1])
+                    switch (child.children[i - 2].innerText + child.children[i - 1].innerText + child.children[i].innerText) {
+                        case "<standoff>":
+                            standOff = true
+                            break
+                        case "</standoff>":
+                            standOff = false
+                    }
+
+                if (standOff && child.children[i].innerText == "type")
+                    variations.push(child.children[i + 2].innerText.replaceAll('"', ''))
+            }
 
         for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++) {
             if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("container").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[1])
@@ -263,7 +269,7 @@ class CurrentEntryView extends Backbone.View {
      * Render the group
      */
     renderGroupDropdown() {
-        this.$el.find("#cb-ce-g-dd").html(currententrygrps_tpl(this.model.lastCore.groups.toJSON()));
+        this.$el.find("#currententry #cb-ce-g-dd").html(currententrygrps_tpl(this.model.lastCore.groups.toJSON()));
     }
 
     /**
@@ -272,7 +278,7 @@ class CurrentEntryView extends Backbone.View {
      */
     render() {
 
-        this.$el.html(currententry_tpl());
+        this.$el.find("#currententry").html(currententry_tpl());
         this.renderGroupDropdown();
         this.renderData();
 
@@ -504,20 +510,20 @@ class CurrentEntryView extends Backbone.View {
             this.model.lastCore.set("xml", data.xml);
             this.model.lastCore.set("json", wrapper);
 
-            this.$el.find("#cb-ce-entry-body").html(currententrydata_tpl(data));
+            this.$el.find("#currententry #cb-ce-entry-body").html(currententrydata_tpl(data));
 
             // If the current view is set to XML, switch to it
-            if (this.$el.find("#cb-ce-xml").hasClass("active")) {
+            if (this.$el.find("#currententry #cb-ce-xml").hasClass("active")) {
                 this.toggleXMLView();
             }
 
             // Show grouping components if a group element has been set.
             if (el_grp.get("name")) {
-                this.$el.find(".cb-ce-g-el").show();
-                this.$el.find("#cb-ce-entry-grps").show();
+                this.$el.find("#currententry .cb-ce-g-el").show();
+                this.$el.find("#currententry #cb-ce-entry-grps").show();
             }
             else {
-                this.$el.find("#cb-ce-entry-grps").hide();
+                this.$el.find("#currententry #cb-ce-entry-grps").hide();
             }
 
         }
@@ -529,22 +535,22 @@ class CurrentEntryView extends Backbone.View {
      * Show the entry
      */
     showEntry() {
-        this.$el.find("#cb-ce-entry").show();
+        this.$el.find("#currententry #cb-ce-entry").show();
     }
 
     /**
      * Hide the entry
      */
     hideEntry() {
-        this.$el.find("#cb-ce-entry").hide();
+        this.$el.find("#currententry #cb-ce-entry").hide();
     }
 
     /**
      * Toggle between standard display and XML format display
      */
     toggleXMLView() {
-        this.$el.find("#cb-ce-entry-xml").toggle();
-        this.$el.find("#cb-ce-entry-items").toggle();
+        this.$el.find("#currententry #cb-ce-entry-xml").toggle();
+        this.$el.find("#currententry #cb-ce-entry-items").toggle();
         Prism.highlightAll();
     }
 
@@ -563,7 +569,7 @@ class CurrentEntryView extends Backbone.View {
      */
     destroy() {
         this.undelegateEvents();
-        this.$el.removeData().unbind();
+        this.$el.find("#currententry").removeData().unbind();
     }
 
 }
