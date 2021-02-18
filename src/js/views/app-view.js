@@ -45,6 +45,9 @@ class CoreBuilder extends Backbone.View {
     initialize(options) {
         // Files
         var xmlFiles = this.xmlFiles = new XMLFiles;
+
+        this.variations = [{ variation: "spelling", color: "#008000" }, { variation: "semantic", color: "#ff0000" }, { variation: "ponctuation", color: "#ffa500" }, { variation: "omission", color: "#0000ff" }, { variation: "repetition", color: "#800080" }]
+
         this.xmlFilesView = new XMLFilesView({ collection: xmlFiles, el: "#workspace" });
         this.listenTo(Events, 'addFile', (textData, lemma) => {
             this.xmlFiles.add({ "title": "Some title", "content": textData.content, "filename": textData.filename, "lemma": lemma });
@@ -55,13 +58,14 @@ class CoreBuilder extends Backbone.View {
 
         // Core
         this.core = new Core;
-        this.coreView = new CoreView({ collection: [this.core, xmlFiles], el: "#workspace" })
+        this.coreView = new CoreView({ collection: [this.core, xmlFiles, this.variations], el: "#workspace" })
         // Always start the core with one unsaved entry
         this.core.add({});
         this.listenTo(Events, "coreEntry:addPointer", function (p) { this.core.addPointer(p) });
         this.listenTo(Events, "coreEntry:removePointer", function (p) { this.core.removePointer(p) });
 
         // Current Entry
+        this.currentEntry = null
         this.newCurrentEntryView();
 
         // When a new core entry is added, render it.
@@ -77,8 +81,9 @@ class CoreBuilder extends Backbone.View {
             model: { lastCore: this.core.last(), target: this.$el },
             "el": "#wrapper",
             "elementSet": this.elementSet,
-            "collection": this.core
+            "collection": [this.core, this.variations]
         });
+        this.currentEntry = currententry
         this.listenTo(this.elementSet, "change", () => { currententry.updateElementSet(this.elementSet) });
     }
 
@@ -116,7 +121,7 @@ class CoreBuilder extends Backbone.View {
      */
     openColorsVariationsComponent(e) {
         e.preventDefault();
-        new ColorsVariationsComponent;
+        new ColorsVariationsComponent({ target: this.$el, collection: this.variations, model: this.core.last(), elementSet: this.elementSet, coreView: this.coreView, currentEntry: this.currentEntry });
     }
 
     /**

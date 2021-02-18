@@ -9,8 +9,8 @@ let textualVariationsTpl = `
       </div>
       <div class="modal-body">
         {{#each this}}
-          <input type="radio" id="{{this}}" name="variation">
-          <label for="{{this}}">{{this}}</label><br>
+          <input type="radio" id="{{this.variation}}" name="variation">
+          <label for="{{this.variation}}">{{this.variation}}</label><br>
         {{/each}}
 
         <input type="radio" id="other" name="variation">
