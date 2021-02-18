@@ -1,53 +1,53 @@
 @charset 'UTF-8';
 
-@import '../../node_modules/bootstrap/scss/variables';
-@import '../../node_modules/bootstrap/scss/mixins';
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/mixins";
 
 // // Reset and dependencies
-@import '../../node_modules/bootstrap/scss/normalize';
+@import "../../node_modules/bootstrap/scss/normalize";
 // @import '../../node_modules/bootstrap/scss/print';
 
 // Core CSS
-@import '../../node_modules/bootstrap/scss/reboot';
-@import '../../node_modules/bootstrap/scss/type';
-@import '../../node_modules/bootstrap/scss/images';
-@import '../../node_modules/bootstrap/scss/code';
-@import '../../node_modules/bootstrap/scss/grid';
-@import '../../node_modules/bootstrap/scss/tables';
-@import '../../node_modules/bootstrap/scss/forms';
-@import '../../node_modules/bootstrap/scss/buttons';
+@import "../../node_modules/bootstrap/scss/reboot";
+@import "../../node_modules/bootstrap/scss/type";
+@import "../../node_modules/bootstrap/scss/images";
+@import "../../node_modules/bootstrap/scss/code";
+@import "../../node_modules/bootstrap/scss/grid";
+@import "../../node_modules/bootstrap/scss/tables";
+@import "../../node_modules/bootstrap/scss/forms";
+@import "../../node_modules/bootstrap/scss/buttons";
 
 // // Components
 // @import '../../node_modules/bootstrap/scss/animation';
-@import '../../node_modules/bootstrap/scss/dropdown';
-@import '../../node_modules/bootstrap/scss/button-group';
-@import '../../node_modules/bootstrap/scss/input-group';
-@import '../../node_modules/bootstrap/scss/custom-forms';
-@import '../../node_modules/bootstrap/scss/nav';
-@import '../../node_modules/bootstrap/scss/navbar';
-@import '../../node_modules/bootstrap/scss/card';
+@import "../../node_modules/bootstrap/scss/dropdown";
+@import "../../node_modules/bootstrap/scss/button-group";
+@import "../../node_modules/bootstrap/scss/input-group";
+@import "../../node_modules/bootstrap/scss/custom-forms";
+@import "../../node_modules/bootstrap/scss/nav";
+@import "../../node_modules/bootstrap/scss/navbar";
+@import "../../node_modules/bootstrap/scss/card";
 //@import '../../node_modules/bootstrap/scss/breadcrumb';
 //@import '../../node_modules/bootstrap/scss/pagination';
 //@import '../../node_modules/bootstrap/scss/pager';
-@import '../../node_modules/bootstrap/scss/labels';
+@import "../../node_modules/bootstrap/scss/labels";
 // @import '../../node_modules/bootstrap/scss/jumbotron';
-@import '../../node_modules/bootstrap/scss/alert';
-@import '../../node_modules/bootstrap/scss/progress';
+@import "../../node_modules/bootstrap/scss/alert";
+@import "../../node_modules/bootstrap/scss/progress";
 // @import '../../node_modules/bootstrap/scss/media';
 // @import '../../node_modules/bootstrap/scss/list-group';
 // @import '../../node_modules/bootstrap/scss/responsive-embed';
-@import '../../node_modules/bootstrap/scss/close';
+@import "../../node_modules/bootstrap/scss/close";
 
 // Components w/ JavaScript
-@import '../../node_modules/bootstrap/scss/modal';
+@import "../../node_modules/bootstrap/scss/modal";
 // @import '../../node_modules/bootstrap/scss/tooltip';
 // @import '../../node_modules/bootstrap/scss/popover';
 // @import '../../node_modules/bootstrap/scss/carousel';
 
 // Utility classes
-@import '../../node_modules/bootstrap/scss/utilities';
-@import '../../node_modules/bootstrap/scss/utilities-spacing';
-@import '../../node_modules/bootstrap/scss/utilities-responsive';
+@import "../../node_modules/bootstrap/scss/utilities";
+@import "../../node_modules/bootstrap/scss/utilities-spacing";
+@import "../../node_modules/bootstrap/scss/utilities-responsive";
 
 // FontAwesome
 
@@ -69,38 +69,39 @@ $fa-font-path: "../../node_modules/font-awesome/fonts";
 @import "../../node_modules/prismjs/themes/prism.css";
 
 // Sidebar
-@import 'sidebar';
+@import "sidebar";
 
 // Workspace
-@import 'workspace';
+@import "workspace";
 
 // Current Entry window
-@import 'currententry';
+@import "currententry";
 
 // File input
-@import 'fileinput';
+@import "fileinput";
 
 // Set Stand Off Elements
-@import 'setelements';
-
-// View Core
-@import 'viewcore';
+@import "setelements";
 
 // Override annoying focus class
-.btn.focus, .btn:focus {
-    outline: none;
+.btn.focus,
+.btn:focus {
+  outline: none;
 }
 
-.btn-secondary-outline.focus, .btn-secondary-outline:focus {
-    background-color: transparent;
+.btn-secondary-outline.focus,
+.btn-secondary-outline:focus {
+  background-color: transparent;
 }
 
-.btn-secondary-outline.focus.active, .btn-secondary-outline.active:focus {
-    background-color: $btn-secondary-border;
+.btn-secondary-outline.focus.active,
+.btn-secondary-outline.active:focus {
+  background-color: $btn-secondary-border;
 }
 
-.btn-secondary.focus, .btn-secondary:focus {
-    background-color: $btn-secondary-bg;
+.btn-secondary.focus,
+.btn-secondary:focus {
+  background-color: $btn-secondary-bg;
 }
 
 // Genearlly useful classes;
@@ -108,7 +109,10 @@ a.cb-plain {
   color: Black;
 }
 
-a.cb-plain:link, a.cb-plain:visited, a.cb-plain:active, a.cb-plain:hover  {
+a.cb-plain:link,
+a.cb-plain:visited,
+a.cb-plain:active,
+a.cb-plain:hover {
   color: Black;
   text-decoration: none;
 }

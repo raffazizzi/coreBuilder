@@ -5,11 +5,19 @@ import $ from 'jquery';
 import Annotate from '../libraries/tei-xpointer/annotate';
 import '../libraries/tei-xpointer/xpointer';
 
+/**
+ * Class representing interactions concerning the creation of expressions in XML input files by the user
+ * @extends Backbone.View
+ */
 class XPointerComponent extends Backbone.View {
 
     // Components are model-less views
-    
-    initialize(options){
+
+    /**
+     * Initialize the view
+     * @param options - The options attached directly to the view.
+     */
+    initialize(options) {
 
         // XPOINTER STORED HERE
         this.xpointerdata;
@@ -22,7 +30,7 @@ class XPointerComponent extends Backbone.View {
         this.listenTo(this, "resume", this.resume);
 
         this.editor.on("focus", () => {
-            for (let txt of $(this.editor.renderer.content).find(".ace_text.ace_xml")){
+            for (let txt of $(this.editor.renderer.content).find(".ace_text.ace_xml")) {
                 // if ($(txt).text().replace(/\s+/g, '') != ''){
                 //     $(txt).css('background-color', "#dce3ea");                       
                 // }
@@ -30,7 +38,7 @@ class XPointerComponent extends Backbone.View {
         });
 
         this.editor.session.on("changeScrollTop", () => {
-            for (let txt of $(this.editor.renderer.content).find(".ace_text.ace_xml")){
+            for (let txt of $(this.editor.renderer.content).find(".ace_text.ace_xml")) {
                 // if ($(txt).text().replace(/\s+/g, '') != ''){
                 //     $(txt).css('background-color', "#dce3ea");                       
                 // }
@@ -38,13 +46,16 @@ class XPointerComponent extends Backbone.View {
         });
 
         this.startEditorListener();
-        
+
     }
 
-    startEditorListener(){
-        $(this.editor.renderer.content).on("mouseup", (e)=>{
+    /**
+     * Listen to the user's interactions
+     */
+    startEditorListener() {
+        $(this.editor.renderer.content).on("mouseup", (e) => {
             e.preventDefault();
-            
+
             let selection = this.editor.getSelection();
             let anchor = selection.selectionAnchor;
             let lead = selection.selectionLead;
@@ -73,7 +84,7 @@ class XPointerComponent extends Backbone.View {
             let startToken = this.editor.session.getTokenAt(start.row, start.column);
             let endToken = this.editor.session.getTokenAt(end.row, end.column);
 
-            if (!startToken || !endToken){
+            if (!startToken || !endToken) {
                 selection.clearSelection();
             }
             else if (startToken.type == "text.xml" && endToken.type == "text.xml") {
@@ -82,46 +93,46 @@ class XPointerComponent extends Backbone.View {
             }
             else if (startToken.type != "text.xml" && startToken === endToken) {
                 // Check adjacent token to deal with tag opening/closing edge case
-                let nextToken = this.editor.session.getTokens(start.row)[startToken.index+1];
-                let prevToken = this.editor.session.getTokens(start.row)[startToken.index-1];
+                let nextToken = this.editor.session.getTokens(start.row)[startToken.index + 1];
+                let prevToken = this.editor.session.getTokens(start.row)[startToken.index - 1];
                 if (nextToken && prevToken) {
-                    if (nextToken.type == "text.xml"){
+                    if (nextToken.type == "text.xml") {
                         start.edge = "next";
                         end.edge = "next";
                         this.getXPointer(start, end);
                     }
-                    else if (prevToken.type == "text.xml"){
+                    else if (prevToken.type == "text.xml") {
                         start.edge = "prev";
                         end.edge = "prev";
-                        this.getXPointer(start, end);   
+                        this.getXPointer(start, end);
                     }
                     else { /* noop */ }
                 }
-                else { /* noop */ }            
+                else { /* noop */ }
             }
             else {
                 let trouble = false;
-                if (startToken.type != "text.xml"){
+                if (startToken.type != "text.xml") {
                     // Check immedately following token
                     // to deal with tag-close edge case
-                    let nextToken = this.editor.session.getTokens(start.row)[startToken.index+1];
+                    let nextToken = this.editor.session.getTokens(start.row)[startToken.index + 1];
                     if (nextToken) {
-                            if (!nextToken || nextToken.type != "text.xml"){
+                        if (!nextToken || nextToken.type != "text.xml") {
                             selection.clearSelection();
                             trouble = true;
                         }
                         else {
                             start.edge = "next";
-                        }    
+                        }
                     }
-                    else trouble = true;                    
+                    else trouble = true;
                 }
-                if (endToken.type != "text.xml"){
+                if (endToken.type != "text.xml") {
                     // Check immedately preceding token
                     // to deal with tag-open edge case
-                    let prevToken = this.editor.session.getTokens(end.row)[endToken.index-1];
+                    let prevToken = this.editor.session.getTokens(end.row)[endToken.index - 1];
                     if (prevToken) {
-                        if (!prevToken || prevToken.type != "text.xml"){
+                        if (!prevToken || prevToken.type != "text.xml") {
                             selection.clearSelection();
                             trouble = true;
                         }
@@ -133,12 +144,17 @@ class XPointerComponent extends Backbone.View {
                 }
 
                 if (!trouble) {
-                    this.getXPointer(start, end);   
+                    this.getXPointer(start, end);
                 }
             }
         });
     }
 
+    /**
+     * Get the expression created by the user
+     * @param start - The starting of the expression created by the user
+     * @param end - The ending of the expression created by the user
+     */
     getXPointer(start, end) {
 
         let getShadowElement = (pos) => {
@@ -163,7 +179,7 @@ class XPointerComponent extends Backbone.View {
             for (var row_i = pos.row; row_i >= 0; row_i--) {
                 let tokenRow = this.editor.session.getTokens(row_i);
 
-                let reduced_tRow = lookingBack ? tokenRow : tokenRow.slice(0, this_token.index+1);
+                let reduced_tRow = lookingBack ? tokenRow : tokenRow.slice(0, this_token.index + 1);
 
                 let tag;
 
@@ -176,29 +192,29 @@ class XPointerComponent extends Backbone.View {
                     // stack text node lengths
                     if (t.type == "text.xml") {
                         if (i != reduced_tRow.length - 1) {
-                            totalOffset += t.value.length;                            
+                            totalOffset += t.value.length;
                         }
-                        if (i == reduced_tRow.length-1 && text_stack.length > 0) {
+                        if (i == reduced_tRow.length - 1 && text_stack.length > 0) {
                             text_stack[0].unshift(t);
                         }
                         else {
                             text_stack.unshift([t]);
                         }
                     }
-                    
+
                     else if (t.type == "meta.tag.punctuation.tag-open.xml") {
                         if (!isClosed) {
                             tag = {
-                                "token_no": i+1,
-                                "value": tokenRow[i+1].value
+                                "token_no": i + 1,
+                                "value": tokenRow[i + 1].value
                             };
-                            break;    
+                            break;
                         }
                         else isClosed = false;
                     }
 
-                    else if ((t.type == "meta.tag.punctuation.tag-close.xml" && t.value == "/>") 
-                      || t.type == "meta.tag.punctuation.end-tag-open.xml"){
+                    else if ((t.type == "meta.tag.punctuation.tag-close.xml" && t.value == "/>")
+                        || t.type == "meta.tag.punctuation.end-tag-open.xml") {
                         isClosed = true;
                     }
 
@@ -206,11 +222,11 @@ class XPointerComponent extends Backbone.View {
 
                 if (tag) {
 
-                    for (let st of this.shadowTags){
+                    for (let st of this.shadowTags) {
                         if (st.row == row_i && st.token_no == tag.token_no) {
-                            shadowEl["$el"] = $(this.shadowDOM).find("*[xml\\:id='"+st.id+"']");
+                            shadowEl["$el"] = $(this.shadowDOM).find("*[xml\\:id='" + st.id + "']");
                             shadowEl["el"] = shadowEl["$el"].get(0);
-                            
+
                             // Find text node.
                             // Get all the shadow text nodes contained by this element, 
                             // to the index eq to the length of text.xml tokens
@@ -228,16 +244,16 @@ class XPointerComponent extends Backbone.View {
                             _getTextNodes(shadowEl["el"]);
 
                             let relevant_tns = textNodes.slice(0, text_stack.length);
-                            shadowEl["node"] = relevant_tns[relevant_tns.length-1]
+                            shadowEl["node"] = relevant_tns[relevant_tns.length - 1]
 
-                            let last_text_token = text_stack[text_stack.length-1]
-                            if (last_text_token.length == 1){
+                            let last_text_token = text_stack[text_stack.length - 1]
+                            if (last_text_token.length == 1) {
                                 shadowEl["offset"] = this_offset;
                             }
                             else {
                                 let count = 0;
                                 for (let t of last_text_token.slice(0, -1)) {
-                                    count += t.value.length +1; //for the new line
+                                    count += t.value.length + 1; //for the new line
 
                                 }
                                 count += this_offset;
@@ -265,37 +281,37 @@ class XPointerComponent extends Backbone.View {
 
         let startShadowEl = getShadowElement(start);
         let endShadowEl;
-        if (start.row == end.row && start.column == end.column){
+        if (start.row == end.row && start.column == end.column) {
             endShadowEl = startShadowEl;
         }
         else {
-            endShadowEl = getShadowElement(end);                
+            endShadowEl = getShadowElement(end);
         }
 
         // TODO: Could this be a class?
         let pseudoSelection = {
-            "startContainer" : startShadowEl["el"],
-            "endContainer" : endShadowEl["el"],                
-            "anchorOffset" : startShadowEl["offset"], 
-            "anchorNode" : startShadowEl["node"], //nodes already ordered, so anchor == start
-            "focusOffset" : endShadowEl["offset"],
-            "focusNode" : endShadowEl["node"], //nodes already ordered, so focus == end
+            "startContainer": startShadowEl["el"],
+            "endContainer": endShadowEl["el"],
+            "anchorOffset": startShadowEl["offset"],
+            "anchorNode": startShadowEl["node"], //nodes already ordered, so anchor == start
+            "focusOffset": endShadowEl["offset"],
+            "focusNode": endShadowEl["node"], //nodes already ordered, so focus == end
         };
 
         if (startShadowEl["el"].getAttribute("xml:id") == endShadowEl["el"].getAttribute("xml:id")) {
-            pseudoSelection["commonAncestorContainer"] = startShadowEl["el"];    
+            pseudoSelection["commonAncestorContainer"] = startShadowEl["el"];
         }
         else {
             pseudoSelection["commonAncestorContainer"] = startShadowEl["$el"].parents().has(endShadowEl["$el"]).first().get(0);
         }
 
-        pseudoSelection["getRangeAt"] = function(i) {
+        pseudoSelection["getRangeAt"] = function (i) {
             // returning this should be sufficient becuase 
             // the xpointer library only requests getRangeAt(0)
             return this;
         }
 
-        pseudoSelection["toString"] = function() {
+        pseudoSelection["toString"] = function () {
             let textNodes = [];
             function _getTextNodes(node) {
                 if (node.nodeType == 3) {
@@ -312,21 +328,21 @@ class XPointerComponent extends Backbone.View {
             // stopping at the focus node
             let theString = "";
             let canAdd = false;
-            for (let tn of textNodes){
-                if (tn === this.anchorNode && tn === this.focusNode){
+            for (let tn of textNodes) {
+                if (tn === this.anchorNode && tn === this.focusNode) {
                     // start and end text nodes are the same
                     theString = tn.textContent.slice(this.anchorOffset, this.focusOffset);
                     break;
                 }
-                else if (tn === this.anchorNode){         
+                else if (tn === this.anchorNode) {
                     canAdd = true;
                     theString = tn.textContent.slice(this.anchorOffset);
                 }
-                else if (tn === this.focusNode){
+                else if (tn === this.focusNode) {
                     theString += tn.textContent.slice(0, this.focusOffset);
                     break;
                 }
-                else if (canAdd){
+                else if (canAdd) {
                     theString += tn.textContent;
                 }
             }
@@ -342,7 +358,7 @@ class XPointerComponent extends Backbone.View {
                 this.$el.find(".cb-xf-xp-msg")
                     .text("XPointer created, add?")
                     .parent().removeClass("cb-xp-fail")
-                    .addClass("cb-xp-ok");            
+                    .addClass("cb-xp-ok");
             }
             else {
                 this.$el.find(".cb-xf-xp-msg")
@@ -363,12 +379,18 @@ class XPointerComponent extends Backbone.View {
 
     }
 
-    suspend(){
+    /**
+     * Suspend expression selection when the user releases the mouse button
+     */
+    suspend() {
         console.log('suspending');
         $(this.editor.renderer.content).off("mouseup");
     }
 
-    resume(){
+    /**
+     * Resume the selection of the performed expression
+     */
+    resume() {
         console.log('resuming');
         // reset exising pointer data
         this.xpointerdata = undefined;

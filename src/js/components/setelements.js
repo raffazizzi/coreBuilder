@@ -7,11 +7,16 @@ var $ = global.jQuery = require('jquery');
 require('../../../node_modules/bootstrap/dist/js/umd/modal');
 require('../../../node_modules/bootstrap/dist/js/umd/dropdown');
 
-// TODO. This whole class could be more MV*. 
-// There is a bit too much manual view building.
+/**
+ * Class representing interactions when defining stand-off markup elements
+ * @extends Backbone.View
+ */
 class SetElementsComponent extends Backbone.View {
-    
-    initialize(options){
+    /**
+     * Initialize the view
+     * @param options - The options attached directly to the view.
+     */
+    initialize(options) {
         this.target = options.target;
         this.temp_attributes = {};
         for (let el in this.model.attributes) {
@@ -20,23 +25,31 @@ class SetElementsComponent extends Backbone.View {
                 for (let atts of this.model.get(el).xmlatts.models) {
                     let j = atts.toJSON();
                     this.temp_attributes[el][j.cid] = j;
-                }    
+                }
             }
         }
         this.render();
     }
 
+    /**
+     * Manage events
+     * @returns Event hashing that associates events to methods in the view
+     */
     events() {
         return {
-            "click .cb-se-preset" : "usePreset",
-            "click .cb-se-remove" : "toggleInputs",
-            "click #cb-se-confirm" : "setElements",
-            "click .cb-se-addatt" : "addAttribute",
-            "click .cb-se-att-remove" : "removeAttribute",
-            "change #cb-se-bhvrs input" : "changeBehavior"
+            "click .cb-se-preset": "usePreset",
+            "click .cb-se-remove": "toggleInputs",
+            "click #cb-se-confirm": "setElements",
+            "click .cb-se-addatt": "addAttribute",
+            "click .cb-se-att-remove": "removeAttribute",
+            "change #cb-se-bhvrs input": "changeBehavior"
         }
     }
 
+    /**
+     * Change the behavior of stand-off markup elements
+     * @param e - Event
+     */
     changeBehavior(e) {
         let ptr_bhv = $(e.target).val();
 
@@ -49,6 +62,10 @@ class SetElementsComponent extends Backbone.View {
         }
     }
 
+    /**
+     * Change the stand-off markup elements according to the user's choice
+     * @param e - Event
+     */
     usePreset(e) {
 
         // clear all non-target attributes
@@ -57,7 +74,7 @@ class SetElementsComponent extends Backbone.View {
             let target_el = $(att_to_x).data("el");
 
             delete this.temp_attributes[target_el][attid];
-            this.$el.find("#cb-se-att-"+target_el).find("#cb-se-att-"+attid).remove();
+            this.$el.find("#cb-se-att-" + target_el).find("#cb-se-att-" + attid).remove();
         }
 
         let $target = $(e.target);
@@ -74,7 +91,7 @@ class SetElementsComponent extends Backbone.View {
                 $addatt.removeClass("cb-disabled");
                 $input.val(els[el]);
                 $edit.removeClass('cb-off').addClass('cb-on');
-            } 
+            }
             else {
                 $input.val("");
                 $input.prop('disabled', true);
@@ -88,7 +105,7 @@ class SetElementsComponent extends Backbone.View {
             for (let el in atts) {
                 for (let att in atts[el]) {
                     let data = {
-                        "isTarget": false, 
+                        "isTarget": false,
                         "xmlel": el,
                         "name": att,
                         "value": atts[el][att]
@@ -96,7 +113,7 @@ class SetElementsComponent extends Backbone.View {
                     // TODO this is ugly.
                     data.cid = Math.floor(Math.random() * 1000);
                     let newatt = this.temp_attributes[el][data.cid] = data;
-                    this.$el.find("#cb-se-att-"+el).append(setattributes_tpl(newatt));
+                    this.$el.find("#cb-se-att-" + el).append(setattributes_tpl(newatt));
                 }
             }
         }
@@ -105,11 +122,15 @@ class SetElementsComponent extends Backbone.View {
 
     }
 
+    /**
+     * Toggle element inputs
+     * @param e - Event
+     */
     toggleInputs(e) {
         let $edit = $(e.target);
         let $input = $edit.parent().next("input");
         let $addatt = $input.next(".cb-se-addatt");
-        if ($edit.hasClass('cb-on')){
+        if ($edit.hasClass('cb-on')) {
             $input.val("");
             // Clear attributes
             let $atts = $edit.closest(".form-group").next();
@@ -118,7 +139,7 @@ class SetElementsComponent extends Backbone.View {
                 let target_el = $(att_to_x).data("el");
 
                 delete this.temp_attributes[target_el][attid];
-                this.$el.find("#cb-se-att-"+target_el).find("#cb-se-att-"+attid).remove();
+                this.$el.find("#cb-se-att-" + target_el).find("#cb-se-att-" + attid).remove();
             }
             $input.prop('disabled', true);
             $addatt.addClass("cb-disabled");
@@ -127,36 +148,47 @@ class SetElementsComponent extends Backbone.View {
         else {
             $input.prop('disabled', false);
             $addatt.removeClass("cb-disabled");
-            $edit.removeClass('cb-off').addClass('cb-on');   
+            $edit.removeClass('cb-off').addClass('cb-on');
         }
     }
 
+    /**
+     * Add an attribute
+     * @param e - Event
+     */
     addAttribute(e) {
         e.preventDefault();
         if (!$(e.target).hasClass("cb-disabled")) {
-            let target_el = $(e.target).data("el"); 
-            let data = {"isTarget": false, "xmlel": target_el}
+            let target_el = $(e.target).data("el");
+            let data = { "isTarget": false, "xmlel": target_el }
             data.cid = Math.floor(Math.random() * 1000);
             let newatt = this.temp_attributes[target_el][data.cid] = data;
-            this.$el.find("#cb-se-att-"+target_el).append(setattributes_tpl(newatt));
-        }        
+            this.$el.find("#cb-se-att-" + target_el).append(setattributes_tpl(newatt));
+        }
     }
 
+    /**
+     * Remove an attribute
+     * @param e - Event
+     */
     removeAttribute(e) {
         e.preventDefault();
         let target_el = $(e.target).data("el");
-        let att_id = $(e.target).data("attid"); 
+        let att_id = $(e.target).data("attid");
 
         delete this.temp_attributes[target_el][att_id];
-        this.$el.find("#cb-se-att-"+target_el).find("#cb-se-att-"+att_id).remove();
+        this.$el.find("#cb-se-att-" + target_el).find("#cb-se-att-" + att_id).remove();
     }
 
+    /**
+     * Set stand-off markup elements
+     */
     setElements() {
         let $status = this.$el.find("#cb-se-status");
 
         // validate: wrapper and pointer need to be specified
-        if (!this.$el.find("#cb-se-wrapper").val().replace(/\s/g, "") 
-         || !this.$el.find("#cb-se-ptr").val().replace(/\s/g, "") ) {
+        if (!this.$el.find("#cb-se-wrapper").val().replace(/\s/g, "")
+            || !this.$el.find("#cb-se-ptr").val().replace(/\s/g, "")) {
             $status.html(
                 `<div class="alert alert-danger" role="alert">
                     A wrapper and pointer must be specified
@@ -165,10 +197,10 @@ class SetElementsComponent extends Backbone.View {
         else {
 
             let eldata = {
-                "wrapper" : this.$el.find("#cb-se-wrapper").val(),
-                "grp" : this.$el.find("#cb-se-grp").val(),
-                "container" : this.$el.find("#cb-se-container").val(),
-                "ptr" : this.$el.find("#cb-se-ptr").val()                
+                "wrapper": this.$el.find("#cb-se-wrapper").val(),
+                "grp": this.$el.find("#cb-se-grp").val(),
+                "container": this.$el.find("#cb-se-container").val(),
+                "ptr": this.$el.find("#cb-se-ptr").val()
             }
 
             for (let d in eldata) {
@@ -179,15 +211,15 @@ class SetElementsComponent extends Backbone.View {
                 m.xmlatts.reset();
                 let temp_a = this.temp_attributes[d];
                 for (let att in temp_a) {
-                    let attdata = this.$el.find("#cb-se-att-"+att);
+                    let attdata = this.$el.find("#cb-se-att-" + att);
                     let name = attdata.find(".cb-se-att-name").val();
                     let value = attdata.find(".cb-se-att-value").val();
-                    let new_att = m.xmlatts.add({"name": name});
+                    let new_att = m.xmlatts.add({ "name": name });
                     if (!temp_a[att].isTarget) {
                         new_att.set("value", value);
                     }
                     else {
-                        new_att.set("isTarget", true);   
+                        new_att.set("isTarget", true);
                     }
                 }
 
@@ -201,24 +233,30 @@ class SetElementsComponent extends Backbone.View {
                 `<div class="alert alert-success" role="alert">
                     OK!
                 </div>`);
-            setTimeout(() => { 
-                this.$el.find("#cb-se_modal").modal( 'hide' ).data( 'bs.modal', null );
-            }, 250);            
+            setTimeout(() => {
+                this.$el.find("#cb-se_modal").modal('hide').data('bs.modal', null);
+            }, 250);
         }
     }
 
+    /**
+     * Transform selected attributes into XML type attributes
+     */
     renderAttributes() {
         for (let xmlel in this.temp_attributes) {
             let xmlatts = this.temp_attributes[xmlel];
             if (xmlatts) {
                 for (let a in xmlatts) {
                     xmlatts[a].xmlel = xmlel;
-                    this.$el.find("#cb-se-att-"+xmlel).append(setattributes_tpl(xmlatts[a]));
-                }                
-            }            
+                    this.$el.find("#cb-se-att-" + xmlel).append(setattributes_tpl(xmlatts[a]));
+                }
+            }
         }
     }
 
+    /**
+     * Render all the stand-off markup elements
+     */
     render() {
 
         let component = $(setelements_tpl(this.model.toJSON()));
