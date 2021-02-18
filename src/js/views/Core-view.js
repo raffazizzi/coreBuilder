@@ -166,12 +166,19 @@ class CoreView extends Backbone.View {
                             let childNodes2 = ""
 
                             for (let childNode2 of childNode1.children) {
-                                childNodes2 += "<p><table style='background-color: #FFFF00;'><tr><td>" + childNode2.nodeName
+                                childNodes2 += "<table style='border: 1px solid;"
 
                                 for (let attribute of childNode2.attributes)
-                                    if (attribute.name == "type") {
+                                    if (attribute.name == "type")
+                                        for (let variation of this.collection[2])
+                                            if (variation.variation == attribute.value)
+                                                childNodes2 += " color: " + variation.color + ';'
+
+                                childNodes2 += "'><tr><td>" + childNode2.nodeName
+
+                                for (let attribute of childNode2.attributes)
+                                    if (attribute.name == "type")
                                         childNodes2 += ' "' + attribute.value + '"'
-                                    }
 
                                 childNodes2 += "</td></tr><tr><td>"
 
@@ -183,27 +190,34 @@ class CoreView extends Backbone.View {
                                     let childNodes3 = ""
 
                                     for (let childNode3 of childNode2.children) {
-                                        childNodes3 += "<p><table style='background-color: #CCFFCC;'><tr><td>" + childNode3.nodeName
+                                        childNodes3 += "<table style='border: 1px solid;"
 
                                         for (let attribute of childNode3.attributes)
-                                            if (attribute.name == "type") {
+                                            if (attribute.name == "type")
+                                                for (let variation of this.collection[2])
+                                                    if (variation.variation == attribute.value)
+                                                        childNodes3 += " color: " + variation.color + ';'
+
+                                        childNodes3 += "'><tr><td>" + childNode3.nodeName
+
+                                        for (let attribute of childNode3.attributes)
+                                            if (attribute.name == "type")
                                                 childNodes3 += ' "' + attribute.value + '"'
-                                            }
 
                                         childNodes3 += "</td></tr><tr><td>"
 
                                         if (!childNode3.children[0].children.length)
                                             childNodes3 += '"' + childNode3.children[0].attributes[0].value + '"'
 
-                                        childNodes3 += "</td></tr></table></p>"
+                                        childNodes3 += "</td></tr></table>"
                                     }
 
                                     childNodes2 += childNodes3
                                 }
 
-                                childNodes2 += "</td></tr></table></p>"
+                                childNodes2 += "</td></tr></table>"
                             }
-                            this.$el.find("#core #HTML").append("<p><table style='background-color: #99CC00;'><tr><td>" + childNode1.nodeName + childNodes2 + "</td></tr></table></p>")
+                            this.$el.find("#core #HTML").append("<br /><table style='border: 1px solid;'><tr><td>" + childNode1.nodeName + childNodes2 + "</td></tr></table>")
                         }
                     })
                 }
@@ -246,7 +260,7 @@ class CoreView extends Backbone.View {
      * Render the last entry
      */
     renderLastEntry() {
-        if (this.collection[0].toJSON()[this.collection[0].toJSON().length - 2]) {
+        if (this.collection[0].toJSON()[0].xml) {
             const edCnt = this.$el.find("#core .cb-ace").get(0);
 
             loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
@@ -255,14 +269,16 @@ class CoreView extends Backbone.View {
                     editor = loadedAce.edit(edCnt);
 
                     for (let i = 0; i < editor.getSession().getLength(); i++)
-                        if (editor.getSession().getLine(i).includes("</standoff>")) {
-                            let splitedXML = this.collection[0].toJSON()[this.collection[0].toJSON().length - 2].xml.split('\n'), XML = ""
+                        if (editor.getSession().getLine(i).includes("</standoff>") && this.collection[0].toJSON()[0].xml) {
+                            let splitedXML = this.collection[0].toJSON()[0].xml.split('\n'), XML = ""
                             for (let j = 0; j < splitedXML.length; j++) {
                                 XML += '\t'
                                 if (j)
                                     XML += '\t'
                                 XML += splitedXML[j] + '\n'
                             }
+
+                            this.collection[0].shift()
 
                             editor.getSession().insert({ column: editor.getSession().getLine(i).indexOf("</standoff>"), row: i }, XML + '\t');
                             break

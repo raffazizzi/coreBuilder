@@ -56,8 +56,8 @@ class CurrentEntryView extends Backbone.View {
                 this.model.lastCore.saveToCore();
 
                 // Add new entry to core
-                if (this.collection.at(this.collection.length - 1).get("xml"))
-                    this.collection.add({ "saved": false })
+                if (this.collection[0].at(this.collection[0].length - 1).get("xml"))
+                    this.collection[0].add({ "saved": false })
 
                 this.removeEntryPart(["all"])
                 this.undelegateEvents();
@@ -205,35 +205,54 @@ class CurrentEntryView extends Backbone.View {
     }
 
     /**
+     * Add a variation without duplicate
+     * @param variation - The variation
+     */
+    addVariationWithoutDuplicate(variation) {
+        let uniqueVariation = true
+
+        for (let variationColor of this.collection[1])
+            if (variationColor["variation"] == variation) {
+                uniqueVariation = false
+                break
+            }
+
+        if (uniqueVariation)
+            this.collection[1].push({ variation: variation, color: "#000000" })
+    }
+
+    /**
      * Add textual variations
      * @returns The textual variations
      */
     addVariations() {
-        let standOff = false, variations = ["spelling", "semantic", "ponctuation", "omission", "repetition"]
+        let standOff = false
 
-        for (let child of this.$el.find("#core .cb-ace")[0].children[2].children[0].children[2].children)
-            for (let i = 0; i < child.children.length; i++) {
-                if (child.children[i - 2] && child.children[i - 1])
-                    switch (child.children[i - 2].innerText + child.children[i - 1].innerText + child.children[i].innerText) {
-                        case "<standoff>":
-                            standOff = true
-                            break
-                        case "</standoff>":
-                            standOff = false
-                    }
+        if (this.$el.find("#core .cb-ace")[0])
+            for (let child of this.$el.find("#core .cb-ace")[0].children[2].children[0].children[2].children)
+                for (let i = 0; i < child.children.length; i++) {
+                    if (child.children[i - 2] && child.children[i - 1])
+                        switch (child.children[i - 2].innerText + child.children[i - 1].innerText + child.children[i].innerText) {
+                            case "<standoff>":
+                                standOff = true
+                                break
+                            case "</standoff>":
+                                standOff = false
+                        }
 
-                if (standOff && child.children[i].innerText == "type")
-                    variations.push(child.children[i + 2].innerText.replaceAll('"', ''))
+                    if (standOff && child.children[i].innerText == "type")
+                        this.addVariationWithoutDuplicate(child.children[i + 2].innerText.replaceAll('"', ''))
+                }
+
+        if (this.model.lastCore.toJSON().json)
+            for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++) {
+                if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("container").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[1])
+                    this.addVariationWithoutDuplicate(this.model.lastCore.toJSON().json.content[i].xmlatts[1].value)
+                if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("grp").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[0])
+                    this.addVariationWithoutDuplicate(this.model.lastCore.toJSON().json.content[i].xmlatts[0].value)
             }
 
-        for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++) {
-            if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("container").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[1])
-                variations.push(this.model.lastCore.toJSON().json.content[i].xmlatts[1].value)
-            if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("grp").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[0])
-                variations.push(this.model.lastCore.toJSON().json.content[i].xmlatts[0].value)
-        }
-
-        return Array.from(new Set(variations))
+        return this.collection[1]
     }
 
     /**

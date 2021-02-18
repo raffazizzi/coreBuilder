@@ -21,8 +21,8 @@ class TextualVariationsComponent extends Backbone.View {
 
         // Events
         for (let variation of this.currentEntry.addVariations())
-            this.$el.on('click', '#' + variation, () => {
-                this.variation = variation
+            this.$el.on('click', '#' + variation["variation"], () => {
+                this.variation = variation["variation"]
                 this.$el.find("#variation").attr("hidden", "")
                 this.$el.find('#cb-lf-status').html("")
             });
