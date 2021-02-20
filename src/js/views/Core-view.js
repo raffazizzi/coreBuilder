@@ -136,6 +136,20 @@ class CoreView extends Backbone.View {
     }
 
     /**
+     * Find the content of the XML tag
+     * @param value - The value of the XML tag
+     */
+    findContentTag(value) {
+        for (let XMLFile of this.collection[1].toJSON())
+            if (XMLFile.filename == value.split('#')[0]) {
+                let XMLId = XMLFile.content.indexOf('xml:id="' + value.split('#')[1] + '"')
+                let string = XMLFile.content.substring(XMLFile.content.substring(0, XMLId).lastIndexOf('<'))
+                let endTag = string.split(' ')[0][0] + '/' + string.split(' ')[0].substring(1) + '>'
+                return string.substring(0, string.indexOf(endTag)).substring(string.substring(0, string.indexOf(endTag)).indexOf('>') + 1)
+            }
+    }
+
+    /**
      * Show the file in HTML format
      */
     showHTML() {
@@ -183,9 +197,9 @@ class CoreView extends Backbone.View {
                                 childNodes2 += "</td></tr><tr><td>"
 
                                 if (childNode1.nodeName != "app")
-                                    childNodes2 += '"' + childNode2.attributes[0].value + '"'
+                                    childNodes2 += this.findContentTag(childNode2.attributes[0].value)
                                 else if (!childNode2.children[0].children.length)
-                                    childNodes2 += '"' + childNode2.children[0].attributes[0].value + '"'
+                                    childNodes2 += this.findContentTag(childNode2.children[0].attributes[0].value)
                                 else {
                                     let childNodes3 = ""
 
@@ -207,7 +221,7 @@ class CoreView extends Backbone.View {
                                         childNodes3 += "</td></tr><tr><td>"
 
                                         if (!childNode3.children[0].children.length)
-                                            childNodes3 += '"' + childNode3.children[0].attributes[0].value + '"'
+                                            childNodes3 += this.findContentTag(childNode3.children[0].attributes[0].value)
 
                                         childNodes3 += "</td></tr></table>"
                                     }
@@ -278,9 +292,13 @@ class CoreView extends Backbone.View {
                                 XML += splitedXML[j] + '\n'
                             }
 
+                            if (editor.getCursorPosition().row && editor.getCursorPosition().column && this.collection[0].at(0).get("cursor"))
+                                editor.getSession().insert(editor.getCursorPosition(), XML);
+                            else
+                                editor.getSession().insert({ column: editor.getSession().getLine(i).indexOf("</standoff>"), row: i }, XML + '\t')
+
                             this.collection[0].shift()
 
-                            editor.getSession().insert({ column: editor.getSession().getLine(i).indexOf("</standoff>"), row: i }, XML + '\t');
                             break
                         }
                 });

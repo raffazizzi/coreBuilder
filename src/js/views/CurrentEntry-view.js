@@ -34,6 +34,20 @@ class CurrentEntryView extends Backbone.View {
     }
 
     /**
+     * Add entry
+     */
+    addEntry() {
+        this.model.lastCore.saveToCore();
+
+        // Add new entry to core
+        if (this.collection[0].at(this.collection[0].length - 1).get("xml"))
+            this.collection[0].add({ "saved": false })
+
+        this.removeEntryPart(["all"])
+        this.undelegateEvents();
+    }
+
+    /**
      * Manage events
      * @returns Event hashing that associates events to methods in the view
      */
@@ -52,15 +66,12 @@ class CurrentEntryView extends Backbone.View {
                     this.$el.find("#currententry").addClass("cb-ce-minimized");
                 }
             },
-            "click #cb-ce-add": () => {
-                this.model.lastCore.saveToCore();
-
-                // Add new entry to core
-                if (this.collection[0].at(this.collection[0].length - 1).get("xml"))
-                    this.collection[0].add({ "saved": false })
-
-                this.removeEntryPart(["all"])
-                this.undelegateEvents();
+            "click #cb-ce-add-end": () => {
+                this.addEntry()
+            },
+            "click #cb-ce-add-cursor": () => {
+                this.collection[0].at(0).set({ cursor: true })
+                this.addEntry()
             },
             "click #cb-ce-g-new": "newGroup",
             "click .cb-ce-g": "selectGroup",

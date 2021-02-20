@@ -5,7 +5,7 @@ let textualVariationsTpl = `
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="ViewCoreLabel">Textual variations</h4>
+        <h4 class="modal-title" id="ViewCoreLabel">Choose type of reading</h4>
       </div>
       <div class="modal-body">
         {{#each this}}
