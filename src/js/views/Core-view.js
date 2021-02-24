@@ -188,18 +188,20 @@ class CoreView extends Backbone.View {
                                             if (variation.variation == attribute.value)
                                                 childNodes2 += " color: " + variation.color + ';'
 
-                                childNodes2 += "'><tr><td>" + childNode2.nodeName
-
-                                for (let attribute of childNode2.attributes)
-                                    if (attribute.name == "type")
-                                        childNodes2 += ' "' + attribute.value + '"'
-
-                                childNodes2 += "</td></tr><tr><td>"
+                                childNodes2 += "'>"
 
                                 if (childNode1.nodeName != "app")
-                                    childNodes2 += this.findContentTag(childNode2.attributes[0].value)
-                                else if (!childNode2.children[0].children.length)
-                                    childNodes2 += this.findContentTag(childNode2.children[0].attributes[0].value)
+                                    for (let value of childNode2.attributes[0].value.split('  '))
+                                        childNodes2 += "<table style='border: 1px solid;'><tr><td>" + childNode2.nodeName + "</td></tr><tr><td>" + this.findContentTag(value) + "</td></tr></table>"
+                                else if (!childNode2.children[0].children.length) {
+                                    childNodes2 += "<tr><td>" + childNode2.nodeName
+
+                                    for (let attribute of childNode2.attributes)
+                                        if (attribute.name == "type")
+                                            childNodes2 += ' "' + attribute.value + '"'
+
+                                    childNodes2 += "</td></tr><tr><td>" + this.findContentTag(childNode2.children[0].attributes[0].value) + "</td></tr>"
+                                }
                                 else {
                                     let childNodes3 = ""
 
@@ -226,10 +228,16 @@ class CoreView extends Backbone.View {
                                         childNodes3 += "</td></tr></table>"
                                     }
 
-                                    childNodes2 += childNodes3
+                                    childNodes2 += "<tr><td>" + childNode2.nodeName
+
+                                    for (let attribute of childNode2.attributes)
+                                        if (attribute.name == "type")
+                                            childNodes2 += ' "' + attribute.value + '"'
+
+                                    childNodes2 += "</td></tr><tr><td>" + childNodes3 + "</td></tr>"
                                 }
 
-                                childNodes2 += "</td></tr></table>"
+                                childNodes2 += "</table>"
                             }
                             this.$el.find("#core #HTML").append("<br /><table style='border: 1px solid;'><tr><td>" + childNode1.nodeName + childNodes2 + "</td></tr></table>")
                         }

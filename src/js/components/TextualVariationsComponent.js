@@ -72,21 +72,45 @@ class TextualVariationsComponent extends Backbone.View {
         if (this.variation) {
             this.currentEntry.model.lastCore.toJSON().json.content[this.index].done = true
 
-            if (this.variation == "Other")
-                this.currentEntry.model.lastCore.toJSON().json.content[this.index].xmlatts.push({ name: "type", value: this.$el.find("#variation").val() })
-            else
+            if (this.variation == "Other") {
+                if (!this.$el.find("#variation").val())
+                    this.$el.find('#cb-lf-status').html(
+                        `<div class="alert alert-danger" role="alert">
+                        Please indicate a variation
+                    </div>`)
+                else if (this.$el.find("#variation").val().includes(' '))
+                    this.$el.find('#cb-lf-status').html(
+                        `<div class="alert alert-danger" role="alert">
+                        Please do not enter spaces
+                    </div>`)
+                else {
+                    this.currentEntry.model.lastCore.toJSON().json.content[this.index].xmlatts.push({ name: "type", value: this.$el.find("#variation").val() })
+
+                    this.currentEntry.renderData()
+
+                    this.$el.find('#cb-lf-status').html(
+                        `<div class="alert alert-success" role="alert">
+                        OK!
+                    </div>`);
+                    setTimeout(() => {
+                        this.$el.find("#cb-tv_modal").modal('hide').data('bs.modal', null);
+                    }, 250);
+                }
+            }
+            else {
                 this.currentEntry.model.lastCore.toJSON().json.content[this.index].xmlatts.push({ name: "type", value: this.variation })
 
-            this.currentEntry.renderData()
+                this.currentEntry.renderData()
 
-            this.$el.find('#cb-lf-status').html(
-                `<div class="alert alert-success" role="alert">
+                this.$el.find('#cb-lf-status').html(
+                    `<div class="alert alert-success" role="alert">
                     OK!
                 </div>`);
-            setTimeout(() => {
-                this.$el.find("#cb-tv_modal").modal('hide').data('bs.modal', null);
-            }, 250);
-        } else if (!this.variation || !this.$el.find("#variation").val())
+                setTimeout(() => {
+                    this.$el.find("#cb-tv_modal").modal('hide').data('bs.modal', null);
+                }, 250);
+            }
+        } else if (!this.variation)
             this.$el.find('#cb-lf-status').html(
                 `<div class="alert alert-danger" role="alert">
                 Please indicate a variation
