@@ -54,7 +54,8 @@ class FileUploadComponent extends Backbone.View {
 
                 filePromise.then(
                     (textdata) => {
-                        if ((new DOMParser).parseFromString(textdata.content, "application/xml").querySelectorAll("standoff")[0].innerHTML.search("<lem") < 0)
+                        textdata.content = textdata.content.replaceAll("standoff", "standOff")
+                        if ((new DOMParser).parseFromString(textdata.content, "application/xml").querySelectorAll("standOff")[0].innerHTML.search("<lem") < 0)
                             lemma = false
                         else
                             lemma = true
@@ -145,7 +146,8 @@ class FileUploadComponent extends Backbone.View {
 
                         filePromise.then(
                             (textdata) => {
-                                let childNodes = (new DOMParser).parseFromString(textdata.content, "application/xml").querySelectorAll("standoff")[0].childNodes
+                                textdata.content = textdata.content.replaceAll("standoff", "standOff")
+                                let childNodes = (new DOMParser).parseFromString(textdata.content, "application/xml").querySelectorAll("standOff")[0].childNodes
                                 let elementNode = false
 
                                 childNodes.forEach(childNode => {
