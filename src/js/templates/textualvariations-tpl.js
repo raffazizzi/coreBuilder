@@ -5,12 +5,12 @@ let textualVariationsTpl = `
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="ViewCoreLabel">Textual variations</h4>
+        <h4 class="modal-title" id="ViewCoreLabel">Choose type of reading</h4>
       </div>
       <div class="modal-body">
         {{#each this}}
-          <input type="radio" id="{{this}}" name="variation">
-          <label for="{{this}}">{{this}}</label><br>
+          <input type="radio" id="{{this.variation}}" name="variation">
+          <label for="{{this.variation}}">{{this.variation}}</label><br>
         {{/each}}
 
         <input type="radio" id="other" name="variation">

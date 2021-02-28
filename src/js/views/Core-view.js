@@ -136,6 +136,20 @@ class CoreView extends Backbone.View {
     }
 
     /**
+     * Find the content of the XML tag
+     * @param value - The value of the XML tag
+     */
+    findContentTag(value) {
+        for (let XMLFile of this.collection[1].toJSON())
+            if (XMLFile.filename == value.split('#')[0]) {
+                let XMLId = XMLFile.content.indexOf('xml:id="' + value.split('#')[1] + '"')
+                let string = XMLFile.content.substring(XMLFile.content.substring(0, XMLId).lastIndexOf('<'))
+                let endTag = string.split(' ')[0][0] + '/' + string.split(' ')[0].substring(1) + '>'
+                return string.substring(0, string.indexOf(endTag)).substring(string.substring(0, string.indexOf(endTag)).indexOf('>') + 1)
+            }
+    }
+
+    /**
      * Show the file in HTML format
      */
     showHTML() {
@@ -166,44 +180,66 @@ class CoreView extends Backbone.View {
                             let childNodes2 = ""
 
                             for (let childNode2 of childNode1.children) {
-                                childNodes2 += "<p><table style='background-color: #FFFF00;'><tr><td>" + childNode2.nodeName
+                                childNodes2 += "<table style='border: 1px solid;"
 
                                 for (let attribute of childNode2.attributes)
-                                    if (attribute.name == "type") {
-                                        childNodes2 += ' "' + attribute.value + '"'
-                                    }
+                                    if (attribute.name == "type")
+                                        for (let variation of this.collection[2])
+                                            if (variation.variation == attribute.value)
+                                                childNodes2 += " color: " + variation.color + ';'
 
-                                childNodes2 += "</td></tr><tr><td>"
+                                childNodes2 += "'>"
 
                                 if (childNode1.nodeName != "app")
-                                    childNodes2 += '"' + childNode2.attributes[0].value + '"'
-                                else if (!childNode2.children[0].children.length)
-                                    childNodes2 += '"' + childNode2.children[0].attributes[0].value + '"'
+                                    for (let value of childNode2.attributes[0].value.split('  '))
+                                        childNodes2 += "<table style='border: 1px solid;'><tr><td>" + childNode2.nodeName + "</td></tr><tr><td>" + this.findContentTag(value) + "</td></tr></table>"
+                                else if (!childNode2.children[0].children.length) {
+                                    childNodes2 += "<tr><td>" + childNode2.nodeName
+
+                                    for (let attribute of childNode2.attributes)
+                                        if (attribute.name == "type")
+                                            childNodes2 += ' "' + attribute.value + '"'
+
+                                    childNodes2 += "</td></tr><tr><td>" + this.findContentTag(childNode2.children[0].attributes[0].value) + "</td></tr>"
+                                }
                                 else {
                                     let childNodes3 = ""
 
                                     for (let childNode3 of childNode2.children) {
-                                        childNodes3 += "<p><table style='background-color: #CCFFCC;'><tr><td>" + childNode3.nodeName
+                                        childNodes3 += "<table style='border: 1px solid;"
 
                                         for (let attribute of childNode3.attributes)
-                                            if (attribute.name == "type") {
+                                            if (attribute.name == "type")
+                                                for (let variation of this.collection[2])
+                                                    if (variation.variation == attribute.value)
+                                                        childNodes3 += " color: " + variation.color + ';'
+
+                                        childNodes3 += "'><tr><td>" + childNode3.nodeName
+
+                                        for (let attribute of childNode3.attributes)
+                                            if (attribute.name == "type")
                                                 childNodes3 += ' "' + attribute.value + '"'
-                                            }
 
                                         childNodes3 += "</td></tr><tr><td>"
 
                                         if (!childNode3.children[0].children.length)
-                                            childNodes3 += '"' + childNode3.children[0].attributes[0].value + '"'
+                                            childNodes3 += this.findContentTag(childNode3.children[0].attributes[0].value)
 
-                                        childNodes3 += "</td></tr></table></p>"
+                                        childNodes3 += "</td></tr></table>"
                                     }
 
-                                    childNodes2 += childNodes3
+                                    childNodes2 += "<tr><td>" + childNode2.nodeName
+
+                                    for (let attribute of childNode2.attributes)
+                                        if (attribute.name == "type")
+                                            childNodes2 += ' "' + attribute.value + '"'
+
+                                    childNodes2 += "</td></tr><tr><td>" + childNodes3 + "</td></tr>"
                                 }
 
-                                childNodes2 += "</td></tr></table></p>"
+                                childNodes2 += "</table>"
                             }
-                            this.$el.find("#core #HTML").append("<p><table style='background-color: #99CC00;'><tr><td>" + childNode1.nodeName + childNodes2 + "</td></tr></table></p>")
+                            this.$el.find("#core #HTML").append("<br /><table style='border: 1px solid;'><tr><td>" + childNode1.nodeName + childNodes2 + "</td></tr></table>")
                         }
                     })
                 }
@@ -246,7 +282,7 @@ class CoreView extends Backbone.View {
      * Render the last entry
      */
     renderLastEntry() {
-        if (this.collection[0].toJSON()[this.collection[0].toJSON().length - 2]) {
+        if (this.collection[0].toJSON()[0].xml) {
             const edCnt = this.$el.find("#core .cb-ace").get(0);
 
             loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
@@ -255,8 +291,8 @@ class CoreView extends Backbone.View {
                     editor = loadedAce.edit(edCnt);
 
                     for (let i = 0; i < editor.getSession().getLength(); i++)
-                        if (editor.getSession().getLine(i).includes("</standoff>")) {
-                            let splitedXML = this.collection[0].toJSON()[this.collection[0].toJSON().length - 2].xml.split('\n'), XML = ""
+                        if (editor.getSession().getLine(i).includes("</standoff>") && this.collection[0].toJSON()[0].xml) {
+                            let splitedXML = this.collection[0].toJSON()[0].xml.split('\n'), XML = ""
                             for (let j = 0; j < splitedXML.length; j++) {
                                 XML += '\t'
                                 if (j)
@@ -264,7 +300,13 @@ class CoreView extends Backbone.View {
                                 XML += splitedXML[j] + '\n'
                             }
 
-                            editor.getSession().insert({ column: editor.getSession().getLine(i).indexOf("</standoff>"), row: i }, XML + '\t');
+                            if (editor.getCursorPosition().row && editor.getCursorPosition().column && this.collection[0].at(0).get("cursor"))
+                                editor.getSession().insert(editor.getCursorPosition(), XML);
+                            else
+                                editor.getSession().insert({ column: editor.getSession().getLine(i).indexOf("</standoff>"), row: i }, XML + '\t')
+
+                            this.collection[0].shift()
+
                             break
                         }
                 });

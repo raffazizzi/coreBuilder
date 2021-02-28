@@ -20,7 +20,8 @@ let currententry_tpl = `
   <div id="cb-ce-entry-body"></div>
   <div id="cb-ce-entry-btns">
     <button type="button" class="btn btn-sm btn-danger" id="cb-ce-cancel"><i class="fa fa-trash-o"></i> Cancel</button>
-    <button type="button" class="btn btn-sm btn-success" id="cb-ce-add"><i class="fa fa-plus"></i> Add entry</button>
+    <button type="button" class="btn btn-sm btn-success" id="cb-ce-add-end"><i class="fa fa-plus"></i> Add entry at the end</button>
+    <button type="button" class="btn btn-sm btn-success" id="cb-ce-add-cursor"><i class="fa fa-plus"></i> Add entry at cursor position</button>
     </span>
   </div>
 </div>

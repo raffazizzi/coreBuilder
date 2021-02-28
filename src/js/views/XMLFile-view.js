@@ -119,7 +119,7 @@ class XMLFileView extends Backbone.View {
 
                 let tagName = xmlel.prop("tagName");
                 let popup = $('<button type="button" class="btn btn-default cb-el_select">Add element: ' + tagName + '</button>');
-                let popupLemma = $('<button type="button" class="btn btn-default cb-el_select_lemma">Add lemma: ' + tagName + '</button>');
+                let popupLemma = $('<button type="button" class="btn btn-default cb-el_select_lemma">Create lemma: lem</button>');
 
                 let parentOffset = this.$el.parent().offset();
                 let offset = this.$el.offset();
