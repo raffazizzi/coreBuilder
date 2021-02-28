@@ -18,8 +18,8 @@ let coreXML_tpl = `<?xml version="1.0" encoding="UTF-8"?>
             </sourceDesc>
         </fileDesc>
     </teiHeader>
-    <standoff>
-    </standoff>
+    <standOff>
+    </standOff>
 </TEI>`
 
 export default Handlebars.compile(coreXML_tpl);

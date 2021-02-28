@@ -244,10 +244,10 @@ class CurrentEntryView extends Backbone.View {
                 for (let i = 0; i < child.children.length; i++) {
                     if (child.children[i - 2] && child.children[i - 1])
                         switch (child.children[i - 2].innerText + child.children[i - 1].innerText + child.children[i].innerText) {
-                            case "<standoff>":
+                            case "<standOff>":
                                 standOff = true
                                 break
-                            case "</standoff>":
+                            case "</standOff>":
                                 standOff = false
                         }
 
@@ -256,11 +256,11 @@ class CurrentEntryView extends Backbone.View {
                 }
 
         if (this.model.lastCore.toJSON().json)
-            for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++) {
-                if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("container").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[1])
-                    this.addVariationWithoutDuplicate(this.model.lastCore.toJSON().json.content[i].xmlatts[1].value)
-                if (this.model.lastCore.toJSON().json.content[i].name == this.elementSet.get("grp").get("name") && this.model.lastCore.toJSON().json.content[i].xmlatts[0])
-                    this.addVariationWithoutDuplicate(this.model.lastCore.toJSON().json.content[i].xmlatts[0].value)
+            for (let content of this.model.lastCore.toJSON().json.content) {
+                if (content.name == this.elementSet.get("container").get("name") && content.xmlatts[1])
+                    this.addVariationWithoutDuplicate(content.xmlatts[1].value)
+                if (content.name == this.elementSet.get("grp").get("name") && content.xmlatts[0])
+                    this.addVariationWithoutDuplicate(content.xmlatts[0].value)
             }
 
         return this.collection[1]
@@ -460,11 +460,11 @@ class CurrentEntryView extends Backbone.View {
                     };
 
                     if (this.model.lastCore.toJSON().json)
-                        for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
-                            if (this.model.lastCore.toJSON().json.content[i].name == this.reading && this.model.lastCore.toJSON().json.content[i].content[0].targets[0].xmlid.split('#')[0] == key) {
-                                if (this.model.lastCore.toJSON().json.content[i].xmlatts[1])
-                                    cnt.xmlatts.push({ name: this.model.lastCore.toJSON().json.content[i].xmlatts[1].name, value: this.model.lastCore.toJSON().json.content[i].xmlatts[1].value })
-                                if (this.model.lastCore.toJSON().json.content[i].done)
+                        for (let content of this.model.lastCore.toJSON().json.content)
+                            if (content.name == this.reading && content.content[0].targets[0].xmlid.split('#')[0] == key) {
+                                if (content.xmlatts[1])
+                                    cnt.xmlatts.push({ name: content.xmlatts[1].name, value: content.xmlatts[1].value })
+                                if (content.done)
                                     cnt.done = true
                             }
 
@@ -495,9 +495,9 @@ class CurrentEntryView extends Backbone.View {
                                     };
                                     grp.content.push(cnt);
 
-                                    for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
-                                        if (this.model.lastCore.toJSON().json.content[i].number == grp_no && this.model.lastCore.toJSON().json.content[i].xmlatts[0])
-                                            grp.xmlatts.push({ name: this.model.lastCore.toJSON().json.content[i].xmlatts[0].name, value: this.model.lastCore.toJSON().json.content[i].xmlatts[0].value })
+                                    for (let content of this.model.lastCore.toJSON().json.content)
+                                        if (content.number == grp_no && content.xmlatts[0])
+                                            grp.xmlatts.push({ name: content.xmlatts[0].name, value: content.xmlatts[0].value })
 
                                     grps[grp_no] = grp;
                                 }
@@ -524,8 +524,8 @@ class CurrentEntryView extends Backbone.View {
                 }
 
             if (this.model.lastCore.toJSON().json)
-                for (let i = 0; i < this.model.lastCore.toJSON().json.content.length; i++)
-                    if (this.model.lastCore.toJSON().json.content[i].name == this.reading && !this.model.lastCore.toJSON().json.content[i].done) {
+                for (let content of this.model.lastCore.toJSON().json.content)
+                    if (content.name == this.reading && !content.done) {
                         new TextualVariationsComponent({ currentEntry: this, index: this.model.lastCore.toJSON().json.content.length - 1 })
                         break
                     }

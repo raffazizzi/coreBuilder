@@ -1,7 +1,10 @@
 import * as Backbone from 'backbone';
 import saveAs from 'save-as';
 import loadScript from "../utils/load-script"
-import jsPDF from "jspdf"
+import pdfMake from "pdfmake/build/pdfmake"
+import pdfFonts from "pdfmake/build/vfs_fonts"
+import htmlToPdfMake from "html-to-pdfmake"
+import { htmlToText } from "html-to-text"
 
 // Sadly Bootstrap js is not ES6 ready yet.
 var $ = global.jQuery = require('jquery');
@@ -46,7 +49,7 @@ class CoreView extends Backbone.View {
                 for (let i = 0; i < editor.getSession().getLength(); i++)
                     XML += editor.getSession().getLine(i)
 
-                let childNodes = (new DOMParser).parseFromString(XML, "application/xml").querySelectorAll("standoff")[0].childNodes
+                let childNodes = (new DOMParser).parseFromString(XML, "application/xml").querySelectorAll("standOff")[0].childNodes
                 let elementNode = false
 
                 childNodes.forEach(childNode => {
@@ -63,31 +66,100 @@ class CoreView extends Backbone.View {
                                 filename = childNode.children[0].children[0].attributes[0].value.substring(1) + ".xml"
                             else if (childNode.children[0].attributes[0].value[0] == '#')
                                 filename = childNode.children[0].attributes[0].value.substring(1) + ".xml"
+                            else if (childNode.children[0].children[0])
+                                filename = childNode.children[0].children[0].attributes[0].value.split('#')[0]
                             else
                                 filename = childNode.children[0].attributes[0].value.substring(0, childNode.children[0].attributes[0].value.indexOf('#'))
 
                             for (let XMLFile of this.collection[1].toJSON())
                                 if (XMLFile.filename == filename) {
-                                    $.get("out-test1.xsl", function (text) {
-                                        let xsltProcessor = new XSLTProcessor(), HTML = ""
+                                    let content = XMLFile.content, title = "<title>", titleTag = content.substring(content.indexOf(title) + title.length, content.indexOf("</title>")), startTag = 'xml:id="', fromIndex = 0, note = 1, notes = "", text = "", HTML = `<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>`
+                                    HTML += titleTag + `</title>
+        
+        <style>
+            body {
+                text-align: justify;
+                font-family: roman, "times new roman", times, serif;
+            }
+        </style>
+    </head>
 
-                                        xsltProcessor.importStylesheet((new DOMParser).parseFromString(text, "application/xml"))
+    <body>
+        <h1>`
 
-                                        for (let child of xsltProcessor.transformToFragment((new DOMParser).parseFromString(XMLFile.content, "application/xml"), document).children)
-                                            HTML += child.outerHTML
+                                    content = content.substring(XMLFile.content.indexOf("<text>"))
+                                    HTML += titleTag + `</h1>
+        `
 
-                                        if (format == "html")
-                                            saveAs(new Blob([HTML]), "core." + format)
-                                        else {
-                                            let doc = new jsPDF()
+                                    while (content.indexOf(startTag, fromIndex) != -1) {
+                                        let endTag = "</" + content.substring(0, content.indexOf(startTag, fromIndex)).substring(content.substring(0, content.indexOf(startTag, fromIndex)).lastIndexOf('<') + 1).replaceAll(' ', '') + '>', tag = content.substring(content.indexOf(startTag, fromIndex), content.indexOf(endTag, fromIndex))
 
-                                            doc.fromHTML(HTML, null, null, null,
-                                                function () {
-                                                    doc.save("core." + format)
+                                        HTML += `<span>` + tag.substring(tag.indexOf('>') + 1)
+                                        text += tag.substring(tag.indexOf('>') + 1)
+
+                                        for (let child of childNodes)
+                                            if (child.nodeType == Node.ELEMENT_NODE && child.innerHTML.replaceAll(' ', '"').includes('"' + filename + '#' + tag.substring(tag.indexOf(startTag) + startTag.length, tag.indexOf('">')) + '"')) {
+                                                let innerHTML = child.innerHTML.replaceAll(' ', '"')
+
+                                                HTML += "<sup><a href='#note" + note + "'>" + note + "</a></sup>"
+                                                text += "<sup><a href='#note" + note + "'>" + note + "</a></sup>"
+                                                notes += '<p id="note' + note + '">' + note + '.'
+
+                                                for (let file of this.collection[1].toJSON()) {
+                                                    let XMLId = '"' + file.filename + '#'
+
+                                                    if (file.filename != filename && innerHTML.includes(XMLId)) {
+                                                        let contentTag = startTag + innerHTML.substring(innerHTML.indexOf(XMLId) + XMLId.length, innerHTML.indexOf('"', innerHTML.indexOf(XMLId) + XMLId.length)) + '">'
+
+                                                        notes += ' ' + file.filename.split('.').slice(0, -1).join('.') + ": " + file.content.substring(file.content.indexOf(contentTag) + contentTag.length, file.content.indexOf(endTag, file.content.indexOf(contentTag) + contentTag.length))
+                                                    }
                                                 }
-                                            )
-                                        }
-                                    }, "text")
+
+                                                notes += `</p>
+        `
+                                                note++
+                                            }
+
+                                        fromIndex = content.indexOf(endTag, fromIndex) + endTag.length
+                                        HTML += "</span>" + content.substring(fromIndex).substring(0, content.substring(fromIndex).indexOf('<'))
+                                        if (content.substring(fromIndex).substring(0, content.substring(fromIndex).indexOf('<')).includes('\n'))
+                                            text += ' '
+                                        text += content.substring(fromIndex).substring(0, content.substring(fromIndex).indexOf('<'))
+                                    }
+                                    HTML += `
+        
+        <h2>Notes</h2>
+        `
+                                    HTML += notes + `
+    </body>
+</html>`
+
+                                    if (format == "html")
+                                        saveAs(new Blob([HTML]), "core." + format)
+                                    else {
+                                        pdfMake.vfs = pdfFonts.pdfMake.vfs
+
+                                        pdfMake.createPdf({
+                                            content: [
+                                                {
+                                                    text: htmlToPdfMake("<h1>" + titleTag + "</h1><br><br>")
+                                                },
+                                                {
+                                                    text: htmlToPdfMake(text),
+                                                    alignment: "justify"
+                                                },
+                                                {
+                                                    text: htmlToPdfMake("<br><h2>Notes</h2><br><br>")
+                                                },
+                                                {
+                                                    text: htmlToText(notes)
+                                                }
+                                            ]
+                                        }).download("core." + format)
+                                    }
 
                                     break
                                 }
@@ -97,7 +169,7 @@ class CoreView extends Backbone.View {
                 } else if (format == "html")
                     saveAs(new Blob, "core." + format)
                 else
-                    new jsPDF().save("core." + format)
+                    pdfMake.createPdf({}).download("core." + format)
             });
         });
     }
@@ -166,7 +238,7 @@ class CoreView extends Backbone.View {
                 for (let i = 0; i < editor.getSession().getLength(); i++)
                     XML += editor.getSession().getLine(i)
 
-                let childNodes1 = (new DOMParser).parseFromString(XML, "application/xml").querySelectorAll("standoff")[0].childNodes
+                let childNodes1 = (new DOMParser).parseFromString(XML, "application/xml").querySelectorAll("standOff")[0].childNodes
                 let elementNode = false
 
                 childNodes1.forEach(childNode1 => {
@@ -190,7 +262,10 @@ class CoreView extends Backbone.View {
 
                                 childNodes2 += "'>"
 
-                                if (childNode1.nodeName != "app")
+                                if (childNode1.nodeName == "lg")
+                                    for (let childNode of childNode2.children)
+                                        childNodes2 += "<table style='border: 1px solid;'><tr><td>" + childNode2.nodeName + "</td></tr><tr><td>" + this.findContentTag(childNode.attributes[0].value) + "</td></tr></table>"
+                                else if (childNode1.nodeName != "app")
                                     for (let value of childNode2.attributes[0].value.split('  '))
                                         childNodes2 += "<table style='border: 1px solid;'><tr><td>" + childNode2.nodeName + "</td></tr><tr><td>" + this.findContentTag(value) + "</td></tr></table>"
                                 else if (!childNode2.children[0].children.length) {
@@ -291,7 +366,7 @@ class CoreView extends Backbone.View {
                     editor = loadedAce.edit(edCnt);
 
                     for (let i = 0; i < editor.getSession().getLength(); i++)
-                        if (editor.getSession().getLine(i).includes("</standoff>") && this.collection[0].toJSON()[0].xml) {
+                        if (editor.getSession().getLine(i).includes("</standOff>") && this.collection[0].toJSON()[0].xml) {
                             let splitedXML = this.collection[0].toJSON()[0].xml.split('\n'), XML = ""
                             for (let j = 0; j < splitedXML.length; j++) {
                                 XML += '\t'
@@ -303,7 +378,7 @@ class CoreView extends Backbone.View {
                             if (editor.getCursorPosition().row && editor.getCursorPosition().column && this.collection[0].at(0).get("cursor"))
                                 editor.getSession().insert(editor.getCursorPosition(), XML);
                             else
-                                editor.getSession().insert({ column: editor.getSession().getLine(i).indexOf("</standoff>"), row: i }, XML + '\t')
+                                editor.getSession().insert({ column: editor.getSession().getLine(i).indexOf("</standOff>"), row: i }, XML + '\t')
 
                             this.collection[0].shift()
 
