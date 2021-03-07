@@ -4,7 +4,6 @@ import loadScript from "../utils/load-script"
 import pdfMake from "pdfmake/build/pdfmake"
 import pdfFonts from "pdfmake/build/vfs_fonts"
 import htmlToPdfMake from "html-to-pdfmake"
-import { htmlToText } from "html-to-text"
 
 // Sadly Bootstrap js is not ES6 ready yet.
 var $ = global.jQuery = require('jquery');
@@ -105,7 +104,7 @@ class CoreView extends Backbone.View {
                                                 let innerHTML = child.innerHTML.replaceAll(' ', '"')
 
                                                 HTML += "<sup><a href='#note" + note + "'>" + note + "</a></sup>"
-                                                text += "<sup><a href='#note" + note + "'>" + note + "</a></sup>"
+                                                text += "<a>" + note + "</a>"
                                                 notes += '<p id="note' + note + '">' + note + '.'
 
                                                 for (let file of this.collection[1].toJSON()) {
@@ -145,18 +144,18 @@ class CoreView extends Backbone.View {
                                         pdfMake.createPdf({
                                             content: [
                                                 {
-                                                    text: htmlToPdfMake("<h1>" + titleTag + "</h1><br><br>")
+                                                    text: htmlToPdfMake("<h1>" + titleTag + "</h1><br><br>"),
+                                                    alignment: "justify"
                                                 },
                                                 {
                                                     text: htmlToPdfMake(text),
                                                     alignment: "justify"
                                                 },
                                                 {
-                                                    text: htmlToPdfMake("<br><h2>Notes</h2><br><br>")
+                                                    text: htmlToPdfMake("<br><h2>Notes</h2><br><br>"),
+                                                    alignment: "justify"
                                                 },
-                                                {
-                                                    text: htmlToText(notes)
-                                                }
+                                                htmlToPdfMake(notes)
                                             ]
                                         }).download("core." + format)
                                     }
