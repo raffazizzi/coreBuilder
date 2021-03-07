@@ -1,6 +1,14 @@
 import * as Backbone from 'backbone';
 
+/**
+ * Class representing the XML attribute selected by the user
+ * @extends Backbone.Model
+ */
 class ElementSetAtt extends Backbone.Model {
+	/**
+	 * Create an XML attribute
+	 * @param args - The arguments
+	 */
 	constructor(...args) {
 		super(...args);
 

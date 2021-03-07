@@ -1,5 +1,9 @@
 import * as Backbone from 'backbone';
 
-class CoreEntryPointer extends Backbone.Model {}
+/**
+ * Class representing a core entry pointer
+ * @extends Backbone.Model
+ */
+class CoreEntryPointer extends Backbone.Model { }
 
 export default CoreEntryPointer;
