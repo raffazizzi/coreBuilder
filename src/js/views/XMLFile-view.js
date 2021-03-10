@@ -29,6 +29,7 @@ class XMLFileView extends Backbone.View {
             'click .cb-xf-xpointer': 'toggleXPointer',
             'click .cb-xf-xp-cancel': 'cancelXPointerEntry',
             'click .cb-xf-xp-ok': 'addXPointerEntry',
+            'click .btn-secondary': 'toggleFileType'
         };
     }
 
@@ -415,6 +416,59 @@ class XMLFileView extends Backbone.View {
         this.model.destroy();
     }
 
+    /**
+     * Toggle the type of view of the file
+     */
+    toggleFileType() {
+        let content = this.model.get("content"),
+            title = "<title>",
+            startTag = 'xml:id="',
+            fromIndex = 0,
+            HTML = "<h1>"
+
+        HTML += content.substring(content.indexOf(title) + title.length, content.indexOf("</title>")) + "</h1>"
+        content = content.substring(this.model.get("content").indexOf("<text>"))
+
+        while (content.indexOf(startTag, fromIndex) != -1) {
+            let endTag = "</" + content.substring(0, content.indexOf(startTag, fromIndex)).substring(content.substring(0, content.indexOf(startTag, fromIndex)).lastIndexOf('<') + 1).replaceAll(' ', '').replaceAll(`
+`, '') + '>',
+                tag = content.substring(content.indexOf(startTag, fromIndex), content.indexOf(endTag, fromIndex))
+
+            HTML += "<span>" + tag.substring(tag.indexOf('>') + 1)
+
+            fromIndex = content.indexOf(endTag, fromIndex) + endTag.length
+            HTML += "</span>" + content.substring(fromIndex).substring(0, content.substring(fromIndex).indexOf('<'))
+        }
+
+        if (!this.$el[0].children[2]) {
+            let newChild = document.createElement("div")
+            newChild.innerHTML = HTML
+            this.$el[0].children[1].parentNode.insertBefore(newChild, this.$el[0].children[1].nextSibling)
+            this.$el[0].children[2].style.height = this.$el[0].children[1].offsetHeight + "px"
+            this.$el[0].children[2].style.overflow = "auto"
+            this.$el[0].children[2].style.background = "white"
+            this.$el[0].children[2].style.textAlign = "justify"
+            this.$el[0].children[2].style.fontFamily = "roman, 'times new roman', times, serif"
+        }
+
+        let filename = this.$el[0].children[0].children[0].children[0].innerText
+        if (this.$el[0].children[0].children[0].children[1].children[1].innerText == "HTML") {
+            this.$el[0].children[0].children[0].children[0].innerText = filename.substring(0, filename.lastIndexOf('.')) + ".html"
+            this.$el[0].children[0].children[0].children[1].children[1].innerText = "XML"
+            for (let i = 0; i < 2; i++)
+                this.$el[0].children[0].children[1].children[i].style.display = "none"
+            this.$el[0].children[1].style.display = "none"
+            this.$el[0].children[2].style.display = "block"
+        }
+        else {
+            this.$el[0].children[0].children[0].children[0].innerText = filename.substring(0, filename.lastIndexOf('.')) + ".xml"
+            this.$el[0].children[0].children[0].children[1].children[1].innerText = "HTML"
+            for (let i = 0; i < 2; i++)
+                this.$el[0].children[0].children[1].children[i].style.display = "block"
+            this.$el[0].children[1].style.display = "block"
+            this.$el[0].children[2].style.display = "none"
+        }
+    }
 }
 
 export default XMLFileView;

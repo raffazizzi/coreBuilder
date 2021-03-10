@@ -94,7 +94,8 @@ class CoreView extends Backbone.View {
         `
 
                                     while (content.indexOf(startTag, fromIndex) != -1) {
-                                        let endTag = "</" + content.substring(0, content.indexOf(startTag, fromIndex)).substring(content.substring(0, content.indexOf(startTag, fromIndex)).lastIndexOf('<') + 1).replaceAll(' ', '') + '>', tag = content.substring(content.indexOf(startTag, fromIndex), content.indexOf(endTag, fromIndex))
+                                        let endTag = "</" + content.substring(0, content.indexOf(startTag, fromIndex)).substring(content.substring(0, content.indexOf(startTag, fromIndex)).lastIndexOf('<') + 1).replaceAll(' ', '').replaceAll(`
+`, '') + '>', tag = content.substring(content.indexOf(startTag, fromIndex), content.indexOf(endTag, fromIndex))
 
                                         HTML += `<span>` + tag.substring(tag.indexOf('>') + 1)
                                         text += tag.substring(tag.indexOf('>') + 1)
