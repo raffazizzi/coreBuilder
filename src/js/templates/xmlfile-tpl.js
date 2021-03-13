@@ -3,7 +3,13 @@ import * as Handlebars from 'handlebars';
 let xmlfile_tpl = `
 {{#if this}}
     <div class="cb-xf-title row">
-        <div class="col-xs-6">{{filename}}</div>
+        <div class="col-xs-6">
+            <span class="filename">{{filename}}</span>
+            <button type="button" class="btn btn-secondary">
+                <i class="fa fa-code"></i>
+                <span>HTML</span>
+            </button>
+        </div>
         <div class="btn-group btn-group-sm cb-ce-entry-ctrls cb-xf-controls" role="group">
             <button type="button" class="btn btn-secondary-outline cb-xf-xpointer" data-toggle="button"><i class="fa fa-hand-o-down"></i> <span>XPointer</span></button>
             <button type="button" class="btn btn-secondary-outline cb-xf-empty" data-toggle="button"><strong>Ø</strong> <span>Add Empty</span></button>
