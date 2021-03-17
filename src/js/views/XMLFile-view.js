@@ -29,7 +29,9 @@ class XMLFileView extends Backbone.View {
             'click .cb-xf-xpointer': 'toggleXPointer',
             'click .cb-xf-xp-cancel': 'cancelXPointerEntry',
             'click .cb-xf-xp-ok': 'addXPointerEntry',
-            'click .btn-secondary': 'toggleFileType'
+            'click .btn-secondary': 'toggleFileType',
+            'click .cb-xf-title.row': 'removePopUps',
+            'click .span': 'addPointer'
         };
     }
 
@@ -406,7 +408,7 @@ class XMLFileView extends Backbone.View {
 
     /**
      * Remove a XML file
-     * @param e - Event
+     * @param e - The event
      */
     remove(e) {
         if (e) e.preventDefault();
@@ -434,7 +436,8 @@ class XMLFileView extends Backbone.View {
 `, '') + '>',
                 tag = content.substring(content.indexOf(startTag, fromIndex), content.indexOf(endTag, fromIndex))
 
-            HTML += "<span>" + tag.substring(tag.indexOf('>') + 1)
+            let xmlID = content.substring(fromIndex).substring(content.substring(fromIndex).indexOf(startTag) + startTag.length)
+            HTML += '<span id="' + xmlID.substring(0, xmlID.indexOf('"')) + '" class="span">' + tag.substring(tag.indexOf('>') + 1)
 
             fromIndex = content.indexOf(endTag, fromIndex) + endTag.length
             HTML += "</span>" + content.substring(fromIndex).substring(0, content.substring(fromIndex).indexOf('<'))
@@ -467,6 +470,74 @@ class XMLFileView extends Backbone.View {
                 this.$el[0].children[0].children[1].children[i].style.display = "block"
             this.$el[0].children[1].style.display = "block"
             this.$el[0].children[2].style.display = "none"
+        }
+    }
+
+    /**
+     * Remove pop-ups
+     */
+    removePopUps() {
+        this.$el.find(".cb-el_select").remove();
+        this.$el.find(".cb-el_select_lemma").remove();
+    }
+
+    /**
+     * Add a pointer to the core entry
+     * @param event - The event
+     */
+    addPointer(event) {
+        this.removePopUps()
+
+        let popup = $('<button type="button" class="btn btn-default cb-el_select">Add element: ' + event.currentTarget.innerText + '</button>');
+        let popupLemma = $('<button type="button" class="btn btn-default cb-el_select_lemma">Create lemma: lem</button>');
+
+        let parentOffset = this.$el.parent().offset();
+        let offset = this.$el.offset();
+
+        popup.css({
+            'position': 'absolute',
+            'left': event.pageX - offset.left,
+            'top': event.pageY - parentOffset.top,
+            'z-index': 999
+        });
+
+        this.$el.append(popup);
+
+        popup.click((ePopup) => {
+            ePopup.stopPropagation();
+            Events.trigger("coreEntry:addPointer",
+                {
+                    'xml_file': this.model.get("filename"),
+                    'cb_xml_file_model': this.model.cid,
+                    'xmlid': event.currentTarget.id,
+                    'lemma': false
+                })
+            popup.remove();
+            popupLemma.remove();
+        });
+
+        if (this.model.get("lemma")) {
+            popupLemma.css({
+                'position': 'absolute',
+                'left': event.pageX - offset.left,
+                'top': event.pageY - parentOffset.top + popup[0].offsetHeight,
+                'z-index': 999
+            });
+
+            this.$el.append(popupLemma);
+
+            popupLemma.click((ePopupLemma) => {
+                ePopupLemma.stopPropagation();
+                Events.trigger("coreEntry:addPointer",
+                    {
+                        'xml_file': this.model.get("filename"),
+                        'cb_xml_file_model': this.model.cid,
+                        'xmlid': event.currentTarget.id,
+                        'lemma': true
+                    })
+                popup.remove();
+                popupLemma.remove();
+            });
         }
     }
 }
