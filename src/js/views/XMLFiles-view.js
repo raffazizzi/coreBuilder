@@ -23,6 +23,29 @@ class XMLFilesView extends Backbone.View {
     }
 
     /**
+     * Manage events
+     * @returns Event hashing that associates events to methods in the view
+     */
+    events() {
+        return {
+            'mousemove .row .cb-ace.ace_editor.ace-chrome': 'adjustScrolling',
+            'keyup .row .cb-ace.ace_editor.ace-chrome': 'adjustScrolling',
+            'mousewheel .row .cb-ace.ace_editor.ace-chrome': 'adjustScrolling'
+        };
+    }
+
+    /**
+     * Adjust scrolling in all file windows
+     * @param event - The event
+     */
+    adjustScrolling(event) {
+        for (let i = 0; i < this.$el.find(".ace_scrollbar.ace_scrollbar-v").length - 1; i++)
+            this.$el.find(".ace_scrollbar.ace_scrollbar-v")[i].scrollTop = event.currentTarget.children[3].scrollTop
+        for (let i = 0; i < this.$el.find(".ace_scrollbar.ace_scrollbar-h").length - 1; i++)
+            this.$el.find(".ace_scrollbar.ace_scrollbar-h")[i].scrollLeft = event.currentTarget.children[4].scrollLeft
+    }
+
+    /**
      * Add a XML file
      * @param m - The XML file
      */
