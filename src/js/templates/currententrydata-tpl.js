@@ -21,52 +21,66 @@ let currententrydata_tpl = `
             </span>
             <span>{{this.name}}</span>
             <ul>
-            {{#each this.content}}
-              {{#if this.content}}
-                <!-- part of group -->
-                <span class="cb-ce-ctrls" data-targets='{{this._targets}}''>
-                  <i class="cb-ce-ctrls-del fa fa-times"></i>
+              <li>
+                <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>
+                  <i class="cb-ce-ctrls-del fa fa-times"></i> 
                 </span>
-                <span>{{this.name}}</span>
+                <span>
+                  {{#if this.number}}
+                    {{this.xmlatts.0.value}}
+                  {{else}}
+                    {{this.xmlatts.1.value}}
+                  {{/if}}
+                </span>
+              </li>
+              <ul>
                 {{#each this.content}}
-                  <!-- pointers -->
-                  <li>
-                    <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>
-                      <i class="cb-ce-ctrls-del fa fa-times"></i>                      
+                  {{#if this.content}}
+                    <!-- part of group -->
+                    <span class="cb-ce-ctrls" data-targets='{{this._targets}}''>
+                      <i class="cb-ce-ctrls-del fa fa-times"></i>
                     </span>
                     <span>{{this.name}}</span>
-                    <ul>
-                    {{#each this.targets}}
+                    {{#each this.content}}
+                      <!-- pointers -->
                       <li>
-                        <span class="cb-ce-ctrls" data-targets='{{this.cid}}'>
-                          <i class="cb-ce-ctrls-del fa fa-times"></i> 
+                        <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>
+                          <i class="cb-ce-ctrls-del fa fa-times"></i>                      
                         </span>
-                        <span>{{this.xmlid}}</span>
+                        <span>{{this.name}}</span>
+                        <ul>
+                        {{#each this.targets}}
+                          <li>
+                            <span class="cb-ce-ctrls" data-targets='{{this.cid}}'>
+                              <i class="cb-ce-ctrls-del fa fa-times"></i> 
+                            </span>
+                            <span>{{this.xmlid}}</span>
+                          </li>
+                        {{/each}}
+                        </ul>
                       </li>
                     {{/each}}
-                    </ul>
-                  </li>
-                {{/each}}
-                {{else}}
-                <!-- pointers -->
-                <li>
-                  <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>
-                    <i class="cb-ce-ctrls-del fa fa-times"></i>
-                  </span>
-                  <span>{{this.name}}</span>
-                  <ul>
-                  {{#each this.targets}}
+                    {{else}}
+                    <!-- pointers -->
                     <li>
-                      <span class="cb-ce-ctrls" data-targets='{{this.cid}}'>
-                        <i class="cb-ce-ctrls-del fa fa-times"></i> 
+                      <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>
+                        <i class="cb-ce-ctrls-del fa fa-times"></i>
                       </span>
-                      <span>{{this.xmlid}}</span>
+                      <span>{{this.name}}</span>
+                      <ul>
+                      {{#each this.targets}}
+                        <li>
+                          <span class="cb-ce-ctrls" data-targets='{{this.cid}}'>
+                            <i class="cb-ce-ctrls-del fa fa-times"></i> 
+                          </span>
+                          <span>{{this.xmlid}}</span>
+                        </li>
+                      {{/each}}
+                      </ul>
                     </li>
-                  {{/each}}
-                  </ul>
-                </li>
-              {{/if}}
-            {{/each}}                            
+                  {{/if}}
+                {{/each}}                            
+              </ul>
             </ul>
           {{else}}
             <span class="cb-ce-ctrls" data-targets='{{this._targets}}'>

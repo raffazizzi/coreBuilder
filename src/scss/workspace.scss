@@ -1,8 +1,7 @@
-@import 'variables';
+@import "variables";
 
 #workspace {
     #getstarted {
-
         margin-left: 10px;
 
         img {
@@ -12,16 +11,37 @@
             vertical-align: bottom;
         }
 
-        div {margin: 0 0 0 8%;}
+        div {
+            margin: 0 0 0 8%;
+        }
 
-        div#instructions {margin-top: -15px; }
+        div#instructions {
+            margin-top: -15px;
+        }
 
-        div#video {margin-top: 2em; }
+        div#video {
+            margin-top: 2em;
+        }
 
+        iframe {
+            border: none;
+        }
     }
 
-    .row {
-        margin: 0;
+    #filesCore {
+        display: flex;
+
+        #files {
+            width: 100%;
+
+            .row {
+                margin: 0;
+
+                .cb-ace {
+                    min-height: inherit;
+                }
+            }
+        }
 
         .cb-XMLFile {
             background: Grey;
@@ -37,7 +57,10 @@
                 .cb-xf-controls {
                     float: right;
 
-                    a:link, a:hover, a:active, a:visited {
+                    a:link,
+                    a:hover,
+                    a:active,
+                    a:visited {
                         color: white;
                         text-decoration: none;
                     }
@@ -45,13 +68,11 @@
                     button span {
                         display: none;
                     }
-
                 }
 
                 .cb-xf-xp-drawer {
-
                     color: black;
-                    width: 250px;  
+                    width: 250px;
                     background-color: $logo-secondary;
                     height: 35px;
                     margin: auto;
@@ -61,7 +82,7 @@
                     right: 0;
                     z-index: 999 !important;
                     text-align: center;
-                    border-radius: 5px; 
+                    border-radius: 5px;
                     display: none;
 
                     span {
@@ -75,10 +96,8 @@
                         margin: 5px 10px 0 0;
 
                         a.cb-xf-xp-d-b {
-
                         }
                     }
-
                 }
 
                 .cb-xf-xp-drawer.cb-xp-ok {
@@ -87,19 +106,21 @@
                 .cb-xf-xp-drawer.cb-xp-fail {
                     background-color: red;
                 }
-
             }
-
-            .cb-ace {
-                min-height: inherit;
-            }
-
         }
 
+        #core {
+            width: 100%;
+
+            #coreSubHeader {
+                display: flex;
+                justify-content: space-between;
+            }
+        }
     }
 }
 
-@media(min-width:500px) {
+@media (min-width: 500px) {
     #workspace .row .cb-XMLFile .cb-xf-title .cb-xf-controls button span {
         display: inline;
     }

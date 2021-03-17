@@ -2,26 +2,68 @@ import $ from 'jquery';
 import * as Backbone from 'backbone';
 import XMLFileView from './XMLFile-view.js';
 import Events from '../utils/backbone-events.js';
+import core_tpl from "../templates/core-tpl"
+import xmlfile_tpl from "../templates/xmlfile-tpl"
+import loadScript from "../utils/load-script"
+import coreXML_tpl from "../templates/coreXML-tpl"
 
+/**
+ * Class representing XML files
+ * @extends Backbone.View
+ */
 class XMLFilesView extends Backbone.View {
-
-    initialize(){
+    /**
+     * Initialize the view
+     */
+    initialize() {
         this.listenTo(this.collection, 'add', this.addOne);
-        this.listenTo(this.collection, 'remove', ()=>{
+        this.listenTo(this.collection, 'remove', () => {
             //noop
         });
     }
 
-    addOne(m){
+    /**
+     * Manage events
+     * @returns Event hashing that associates events to methods in the view
+     */
+    events() {
+        return {
+            'mousemove .row .cb-ace.ace_editor.ace-chrome': 'adjustScrolling',
+            'keyup .row .cb-ace.ace_editor.ace-chrome': 'adjustScrolling',
+            'mousewheel .row .cb-ace.ace_editor.ace-chrome': 'adjustScrolling'
+        };
+    }
+
+    /**
+     * Adjust scrolling in all file windows
+     * @param event - The event
+     */
+    adjustScrolling(event) {
+        for (let i = 0; i < this.$el.find(".ace_scrollbar.ace_scrollbar-v").length - 1; i++)
+            this.$el.find(".ace_scrollbar.ace_scrollbar-v")[i].scrollTop = event.currentTarget.children[3].scrollTop
+        for (let i = 0; i < this.$el.find(".ace_scrollbar.ace_scrollbar-h").length - 1; i++)
+            this.$el.find(".ace_scrollbar.ace_scrollbar-h")[i].scrollLeft = event.currentTarget.children[4].scrollLeft
+    }
+
+    /**
+     * Add a XML file
+     * @param m - The XML file
+     */
+    addOne(m) {
         // update model cell size if needed
         if (this.cell_size) {
             m.size = this.cell_size;
         }
-        this.$el.append(new XMLFileView({model:m}).render());
+        this.$el.append(new XMLFileView({ model: m }).render());
         this.arrange();
     }
 
-    arrange(cols) {
+    /**
+     * Arrange the layout of XML files
+     * @param cols - The columns
+     * @param XML - The XML data
+     */
+    arrange(cols, XML) {
         if (!cols) {
             if (this.cols) {
                 cols = this.cols;
@@ -47,13 +89,42 @@ class XMLFilesView extends Backbone.View {
         }
 
         // create needed number of rows and re-attach xfiles
+        let divFiles = $("<div>").attr("id", "files")
         for (let row of rows) {
             let div = $('<div>').addClass("row");
             for (let xfile of row) {
-                div.append(xfile); 
+                if (xfile.classList[1])
+                    div.append(xfile);
             }
-            this.$el.append(div);
+            if (div[0].innerHTML)
+                divFiles.append(div)
         }
+
+        this.$el.append($("<div>").attr("id", "filesCore").append(divFiles).append($("<div>").attr("id", "core").html(core_tpl())))
+        this.$el.find("#core .cb-XMLFile").html(xmlfile_tpl())
+
+        const edCnt = this.$el.find("#core .cb-ace").get(0);
+
+        loadScript("dist/js/libs/ace/ace.js", { scriptTag: true }).then(() => {
+            var editor;
+            ace.require(['ace/ace'], (loadedAce) => {
+                editor = loadedAce.edit(edCnt);
+
+                editor.setTheme("ace/theme/chrome");
+                editor.setShowPrintMargin(false);
+                editor.getSession().setMode("ace/mode/xml");
+                editor.$blockScrolling = Infinity;
+                editor.$enableBlockSelect = false;
+                editor.$enableMultiselect = false;
+                if (XML == undefined)
+                    editor.getSession().insert({ column: 0, row: 0 }, coreXML_tpl())
+                else
+                    editor.getSession().insert({ column: 0, row: 0 }, XML)
+                editor.moveCursorTo({ column: 0, row: 0 });
+            });
+        });
+
+        this.$el.find("#core .cb-ace").height(this.$el.find("#files").height() - this.$el.find("#coreHeader").height())
     }
 }
 
