@@ -4,18 +4,27 @@ import currententrydata_tpl from '../templates/currententrydata-tpl';
 import currententrygrps_tpl from '../templates/currententrygrps-tpl';
 import Prism from 'prismjs';
 import vk from 'vkbeautify';
+import TextualVariationsComponent from '../components/TextualVariationsComponent';
 
 var $ = global.jQuery = require('jquery');
 require("../../../node_modules/bootstrap/dist/js/umd/button.js");
 
+/**
+ * Class representing interactions with the current entry window
+ * @extends Backbone.View
+ */
 class CurrentEntryView extends Backbone.View {
-
+    /**
+     * Initialize the view
+     * @param options - The options attached directly to the view.
+     */
     initialize(options) {
         this.elementSet = options.elementSet;
-        this.listenTo(this.model, 'change', this.renderData);
-        this.listenTo(this.model.pointers, 'add', this.renderData);
-        this.listenTo(this.model.pointers, 'remove', ()=>{
-            if (this.model.pointers.length > 0){
+        this.reading = "rdg"
+        this.listenTo(this.model.lastCore, 'change', this.renderData);
+        this.listenTo(this.model.lastCore.pointers, 'add', this.renderData);
+        this.listenTo(this.model.lastCore.pointers, 'remove', () => {
+            if (this.model.lastCore.pointers.length > 0) {
                 this.renderData();
             }
             else this.render();
@@ -24,25 +33,45 @@ class CurrentEntryView extends Backbone.View {
         this.render();
     }
 
-    events(){
+    /**
+     * Add entry
+     */
+    addEntry() {
+        this.model.lastCore.saveToCore();
+
+        // Add new entry to core
+        if (this.collection[0].at(this.collection[0].length - 1).get("xml"))
+            this.collection[0].add({ "saved": false })
+
+        this.removeEntryPart(["all"])
+        this.undelegateEvents();
+    }
+
+    /**
+     * Manage events
+     * @returns Event hashing that associates events to methods in the view
+     */
+    events() {
         return {
-            "click #cb-ce-xml" : ()=>{this.toggleXMLView()},
-            "click .cb-ce-ctrls-del" : (e)=>{
+            "click #cb-ce-xml": () => { this.toggleXMLView() },
+            "click .cb-ce-ctrls-del": (e) => {
                 this.removeEntryPart($(e.target).parent().data("targets"));
             },
-            "click #cb-ce-cancel" : ()=>{this.removeEntryPart(["all"])},
-            "click #cb-ce-minimize" : ()=>{
-                if (this.$el.hasClass("cb-ce-minimized")){
-                    this.$el.removeClass("cb-ce-minimized");
+            "click #cb-ce-cancel": () => { this.removeEntryPart(["all"]) },
+            "click #cb-ce-minimize": () => {
+                if (this.$el.find("#currententry").hasClass("cb-ce-minimized")) {
+                    this.$el.find("#currententry").removeClass("cb-ce-minimized");
                 }
                 else {
-                    this.$el.addClass("cb-ce-minimized");
+                    this.$el.find("#currententry").addClass("cb-ce-minimized");
                 }
             },
-            "click #cb-ce-add" : ()=>{
-                this.model.saveToCore();
-                this.removeEntryPart(["all"])
-                this.undelegateEvents();
+            "click #cb-ce-add-end": () => {
+                this.addEntry()
+            },
+            "click #cb-ce-add-cursor": () => {
+                this.collection[0].at(0).set({ cursor: true })
+                this.addEntry()
             },
             "click #cb-ce-g-new": "newGroup",
             "click .cb-ce-g": "selectGroup",
@@ -50,24 +79,32 @@ class CurrentEntryView extends Backbone.View {
         }
     }
 
-    updateElementSet(elset){
+    /**
+     * Update the current entry if stand-off markup elements are modified
+     * @param elset - Stand-off markup elements
+     */
+    updateElementSet(elset) {
         // Make sure this entry is not already saved
-        if (!this.model.get("saved")){
+        if (!this.model.lastCore.get("saved")) {
             this.elementSet = elset;
             this.renderData();
-        }        
+        }
     }
 
+    /**
+     * Remove an entry part
+     * @param targets - The targets
+     */
     removeEntryPart(targets) {
         if (targets == "all") {
-            this.model.pointers.reset();
-            this.model.groups.reset();
+            this.model.lastCore.pointers.reset();
+            this.model.lastCore.groups.reset();
         }
         else {
             targets = Array.isArray(targets) ? targets : [targets];
             for (let target of targets) {
-                
-                let pointers = this.model.pointers.filter(function(pointer){
+
+                let pointers = this.model.lastCore.pointers.filter(function (pointer) {
                     return pointer.cid == target
                 });
 
@@ -77,13 +114,18 @@ class CurrentEntryView extends Backbone.View {
             }
         }
 
-        if (this.model.pointers.length > 0){
+        if (this.model.lastCore.pointers.length > 0) {
             this.renderData();
         }
         else this.render();
 
     }
 
+    /**
+     * Transform data into XML format
+     * @param data - The data
+     * @returns Data in XML format
+     */
     getXML(data) {
 
         var _writeattribute = (el, a) => {
@@ -98,10 +140,10 @@ class CurrentEntryView extends Backbone.View {
         }
 
         let parser = new DOMParser();
-        let xmlDoc = parser.parseFromString("<"+data.wrapper.name+"/>","text/xml");
+        let xmlDoc = parser.parseFromString("<" + data.wrapper.name + "/>", "text/xml");
         let wrapper = xmlDoc.documentElement;
 
-        let currentXMLFile = this.model.pointers.first().get("xml_file");
+        let currentXMLFile = this.model.lastCore.pointers.first().get("xml_file");
 
         // Add wrapper's attributes
         for (let a of data.wrapper.xmlatts) {
@@ -114,7 +156,7 @@ class CurrentEntryView extends Backbone.View {
             for (let cnt of lvl.content) {
                 if (cnt.name) {
                     let el = xmlDoc.createElement(cnt.name);
-                    let target_att = "target"; 
+                    let target_att = "target";
                     for (let a of cnt.xmlatts) {
                         if (a.name && !a.isTarget) {
                             _writeattribute(el, a);
@@ -126,16 +168,16 @@ class CurrentEntryView extends Backbone.View {
                     if (cnt.targets) {
                         let ids = [];
                         for (let target of cnt.targets) {
-                           ids.push(target.xmlid);
+                            ids.push(target.xmlid);
                         }
                         el.setAttribute(target_att, ids.join(" "));
-                    }                
+                    }
                     if (cnt.content) {
                         _createElementDown(cnt, el);
                     }
                     xmlel.appendChild(el);
                 }
-            }    
+            }
         }
 
         _createElementDown(data.wrapper, wrapper);
@@ -143,26 +185,91 @@ class CurrentEntryView extends Backbone.View {
         return xmlDoc;
     }
 
+    /**
+     * Create a group
+     */
     newGroup() {
-        let pos = this.model.groups.length + 1;
-        this.unselectGroups(); 
-        this.model.groups.add({"number" : pos, "selected": true});
+        let pos = this.model.lastCore.groups.length + 1;
+        this.unselectGroups();
+        this.model.lastCore.groups.add({ "number": pos, "selected": true });
         this.renderGroupDropdown();
     }
 
+    /**
+     * Select a group
+     * @param e - Event
+     */
     selectGroup(e) {
         let pos = parseInt($(e.target).data("pos")) - 1;
         this.unselectGroups();
-        this.model.groups.models[pos].set("selected", true);
+        this.model.lastCore.groups.models[pos].set("selected", true);
         this.renderGroupDropdown();
     }
 
-    unselectGroups(){
-        this.model.groups.each(function(g){
+    /**
+     * Unselect all groups 
+     */
+    unselectGroups() {
+        this.model.lastCore.groups.each(function (g) {
             g.set("selected", false);
         });
     }
 
+    /**
+     * Add a variation without duplicate
+     * @param variation - The variation
+     */
+    addVariationWithoutDuplicate(variation) {
+        let uniqueVariation = true
+
+        for (let variationColor of this.collection[1])
+            if (variationColor["variation"] == variation) {
+                uniqueVariation = false
+                break
+            }
+
+        if (uniqueVariation)
+            this.collection[1].push({ variation: variation, color: "#000000" })
+    }
+
+    /**
+     * Add textual variations
+     * @returns The textual variations
+     */
+    addVariations() {
+        let standOff = false
+
+        if (this.$el.find("#core .cb-ace")[0])
+            for (let child of this.$el.find("#core .cb-ace")[0].children[2].children[0].children[2].children)
+                for (let i = 0; i < child.children.length; i++) {
+                    if (child.children[i - 2] && child.children[i - 1])
+                        switch (child.children[i - 2].innerText + child.children[i - 1].innerText + child.children[i].innerText) {
+                            case "<standOff>":
+                                standOff = true
+                                break
+                            case "</standOff>":
+                                standOff = false
+                        }
+
+                    if (standOff && child.children[i].innerText == "type")
+                        this.addVariationWithoutDuplicate(child.children[i + 2].innerText.replaceAll('"', ''))
+                }
+
+        if (this.model.lastCore.toJSON().json)
+            for (let content of this.model.lastCore.toJSON().json.content) {
+                if (content.name == this.elementSet.get("container").get("name") && content.xmlatts[1])
+                    this.addVariationWithoutDuplicate(content.xmlatts[1].value)
+                if (content.name == this.elementSet.get("grp").get("name") && content.xmlatts[0])
+                    this.addVariationWithoutDuplicate(content.xmlatts[0].value)
+            }
+
+        return this.collection[1]
+    }
+
+    /**
+     * Add an element to the group
+     * @param e - Event
+     */
     addToGroup(e) {
         let targets = $(e.target).parent().data("targets");
 
@@ -170,42 +277,54 @@ class CurrentEntryView extends Backbone.View {
 
             let targetParts = target.split("#");
 
-            for (let ptr of this.model.pointers.models) {
+            for (let ptr of this.model.lastCore.pointers.models) {
                 if (targets.indexOf(ptr.cid) > -1) {
-                    let group = this.model.groups.filter(function(group){
-                        return group.get("selected");
+                    let group = this.model.lastCore.groups.filter(function (selectedGroup) {
+                        return selectedGroup.get("selected");
                     });
-                    if (group.length > 0) { 
+                    if (group.length > 0) {
                         ptr.set("group", group[0].get("number"));
                     }
-                }                
+                }
             }
         }
 
         this.renderData();
-        
+
+        if (!this.model.lastCore.toJSON().json.content[this.model.lastCore.toJSON().json.content.length - 1].xmlatts.length)
+            new TextualVariationsComponent({ currentEntry: this, index: this.model.lastCore.toJSON().json.content.length - 1 })
     }
 
-    renderGroupDropdown() { 
-        this.$el.find("#cb-ce-g-dd").html(currententrygrps_tpl(this.model.groups.toJSON()));
+    /**
+     * Render the group
+     */
+    renderGroupDropdown() {
+        this.$el.find("#currententry #cb-ce-g-dd").html(currententrygrps_tpl(this.model.lastCore.groups.toJSON()));
     }
 
+    /**
+     * Render the current entry
+     * @returns The current entry
+     */
     render() {
 
-        this.$el.html(currententry_tpl());
+        this.$el.find("#currententry").html(currententry_tpl());
         this.renderGroupDropdown();
         this.renderData();
 
         return this;
     }
 
+    /**
+     * Render the data
+     */
     renderData() {
 
         let data = {};
-        if (this.model.pointers.models.length > 0){
+        if (this.model.lastCore.pointers.models.length > 0) {
 
             this.showEntry();
-            
+
             let es = this.elementSet;
             let ptr_bhv = this.elementSet.get("ptr_bhv");
 
@@ -215,28 +334,28 @@ class CurrentEntryView extends Backbone.View {
             let el_container = es.get("container");
             let el_ptr = es.get("ptr");
 
-            let wrapper = {"name": el_wrapper.get("name"), "content": [], 'xmlatts': el_wrapper.xmlatts.toJSON()};
+            let wrapper = { "name": el_wrapper.get("name"), "content": [], 'xmlatts': el_wrapper.xmlatts.toJSON() };
             var cnt = null;
             if (el_container.get("name")) {
                 cnt = {
-                    "name": el_container.get("name"), 
-                    "content": [], 
+                    "name": el_container.get("name"),
+                    "content": [],
                     "targets": [],
                     "_targets": [],
                     "xmlatts": el_container.xmlatts.toJSON()
                 };
             }
-            
+
             let pointers = [];
             if (ptr_bhv == "attr") {
                 // Remember: no need to worry about group elements in this behavior
-                let ptr = {"name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON()};
+                let ptr = { "name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON() };
                 let targets = [];
                 let _targets = [];
-                for (let pointer of this.model.pointers.models) {
+                for (let pointer of this.model.lastCore.pointers.models) {
                     if (!pointer.get("empty")) {
-                        let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer"); 
-                        targets.push({"xmlid" : pointer.get("xml_file") + "#" + xp, "cid" : pointer.cid});
+                        let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
+                        targets.push({ "xmlid": pointer.get("xml_file") + "#" + xp, "cid": pointer.cid });
                         _targets.push(pointer.cid);
                     }
                 }
@@ -257,12 +376,12 @@ class CurrentEntryView extends Backbone.View {
                 var ptrs = [];
                 let inGroup = false;
 
-                for (let pointer of this.model.pointers.models) {
+                for (let pointer of this.model.lastCore.pointers.models) {
                     if (!pointer.get("empty")) {
-                        let ptr = {"name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON()};
+                        let ptr = { "name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON() };
                         let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
-                        ptr.targets = [{"xmlid" : pointer.get("xml_file") + "#" + xp, "cid" : pointer.cid}];
-                        ptr._targets = '["'+pointer.cid+'"]';
+                        ptr.targets = [{ "xmlid": pointer.get("xml_file") + "#" + xp, "cid": pointer.cid }];
+                        ptr._targets = '["' + pointer.cid + '"]';
 
                         if (cnt) {
                             cnt.content.push(ptr);
@@ -276,19 +395,19 @@ class CurrentEntryView extends Backbone.View {
                             inGroup = true;
                             if (grps[grp_no]) {
                                 if (cnt) {
-                                    grps[grp_no].content.push(cnt)                                    
+                                    grps[grp_no].content.push(cnt)
                                 }
                                 else {
-                                    grps[grp_no].content.push(ptr)   
+                                    grps[grp_no].content.push(ptr)
                                 }
                                 grps[grp_no]._targets.push(pointer.cid)
                             }
                             else {
                                 let grp = {
-                                    "name" : el_grp_name,
-                                    "number" : grp_no,
-                                    "content" : [],
-                                    "_targets" : [pointer.cid],
+                                    "name": el_grp_name,
+                                    "number": grp_no,
+                                    "content": [],
+                                    "_targets": [pointer.cid],
                                     "xmlatts": el_grp.xmlatts.toJSON()
                                 };
                                 if (cnt) {
@@ -296,13 +415,13 @@ class CurrentEntryView extends Backbone.View {
                                 }
                                 else {
                                     grp.content.push(ptr);
-                                }                                
+                                }
                                 grps[grp_no] = grp;
                             }
                         }
                         else {
                             ptrs.push(ptr);
-                        } 
+                        }
 
                     }
                 }
@@ -321,11 +440,11 @@ class CurrentEntryView extends Backbone.View {
                     for (let grp_no of Object.keys(grps).sort()) {
                         wrapper.content.push(grps[grp_no]);
                     }
-                }                
-                
+                }
+
             }
-            else if (ptr_bhv == "cnt"){
-                let byfile = this.model.pointers.groupBy(function(pointer){
+            else if (ptr_bhv == "cnt") {
+                let byfile = this.model.lastCore.pointers.groupBy(function (pointer) {
                     return pointer.get("xml_file")
                 });
 
@@ -334,18 +453,28 @@ class CurrentEntryView extends Backbone.View {
                 for (var key of Object.keys(byfile)) {
 
                     let cnt = {
-                        "name": el_container.get("name"), 
-                        "content": [], 
-                        "_targets": [], 
+                        "name": el_container.get("name"),
+                        "content": [],
+                        "_targets": [],
                         'xmlatts': el_container.xmlatts.toJSON()
                     };
+
+                    if (this.model.lastCore.toJSON().json)
+                        for (let content of this.model.lastCore.toJSON().json.content)
+                            if (content.name == this.reading && content.content[0].targets[0].xmlid.split('#')[0] == key) {
+                                if (content.xmlatts[1])
+                                    cnt.xmlatts.push({ name: content.xmlatts[1].name, value: content.xmlatts[1].value })
+                                if (content.done)
+                                    cnt.done = true
+                            }
+
                     let inGroup = false;
                     for (let pointer of byfile[key]) {
-                       if (!pointer.get("empty")) {
-                            let ptr = {"name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON()};
+                        if (!pointer.get("empty")) {
+                            let ptr = { "name": el_ptr.get("name"), 'xmlatts': el_ptr.xmlatts.toJSON() };
                             let xp = pointer.get("xmlid") ? pointer.get("xmlid") : pointer.get("xpointer");
-                            ptr.targets = [{"xmlid" : pointer.get("xml_file") + "#" + xp, "cid" : pointer.cid}];
-                            ptr._targets = '["'+pointer.cid+'"]';
+                            ptr.targets = [{ "xmlid": pointer.get("xml_file") + "#" + xp, "cid": pointer.cid }];
+                            ptr._targets = '["' + pointer.cid + '"]';
                             cnt.content.push(ptr);
                             cnt._targets.push(pointer.cid);
 
@@ -358,13 +487,18 @@ class CurrentEntryView extends Backbone.View {
                                 }
                                 else {
                                     let grp = {
-                                        "name" : el_grp_name,
-                                        "number" : grp_no,
-                                        "content" : [],
-                                        "_targets" : cnt._targets,
+                                        "name": el_grp_name,
+                                        "number": grp_no,
+                                        "content": [],
+                                        "_targets": cnt._targets,
                                         "xmlatts": el_grp.xmlatts.toJSON()
                                     };
                                     grp.content.push(cnt);
+
+                                    for (let content of this.model.lastCore.toJSON().json.content)
+                                        if (content.number == grp_no && content.xmlatts[0])
+                                            grp.xmlatts.push({ name: content.xmlatts[0].name, value: content.xmlatts[0].value })
+
                                     grps[grp_no] = grp;
                                 }
                             }
@@ -374,15 +508,27 @@ class CurrentEntryView extends Backbone.View {
                     cnt._targets = JSON.stringify(cnt._targets);
 
                     if (!inGroup) {
-                        wrapper.content.push(cnt);                        
+                        wrapper.content.push(cnt);
                     }
                 }
 
                 for (let grp_no of Object.keys(grps).sort()) {
                     wrapper.content.push(grps[grp_no]);
-                }                
-
+                }
             }
+
+            for (let i = this.model.lastCore.pointers.models.length - 1; i >= 0; i--)
+                if (this.model.lastCore.pointers.models[i].toJSON().lemma) {
+                    wrapper.content[i].name = "lem"
+                    break
+                }
+
+            if (this.model.lastCore.toJSON().json)
+                for (let content of this.model.lastCore.toJSON().json.content)
+                    if (content.name == this.reading && !content.done) {
+                        new TextualVariationsComponent({ currentEntry: this, index: this.model.lastCore.toJSON().json.content.length - 1 })
+                        break
+                    }
 
             data.wrapper = wrapper;
             data.xml = new XMLSerializer().serializeToString(this.getXML(data));
@@ -391,52 +537,69 @@ class CurrentEntryView extends Backbone.View {
             // custom formatting fix
             data.xml = this.fixXMLindent(data.xml);
 
-            this.model.set("xml", data.xml);
-            this.model.set("json", wrapper);
+            this.model.lastCore.set("xml", data.xml);
+            this.model.lastCore.set("json", wrapper);
 
-            this.$el.find("#cb-ce-entry-body").html(currententrydata_tpl(data));
+            this.$el.find("#currententry #cb-ce-entry-body").html(currententrydata_tpl(data));
 
             // If the current view is set to XML, switch to it
-            if (this.$el.find("#cb-ce-xml").hasClass("active")){
+            if (this.$el.find("#currententry #cb-ce-xml").hasClass("active")) {
                 this.toggleXMLView();
             }
 
             // Show grouping components if a group element has been set.
             if (el_grp.get("name")) {
-                this.$el.find(".cb-ce-g-el").show();
-                this.$el.find("#cb-ce-entry-grps").show();
+                this.$el.find("#currententry .cb-ce-g-el").show();
+                this.$el.find("#currententry #cb-ce-entry-grps").show();
             }
             else {
-                this.$el.find("#cb-ce-entry-grps").hide();   
+                this.$el.find("#currententry #cb-ce-entry-grps").hide();
             }
 
         }
         else this.hideEntry();
-        
+
     }
 
+    /**
+     * Show the entry
+     */
     showEntry() {
-        this.$el.find("#cb-ce-entry").show();
+        this.$el.find("#currententry #cb-ce-entry").show();
     }
 
+    /**
+     * Hide the entry
+     */
     hideEntry() {
-        this.$el.find("#cb-ce-entry").hide();
+        this.$el.find("#currententry #cb-ce-entry").hide();
     }
 
+    /**
+     * Toggle between standard display and XML format display
+     */
     toggleXMLView() {
-        this.$el.find("#cb-ce-entry-xml").toggle();
-        this.$el.find("#cb-ce-entry-items").toggle();
+        this.$el.find("#currententry #cb-ce-entry-xml").toggle();
+        this.$el.find("#currententry #cb-ce-entry-items").toggle();
         Prism.highlightAll();
     }
 
-    fixXMLindent(xml){
+    /**
+     * Fix the indentation of XML data
+     * @param xml - The XML data
+     * @returns The XML data fixed
+     */
+    fixXMLindent(xml) {
         // TODO make better
         return xml.replace(/(#[^#]+)\s/g, "$1\n");
     }
 
-    destroy(){
+    /**
+     * Delete the current entry
+     */
+    destroy() {
         this.undelegateEvents();
-        this.$el.removeData().unbind(); 
+        this.$el.find("#currententry").removeData().unbind();
     }
 
 }
